@@ -9,6 +9,9 @@
   <link href="options.css" rel="stylesheet" media="screen">
 </head>
 <body>
+  <div id="save-notice" style="display: none" class="notification is-success">
+    Saved!
+  </div>
   <section class="hero">
     <div class="hero-body">
       <div class="container">
@@ -18,7 +21,7 @@
   </section>
   <section class="section">
     <div class="container">
-      <form>
+      <form id="options-form">
         <div class="field">
           <label class="label" for="repository">Set default repository:</label>
           <div class="control">
