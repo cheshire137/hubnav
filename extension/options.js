@@ -32,7 +32,6 @@ class OptionsPage {
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
     this.submitButton.addEventListener('click', e => e.currentTarget.blur())
     this.orgInput.addEventListener('keyup', e => this.onOrgKeyup(e))
-    this.orgLogo.addEventListener('load', () => this.onOrgLogoLoad())
     this.orgLogo.addEventListener('error', () => this.showDefaultOrgLogo())
   }
 
