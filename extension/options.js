@@ -33,7 +33,7 @@ class OptionsPage {
     this.submitButton.addEventListener('click', e => e.currentTarget.blur())
     this.orgInput.addEventListener('keyup', e => this.onOrgKeyup(e))
     this.orgLogo.addEventListener('load', () => this.onOrgLogoLoad())
-    this.orgLogo.addEventListener('error', () => this.onOrgLogoError())
+    this.orgLogo.addEventListener('error', () => this.showDefaultOrgLogo())
   }
 
   loadOrgLogo(rawOrg) {
@@ -42,17 +42,27 @@ class OptionsPage {
     this.orgLogo.alt = org
   }
 
-  onOrgKeyup(event) {
-    const org = (event.target.value || '').trim()
-    if (org.length < 1) {
-      return
-    }
-    this.loadOrgLogo(org)
-  }
-
-  onOrgLogoError() {
+  showDefaultOrgLogo() {
     this.orgLogo.src = 'unknown-org.png'
     this.orgLogo.alt = ''
+  }
+
+  onOrgKeyup(event) {
+    if (this.orgInputTimer) {
+      clearTimeout(this.orgInputTimer)
+    }
+    this.orgInputTimer = setTimeout(() => {
+      this.setOrgLogoSource()
+    }, 750)
+  }
+
+  setOrgLogoSource() {
+    const org = (this.orgInput.value || '').trim()
+    if (org.length < 1) {
+      this.showDefaultOrgLogo()
+    } else {
+      this.loadOrgLogo(org)
+    }
   }
 
   onSubmit(event) {
