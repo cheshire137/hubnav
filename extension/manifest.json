@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "Hubnav",
+  "short_name": "Hubnav",
+  "description": "Navigate GitHub.com via keyboard shortcuts.",
+  "version": "0.0.1",
+  "permissions": [
+    "storage", "tabs", "*://*.github.com/*"
+  ],
+  "browser_action": {
+    "default_icon": "icon48.png",
+    "default_popup": "popup.html",
+    "default_title": "Hubnav"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.github.com/*"],
+      "js": ["storage.js", "content.js"]
+    }
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "options_page": "options.html",
+  "web_accessible_resources": [
+    "icon128.png"
+  ]
+}
