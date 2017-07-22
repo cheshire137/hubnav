@@ -1,3 +1,11 @@
+.button {
+  transition: background-color 0.1s ease-in-out;
+}
+
+.hero {
+  background-color: #fed1a2;
+}
+
 .notification {
   width: 400px;
   left: 50%;
@@ -17,4 +25,19 @@
 .org-container {
   display: flex;
   align-items: center;
+}
+
+.button.is-primary {
+  background-color: #feefa2;
+  color: #111;
+}
+
+.button.is-primary:hover,
+.button.is-primary:focus {
+  background-color: #edfea2;
+  color: #111;
+}
+
+.input:focus {
+  border-color: #fed1a2;
 }
