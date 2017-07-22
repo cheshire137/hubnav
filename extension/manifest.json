@@ -28,8 +28,9 @@
   },
   "options_page": "options.html",
   "web_accessible_resources": [
+    "bad-user.png",
     "icon128.png",
-    "unknown-org.png"
+    "unknown-user.png"
   ],
   "commands": {
     "select-repository": {

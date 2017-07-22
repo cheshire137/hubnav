@@ -1,6 +1,11 @@
 class OptionsPage {
   constructor() {
     this.findElements()
+    this.errors = {}
+  }
+
+  anyErrors() {
+    return Object.keys(this.errors).length > 0
   }
 
   isValidRepo(repo) {
@@ -11,15 +16,20 @@ class OptionsPage {
     return slashIndex > 0 && slashIndex < repo.length - 1
   }
 
-  checkRepoValidity() {
+  checkFormValidity() {
     const repo = (this.repoInput.value || '').trim()
     if (this.isValidRepo(repo)) {
+      delete this.errors.repository
+    } else {
+      this.errors.repository = true
+      this.flashErrorMessage('Invalid repository')
+    }
+    if (this.anyErrors()) {
+      this.optionsForm.classList.add('error')
+      this.submitButton.disabled = true
+    } else {
       this.optionsForm.classList.remove('error')
       this.submitButton.disabled = false
-    } else {
-      this.optionsForm.classList.add('error')
-      this.flashErrorMessage('Invalid repository')
-      this.submitButton.disabled = true
     }
   }
 
@@ -71,8 +81,10 @@ class OptionsPage {
     this.submitButton.addEventListener('click', e => e.currentTarget.blur())
     this.repoInput.addEventListener('keyup', e => this.onRepoKeyup(e))
     this.orgInput.addEventListener('keyup', e => this.onOrgKeyup(e))
-    this.repoLogo.addEventListener('error', () => this.showDefaultRepoLogo())
-    this.orgLogo.addEventListener('error', () => this.showDefaultOrgLogo())
+    this.repoLogo.addEventListener('load', () => this.onRepoLogoLoad())
+    this.orgLogo.addEventListener('load', () => this.onOrgLogoLoad())
+    this.repoLogo.addEventListener('error', () => this.onRepoLogoError())
+    this.orgLogo.addEventListener('error', () => this.onOrgLogoError())
   }
 
   loadOrgLogo(rawOrg) {
@@ -90,13 +102,23 @@ class OptionsPage {
     }
   }
 
-  showDefaultOrgLogo() {
-    this.orgLogo.src = 'unknown-org.png'
+  showBadOrgLogo() {
+    this.orgLogo.src = 'bad-user.png'
     this.orgLogo.alt = ''
   }
 
+  showDefaultOrgLogo() {
+    this.orgLogo.src = 'unknown-user.png'
+    this.orgLogo.alt = ''
+  }
+
+  showBadRepoLogo() {
+    this.repoLogo.src = 'bad-user.png'
+    this.repoLogo.alt = ''
+  }
+
   showDefaultRepoLogo() {
-    this.repoLogo.src = 'unknown-org.png'
+    this.repoLogo.src = 'unknown-user.png'
     this.repoLogo.alt = ''
   }
 
@@ -106,6 +128,7 @@ class OptionsPage {
     }
     this.orgInputTimer = setTimeout(() => {
       this.setOrgLogoSource()
+      this.checkFormValidity()
     }, 750)
   }
 
@@ -114,9 +137,52 @@ class OptionsPage {
       clearTimeout(this.repoInputTimer)
     }
     this.repoInputTimer = setTimeout(() => {
-      this.checkRepoValidity()
       this.setRepoLogoSource()
+      this.checkFormValidity()
     }, 750)
+  }
+
+  onRepoLogoLoad() {
+    if (this.isBadLogo(this.repoLogo.src)) {
+      return
+    }
+    delete this.errors.repositoryLogo
+    if (!this.anyErrors()) {
+      this.optionsForm.classList.remove('error')
+      this.submitButton.disabled = false
+    }
+  }
+
+  onRepoLogoError() {
+    this.showBadRepoLogo()
+    this.errors.repositoryLogo = true
+    const repo = (this.repoInput.value || '').trim()
+    const user = encodeURIComponent(repo.split('/')[0] || '')
+    this.flashErrorMessage(`Invalid repository: can't find "${user}"`)
+    this.checkFormValidity()
+  }
+
+  isBadLogo(url) {
+    return url === `chrome-extension://${chrome.runtime.id}/bad-user.png`
+  }
+
+  onOrgLogoLoad() {
+    if (this.isBadLogo(this.orgLogo.src)) {
+      return
+    }
+    delete this.errors.organizationLogo
+    if (!this.anyErrors()) {
+      this.optionsForm.classList.remove('error')
+      this.submitButton.disabled = false
+    }
+  }
+
+  onOrgLogoError() {
+    this.showBadOrgLogo()
+    this.errors.organizationLogo = true
+    const org = encodeURIComponent((this.orgInput.value || '').trim())
+    this.flashErrorMessage(`Can't find organization "${org}"`)
+    this.checkFormValidity()
   }
 
   setOrgLogoSource() {
