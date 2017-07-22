@@ -39,6 +39,10 @@
     "select-organization": {
       "suggested_key": "Alt+Shift+O",
       "description": "Select default GitHub organization"
+    },
+    "global-search": {
+      "suggested_key": "Alt+Shift+S",
+      "description": "Open GitHub's global search"
     }
   }
 }
