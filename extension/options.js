@@ -5,6 +5,7 @@ class OptionsPage {
 
   findElements() {
     this.repoInput = document.getElementById('repository')
+    this.orgInput = document.getElementById('organization')
     this.optionsForm = document.getElementById('options-form')
     this.saveNotice = document.getElementById('save-notice')
     this.submitButton = document.getElementById('submit-button')
@@ -18,8 +19,11 @@ class OptionsPage {
   }
 
   focusField() {
-    if (window.location.hash === '#select-repository') {
+    const hash = window.location.hash
+    if (hash === '#select-repository') {
       this.repoInput.focus()
+    } else if (hash === '#select-organization') {
+      this.orgInput.focus()
     }
   }
 
@@ -31,7 +35,8 @@ class OptionsPage {
   onSubmit(event) {
     event.preventDefault()
     const options = {
-      repository: this.repoInput.value
+      repository: (this.repoInput.value || '').trim(),
+      organization: (this.orgInput.value || '').trim()
     }
     HubnavStorage.save(options).then(() => this.flashSaveNotice())
   }
@@ -39,6 +44,7 @@ class OptionsPage {
   restoreOptions() {
     HubnavStorage.load().then(options => {
       this.repoInput.value = options.repository || ''
+      this.orgInput.value = options.organization || ''
     })
   }
 
