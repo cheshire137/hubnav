@@ -16,6 +16,11 @@
   color: #111;
 }
 
+.notification.error {
+  background-color: #FEB5A2;
+  color: #111;
+}
+
 .user-logo {
   width: 36px;
   height: 36px;
@@ -36,6 +41,11 @@
 
 .button.is-primary:hover,
 .button.is-primary:focus {
+  background-color: #edfea2;
+  color: #111;
+}
+
+.button.is-primary[disabled] {
   background-color: #edfea2;
   color: #111;
 }

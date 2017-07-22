@@ -3,20 +3,57 @@ class OptionsPage {
     this.findElements()
   }
 
+  isValidRepo(repo) {
+    if (repo.length < 1) {
+      return true
+    }
+    const slashIndex = repo.indexOf('/')
+    return slashIndex > 0 && slashIndex < repo.length - 1
+  }
+
+  checkRepoValidity() {
+    const repo = (this.repoInput.value || '').trim()
+    if (this.isValidRepo(repo)) {
+      this.optionsForm.classList.remove('error')
+      this.submitButton.disabled = false
+    } else {
+      this.optionsForm.classList.add('error')
+      this.flashErrorMessage('Invalid repository')
+      this.submitButton.disabled = true
+    }
+  }
+
   findElements() {
     this.repoInput = document.getElementById('repository')
     this.repoLogo = document.getElementById('repo-logo')
     this.orgInput = document.getElementById('organization')
     this.orgLogo = document.getElementById('org-logo')
     this.optionsForm = document.getElementById('options-form')
-    this.saveNotice = document.getElementById('save-notice')
+    this.notification = document.getElementById('notification')
     this.submitButton = document.getElementById('submit-button')
   }
 
   flashSaveNotice() {
-    this.saveNotice.style.display = 'block'
-    setTimeout(() => {
-      this.saveNotice.style.display = 'none'
+    if (this.notificationTimer) {
+      clearTimeout(this.notificationTimer)
+    }
+    this.notification.classList.remove('error')
+    this.notification.textContent = 'Saved!'
+    this.notification.style.display = 'block'
+    this.notificationTimer = setTimeout(() => {
+      this.notification.style.display = 'none'
+    }, 1500)
+  }
+
+  flashErrorMessage(message) {
+    if (this.notificationTimer) {
+      clearTimeout(this.notificationTimer)
+    }
+    this.notification.classList.add('error')
+    this.notification.textContent = message
+    this.notification.style.display = 'block'
+    this.notificationTimer = setTimeout(() => {
+      this.notification.style.display = 'none'
     }, 1500)
   }
 
@@ -77,6 +114,7 @@ class OptionsPage {
       clearTimeout(this.repoInputTimer)
     }
     this.repoInputTimer = setTimeout(() => {
+      this.checkRepoValidity()
       this.setRepoLogoSource()
     }, 750)
   }
@@ -101,6 +139,9 @@ class OptionsPage {
 
   onSubmit(event) {
     event.preventDefault()
+    if (this.optionsForm.classList.contains('error')) {
+      return
+    }
     const options = {
       repository: (this.repoInput.value || '').trim(),
       organization: (this.orgInput.value || '').trim()
