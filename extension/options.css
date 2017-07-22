@@ -1,0 +1,7 @@
+.notification {
+  width: 400px;
+  left: 50%;
+  margin-left: -200px;
+  position: absolute;
+  top: 40px;
+}
