@@ -43,6 +43,10 @@
     "global-search": {
       "suggested_key": "Alt+Shift+S",
       "description": "Open GitHub's global search"
+    },
+    "file-finder": {
+      "suggested_key": "Alt+Shift+F",
+      "description": "Open file finder for your selected repository"
     }
   }
 }
