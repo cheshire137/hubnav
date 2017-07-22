@@ -7,6 +7,7 @@ class OptionsPage {
     this.repoInput = document.getElementById('repository')
     this.optionsForm = document.getElementById('options-form')
     this.saveNotice = document.getElementById('save-notice')
+    this.submitButton = document.getElementById('submit-button')
   }
 
   flashSaveNotice() {
@@ -22,8 +23,9 @@ class OptionsPage {
     }
   }
 
-  handleFormSubmit() {
+  hookUpHandlers() {
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
+    this.submitButton.addEventListener('click', e => e.currentTarget.blur())
   }
 
   onSubmit(event) {
@@ -42,7 +44,7 @@ class OptionsPage {
 
   setup() {
     this.focusField()
-    this.handleFormSubmit()
+    this.hookUpHandlers()
     this.restoreOptions()
   }
 }
