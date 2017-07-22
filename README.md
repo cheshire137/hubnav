@@ -4,8 +4,18 @@ A Chrome extension for navigating github.com via keyboard shortcuts.
 
 ## How to Use
 
-- **Cmd-G-R** - select GitHub repository
-- **Cmd-G-O** - select GitHub organization
-- **Cmd-G-F** - open file finder for selected repository
-- **Cmd-G-S** - open global GitHub search
-- **Cmd-G-T** - open teams for your selected organization
+### macOS
+
+- **Option-Shift-R** - select GitHub repository
+- **Option-Shift-O** - select GitHub organization
+- **Option-Shift-F** - open file finder for selected repository
+- **Option-Shift-S** - open global GitHub search
+- **Option-Shift-T** - open teams for your selected organization
+
+### Windows/Linux
+
+- **Alt-Shift-R** - select GitHub repository
+- **Alt-Shift-O** - select GitHub organization
+- **Alt-Shift-F** - open file finder for selected repository
+- **Alt-Shift-S** - open global GitHub search
+- **Alt-Shift-T** - open teams for your selected organization

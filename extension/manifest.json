@@ -7,6 +7,9 @@
   "permissions": [
     "storage", "tabs", "*://*.github.com/*"
   ],
+  "background": {
+    "scripts": ["storage.js", "background.js"]
+  },
   "browser_action": {
     "default_icon": "icon48.png",
     "default_popup": "popup.html",
@@ -26,5 +29,11 @@
   "options_page": "options.html",
   "web_accessible_resources": [
     "icon128.png"
-  ]
+  ],
+  "commands": {
+    "select-repository": {
+      "suggested_key": "Alt+Shift+R",
+      "description": "Select default GitHub repository"
+    }
+  }
 }
