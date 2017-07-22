@@ -25,7 +25,7 @@
         <div class="field">
           <label class="label" for="repository">Set default GitHub repository:</label>
           <div class="control">
-            <input class="input" type="text" placeholder="e.g., twbs/bootstrap" id="repository">
+            <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs/bootstrap" id="repository">
           </div>
           <p class="help">
             Repository-based commands like opening the file finder will default to this repository.
@@ -33,8 +33,9 @@
         </div>
         <div class="field">
           <label class="label" for="organization">Set default GitHub organization:</label>
-          <div class="control">
-            <input class="input" type="text" placeholder="e.g., twbs" id="organization">
+          <div class="control org-container">
+            <img width="36" height="36" id="org-logo" class="org-logo" src="unknown-org.png">
+            <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs" id="organization">
           </div>
           <p class="help">
             Organization-based commands like opening the teams page will default to this organization.

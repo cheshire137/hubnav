@@ -6,6 +6,7 @@ class OptionsPage {
   findElements() {
     this.repoInput = document.getElementById('repository')
     this.orgInput = document.getElementById('organization')
+    this.orgLogo = document.getElementById('org-logo')
     this.optionsForm = document.getElementById('options-form')
     this.saveNotice = document.getElementById('save-notice')
     this.submitButton = document.getElementById('submit-button')
@@ -30,6 +31,28 @@ class OptionsPage {
   hookUpHandlers() {
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
     this.submitButton.addEventListener('click', e => e.currentTarget.blur())
+    this.orgInput.addEventListener('keyup', e => this.onOrgKeyup(e))
+    this.orgLogo.addEventListener('load', () => this.onOrgLogoLoad())
+    this.orgLogo.addEventListener('error', () => this.onOrgLogoError())
+  }
+
+  loadOrgLogo(rawOrg) {
+    const org = encodeURIComponent(rawOrg)
+    this.orgLogo.src = `https://github.com/${org}.png`
+    this.orgLogo.alt = org
+  }
+
+  onOrgKeyup(event) {
+    const org = (event.target.value || '').trim()
+    if (org.length < 1) {
+      return
+    }
+    this.loadOrgLogo(org)
+  }
+
+  onOrgLogoError() {
+    this.orgLogo.src = 'unknown-org.png'
+    this.orgLogo.alt = ''
   }
 
   onSubmit(event) {
@@ -44,7 +67,10 @@ class OptionsPage {
   restoreOptions() {
     HubnavStorage.load().then(options => {
       this.repoInput.value = options.repository || ''
-      this.orgInput.value = options.organization || ''
+      if (options.organization && options.organization.length > 0) {
+        this.orgInput.value = options.organization
+        this.loadOrgLogo(options.organization)
+      }
     })
   }
 

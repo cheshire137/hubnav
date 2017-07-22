@@ -5,3 +5,16 @@
   position: absolute;
   top: 40px;
 }
+
+.org-logo {
+  width: 36px;
+  height: 36px;
+  float: left;
+  margin-right: 10px;
+  border-radius: 3px;
+}
+
+.org-container {
+  display: flex;
+  align-items: center;
+}
