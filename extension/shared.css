@@ -1,0 +1,42 @@
+.button {
+  transition: background-color 0.1s ease-in-out;
+}
+
+.hero {
+  background-color: #fed1a2;
+}
+
+.notification {
+  width: 400px;
+  left: 50%;
+  margin-left: -200px;
+  position: absolute;
+  top: 40px;
+  background-color: #a2feb2;
+  color: #111;
+}
+
+.notification.error {
+  background-color: #FEB5A2;
+  color: #111;
+}
+
+.button.is-primary {
+  background-color: #feefa2;
+  color: #111;
+}
+
+.button.is-primary:hover,
+.button.is-primary:focus {
+  background-color: #edfea2;
+  color: #111;
+}
+
+.button.is-primary[disabled] {
+  background-color: #edfea2;
+  color: #111;
+}
+
+.input:focus {
+  border-color: #fed1a2;
+}
