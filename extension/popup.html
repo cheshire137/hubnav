@@ -17,45 +17,74 @@
       </div>
     </div>
   </section>
+
   <section class="section">
     <div class="container content">
       <div id="repo-commands" style="display: none">
         <h2 class="subtitle is-6">
           <img width="36" height="36" id="repo-logo" class="user-logo" src="unknown-user.png">
-          <span class="repository"></span>
+          <span id="repository"></span>
         </h2>
         <dl class="shortcuts-list">
-          <dt class="f-shortcut shortcut">f</dt>
-          <dd class="f-shortcut shortcut">open file finder</dd>
-          <dt class="i-shortcut shortcut">i</dt>
-          <dd class="i-shortcut shortcut">open issues</dd>
-          <dt class="p-shortcut shortcut">p</dt>
-          <dd class="p-shortcut shortcut">open pull requests</dd>
-          <dt class="h-shortcut shortcut">h</dt>
-          <dd class="h-shortcut shortcut">browse repository</dd>
+          <dt class="shortcut-f shortcut">f</dt>
+          <dd class="shortcut-f shortcut">open file finder</dd>
+          <dt class="shortcut-i shortcut">i</dt>
+          <dd class="shortcut-i shortcut">open issues</dd>
+          <dt class="shortcut-p shortcut">p</dt>
+          <dd class="shortcut-p shortcut">open pull requests</dd>
+          <dt class="shortcut-h shortcut">h</dt>
+          <dd class="shortcut-h shortcut">browse repository</dd>
         </dl>
       </div>
+
       <div id="org-commands" style="display: none">
         <h2 class="subtitle is-6">
           <img width="36" height="36" id="org-logo" class="user-logo" src="unknown-user.png">
-          <span class="organization"></span>
+          <span id="organization"></span>
         </h2>
         <dl class="shortcuts-list">
-          <dt class="t-shortcut shortcut">t</dt>
-          <dd class="t-shortcut shortcut">open teams</dd>
-          <dt class="m-shortcut shortcut">m</dt>
-          <dd class="m-shortcut shortcut">browse members</dd>
+          <dt class="shortcut-t shortcut">t</dt>
+          <dd class="shortcut-t shortcut">open teams</dd>
+          <dt class="shortcut-m shortcut">m</dt>
+          <dd class="shortcut-m shortcut">browse members</dd>
         </dl>
       </div>
+
       <h2 class="subtitle is-6">General</h2>
       <dl class="shortcuts-list">
-        <dt class="s-shortcut shortcut">s</dt>
-        <dd class="s-shortcut shortcut">open global search</dd>
-        <dt class="r-shortcut shortcut">r</dt>
-        <dd class="r-shortcut shortcut">change repository</dd>
-        <dt class="o-shortcut shortcut">o</dt>
-        <dd class="o-shortcut shortcut">change organization</dd>
+        <dt class="shortcut-s shortcut">s</dt>
+        <dd class="shortcut-s shortcut">open global search</dd>
+        <dt class="shortcut-r shortcut">r</dt>
+        <dd class="shortcut-r shortcut">change repository</dd>
+        <dt class="shortcut-o shortcut">o</dt>
+        <dd class="shortcut-o shortcut">change organization</dd>
       </dl>
+
+      <div id="repo-switch" style="display: none">
+        <h2 class="subtitle is-6">Quick Repository Switch</h2>
+        <dl class="shortcuts-list">
+          <dt class="shortcut-1 shortcut" style="display: none">1</dt>
+          <dd class="shortcut-1 shortcut" style="display: none">
+            <img width="36" height="36" id="repo-logo1" class="user-logo" src="unknown-user.png">
+            <span id="repo1"></span>
+          </dd>
+          <dt class="shortcut-2 shortcut" style="display: none">2</dt>
+          <dd class="shortcut-2 shortcut" style="display: none">
+            <img width="36" height="36" id="repo-logo2" class="user-logo" src="unknown-user.png">
+            <span id="repo2"></span>
+          </dd>
+          <dt class="shortcut-3 shortcut" style="display: none">3</dt>
+          <dd class="shortcut-3 shortcut" style="display: none">
+            <img width="36" height="36" id="repo-logo3" class="user-logo" src="unknown-user.png">
+            <span id="repo3"></span>
+          </dd>
+          <dt class="shortcut-4 shortcut" style="display: none">4</dt>
+          <dd class="shortcut-4 shortcut" style="display: none">
+            <img width="36" height="36" id="repo-logo4" class="user-logo" src="unknown-user.png">
+            <span id="repo4"></span>
+          </dd>
+        </dl>
+      </div>
     </div>
   </section>
   <script src="storage.js"></script>

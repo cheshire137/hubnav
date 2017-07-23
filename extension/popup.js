@@ -4,22 +4,27 @@ class PopupPage {
   }
 
   findElements() {
-    this.repoReferences = document.querySelectorAll('.repository')
-    this.orgReferences = document.querySelectorAll('.organization')
-    this.fShortcuts = document.querySelectorAll('.f-shortcut')
-    this.tShortcuts = document.querySelectorAll('.t-shortcut')
-    this.sShortcuts = document.querySelectorAll('.s-shortcut')
-    this.rShortcuts = document.querySelectorAll('.r-shortcut')
-    this.oShortcuts = document.querySelectorAll('.o-shortcut')
-    this.iShortcuts = document.querySelectorAll('.i-shortcut')
-    this.pShortcuts = document.querySelectorAll('.p-shortcut')
-    this.hShortcuts = document.querySelectorAll('.h-shortcut')
-    this.mShortcuts = document.querySelectorAll('.m-shortcut')
+    for (let i = 1; i <= 4; i++) {
+      this[`repo${i}`] = document.getElementById(`repo${i}`)
+      this[`repoLogo${i}`] = document.getElementById(`repo-logo${i}`)
+    }
+    this.repo = document.getElementById('repository')
+    this.org = document.getElementById('organization')
+    this.fShortcuts = document.querySelectorAll('.shortcut-f')
+    this.tShortcuts = document.querySelectorAll('.shortcut-t')
+    this.sShortcuts = document.querySelectorAll('.shortcut-s')
+    this.rShortcuts = document.querySelectorAll('.shortcut-r')
+    this.oShortcuts = document.querySelectorAll('.shortcut-o')
+    this.iShortcuts = document.querySelectorAll('.shortcut-i')
+    this.pShortcuts = document.querySelectorAll('.shortcut-p')
+    this.hShortcuts = document.querySelectorAll('.shortcut-h')
+    this.mShortcuts = document.querySelectorAll('.shortcut-m')
     this.repoCommands = document.getElementById('repo-commands')
     this.orgCommands = document.getElementById('org-commands')
     this.orgLogo = document.getElementById('org-logo')
     this.repoLogo = document.getElementById('repo-logo')
     this.shortcuts = document.querySelectorAll('.shortcut')
+    this.repoSwitch = document.getElementById('repo-switch')
   }
 
   runAfterDelay(action) {
@@ -128,14 +133,34 @@ class PopupPage {
     this.runAfterDelay(() => chrome.tabs.create({ url }))
   }
 
+  quickRepositorySwitch(i) {
+    HubnavStorage.load().then(currentOptions => {
+      const newOptions = {}
+      for (let key in currentOptions) {
+        newOptions[key] = currentOptions[key]
+      }
+      const newRepo = currentOptions[`repository${i}`]
+      const newDefaultBranch = currentOptions[`defaultBranch${i}`]
+      if (newRepo && newRepo.length > 0) {
+        newOptions.repository = newRepo
+      }
+      if (newDefaultBranch && newDefaultBranch.length > 0) {
+        newOptions.defaultBranch = newDefaultBranch
+      }
+      HubnavStorage.save(newOptions).then(() => {
+        this.loadActiveRepository(newOptions.repository)
+      })
+    })
+  }
+
   onShortcutClick(event) {
     event.preventDefault()
     const keyClass = event.currentTarget.className.split(' ').
-      filter(cls => cls.indexOf('-shortcut') === 1)[0]
+      filter(cls => cls.indexOf('shortcut-') === 0)[0]
     if (!keyClass) {
       return
     }
-    const key = keyClass.split('-shortcut')[0]
+    const key = keyClass.split('shortcut-')[1]
     this.executeShortcut(key)
   }
 
@@ -165,7 +190,15 @@ class PopupPage {
       this.openRepository()
     } else if (key === 'm') {
       this.openOrgMembers()
+    } else if (['1', '2', '3', '4'].indexOf(key) > -1) {
+      this.quickRepositorySwitch(key)
     }
+  }
+
+  loadActiveRepository(repo) {
+    this.repoCommands.style.display = 'block'
+    this.loadRepoLogo(repo, this.repoLogo)
+    this.repo.textContent = repo
   }
 
   setup() {
@@ -179,15 +212,31 @@ class PopupPage {
 
     HubnavStorage.load().then(options => {
       if (options.repository && options.repository.length > 0) {
-        this.repoCommands.style.display = 'block'
-        this.loadRepoLogo(options.repository)
+        this.loadActiveRepository(options.repository)
       }
+
       if (options.organization && options.organization.length > 0) {
         this.orgCommands.style.display = 'block'
         this.loadOrgLogo(options.organization)
+        this.org.textContent = options.organization
       }
-      this.updateRepoReferences(options.repository)
-      this.updateOrgReferences(options.organization)
+
+      let repoCount = 0
+      for (let i = 1; i <= 4; i++) {
+        const repo = options[`repository${i}`]
+        if (repo && repo.length > 0) {
+          repoCount++
+          const repoRefs = document.querySelectorAll(`.shortcut-${i}`)
+          for (let j = 0; j < repoRefs.length; j++) {
+            repoRefs[j].style.display = 'block'
+          }
+          this[`repo${i}`].textContent = repo
+          this.loadRepoLogo(repo, this[`repoLogo${i}`])
+        }
+      }
+      if (repoCount > 1) {
+        this.repoSwitch.style.display = 'block'
+      }
     })
   }
 
@@ -197,28 +246,12 @@ class PopupPage {
     this.orgLogo.alt = org
   }
 
-  loadRepoLogo(rawRepo) {
+  loadRepoLogo(rawRepo, imgTag) {
     let user = rawRepo.split('/')[0]
     if (user && user.length > 0) {
       user = encodeURIComponent(user)
-      this.repoLogo.src = `https://github.com/${user}.png`
-      this.repoLogo.alt = user
-    }
-  }
-
-  updateRepoReferences(repo) {
-    if (repo && repo.length > 0) {
-      for (let i = 0; i < this.repoReferences.length; i++) {
-        this.repoReferences[i].textContent = repo
-      }
-    }
-  }
-
-  updateOrgReferences(org) {
-    if (org && org.length > 0) {
-      for (let i = 0; i < this.orgReferences.length; i++) {
-        this.orgReferences[i].textContent = org
-      }
+      imgTag.src = `https://github.com/${user}.png`
+      imgTag.alt = user
     }
   }
 }

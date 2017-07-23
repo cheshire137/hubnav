@@ -235,12 +235,13 @@ class OptionsPage {
       return
     }
     HubnavStorage.load().then(currentOptions => {
+      const organization = (this.orgInput.value || '').trim()
       const repository1 = (this.repoInput1.value || '').trim()
       const repository2 = (this.repoInput2.value || '').trim()
       const repository3 = (this.repoInput3.value || '').trim()
       const repository4 = (this.repoInput4.value || '').trim()
       let repository = currentOptions.repository
-      if (!repository) {
+      if (!repository || repository.length < 1) {
         if (repository1.length > 0) {
           repository = repository1
         } else if (repository2.length > 0) {
@@ -251,18 +252,37 @@ class OptionsPage {
           repository = repository4
         }
       }
-      const newOptions = {
-        repository,
-        repository1,
-        repository2,
-        repository3,
-        repository4,
-        organization: (this.orgInput.value || '').trim(),
-        defaultBranch1: (this.defaultBranchInput1.value || '').trim(),
-        defaultBranch2: (this.defaultBranchInput2.value || '').trim(),
-        defaultBranch3: (this.defaultBranchInput3.value || '').trim(),
-        defaultBranch4: (this.defaultBranchInput4.value || '').trim()
+      let defaultBranch1 = ''
+      if (repository1.length > 0) {
+        defaultBranch1 = (this.defaultBranchInput1.value || '').trim()
       }
+      let defaultBranch2 = ''
+      if (repository2.length > 0) {
+        defaultBranch2 = (this.defaultBranchInput2.value || '').trim()
+      }
+      let defaultBranch3 = ''
+      if (repository3.length > 0) {
+        defaultBranch3 = (this.defaultBranchInput3.value || '').trim()
+      }
+      let defaultBranch4 = ''
+      if (repository4.length > 0) {
+        defaultBranch4 = (this.defaultBranchInput4.value || '').trim()
+      }
+      let defaultBranch = currentOptions.defaultBranch
+      if (!defaultBranch || defaultBranch.length < 1) {
+        if (defaultBranch1.length > 0) {
+          defaultBranch = defaultBranch1
+        } else if (defaultBranch2.length > 0) {
+          defaultBranch = defaultBranch2
+        } else if (defaultBranch3.length > 0) {
+          defaultBranch = defaultBranch3
+        } else if (defaultBranch4.length > 0) {
+          defaultBranch = defaultBranch4
+        }
+      }
+      const newOptions = { repository, repository1, repository2, repository3, repository4,
+                           organization, defaultBranch1, defaultBranch2, defaultBranch3,
+                           defaultBranch4, defaultBranch }
       HubnavStorage.save(newOptions).then(() => this.flashSaveNotice())
     })
   }
