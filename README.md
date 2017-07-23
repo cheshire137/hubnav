@@ -17,7 +17,11 @@ A Chrome extension for navigating github.com via keyboard shortcuts.
     - **t** - open teams for your selected organization
     - **s** - open global GitHub search
     - **i** - open issues for your selected repository
+    - **Shift I** - view closed issues for your selected repository
+    - **Ctrl i** - create a new issue in your selected repository
     - **p** - open pull requests for your selected repository
+    - **Shift P** - view merged pull requests in your selected repository
+    - **Ctrl p** - create a new pull request in your selected repository
     - **h** - open home page of your selected repository
     - **m** - view members of your selected organization
     - **1** - switch to your first specified repository
