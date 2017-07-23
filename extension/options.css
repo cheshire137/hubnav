@@ -18,3 +18,7 @@
 .separator {
   padding: 0 1em;
 }
+
+.section:not(:last-child) {
+  padding: 3rem 1.5rem 0 1.5rem;
+}

@@ -23,45 +23,55 @@
       </div>
     </div>
   </section>
-  <section class="section">
-    <div class="container">
-      <div class="columns">
-        <div class="column is-8 is-offset-2">
-          <form id="options-form">
+  <form id="options-form">
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-8 is-offset-2">
+            <h2 class="subtitle">Repository Options</h2>
             <div class="field">
-              <label class="label" for="repository">Set default GitHub repository:</label>
+              <label class="label" for="repository">Set your GitHub repository:</label>
               <div class="control with-image">
                 <img width="36" height="36" id="repo-logo" class="user-logo" src="unknown-user.png">
                 <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs/bootstrap" id="repository">
               </div>
               <p class="help">
-                Repository-based commands like opening the file finder will default to this repository.
+                Used with commands like browsing a repository's issues.
               </p>
             </div>
             <div class="field">
-              <label class="label" for="default-branch">Repository's default branch:</label>
+              <label class="label" for="default-branch">Default branch:</label>
               <div class="control">
                 <input class="input" autocomplete="off" type="text" placeholder="e.g., master" id="default-branch">
               </div>
               <p class="help">
-                Will be used for opening the file finder.
+                Used with branch-specific commands, like the file finder.
               </p>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-8 is-offset-2">
+            <h2 class="subtitle">Organization Options</h2>
             <div class="field">
-              <label class="label" for="organization">Set default GitHub organization:</label>
+              <label class="label" for="organization">Set your GitHub organization:</label>
               <div class="control with-image">
                 <img width="36" height="36" id="org-logo" class="user-logo" src="unknown-user.png">
                 <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs" id="organization">
               </div>
               <p class="help">
-                Organization-based commands like opening the teams page will default to this organization.
+                Used with commands like viewing the teams in an organization.
               </p>
             </div>
-          </form>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </form>
   <footer class="footer has-text-centered">
     <div class="container">
       Built with &hearts; by <a href="http://sarahvessels.com/">Sarah</a>
