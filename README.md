@@ -10,6 +10,10 @@ A Chrome extension for navigating github.com via keyboard shortcuts.
 
     - In macOS: **Option-H**
     - In Windows/Linux: **Alt-H**
+
+    The keyboard shortcut can be changed from `chrome://extensions/`
+    via the "Keyboard shortcuts" link at the bottom.
+
 2. Navigate to your desired GitHub page via shortcuts:
 
     - **o** - customize options for the extension, including setting your default GitHub organization and up to four repositories to quickly swap between
@@ -29,3 +33,11 @@ A Chrome extension for navigating github.com via keyboard shortcuts.
     - **2** - switch to your second specified repository
     - **3** - switch to your third specified repository
     - **4** - switch to your fourth specified repository
+
+## How to Develop
+
+Clone this repository locally via
+`git clone https://github.com/cheshire137/hubnav.git`. In Chrome, go to
+`chrome://extensions/` and ensure "Developer mode" is
+enabled. Then click "Load unpacked extension..." and
+choose the extension/ directory from wherever you cloned this repository.
