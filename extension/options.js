@@ -17,13 +17,16 @@ class OptionsPage {
   }
 
   checkFormValidity() {
-    const repo = (this.repoInput.value || '').trim()
-    if (this.isValidRepo(repo)) {
-      delete this.errors.repository
-    } else {
-      this.errors.repository = true
-      this.flashErrorMessage('Invalid repository')
+    for (let i = 1; i <= 4; i++) {
+      const repo = (this[`repoInput${i}`].value || '').trim()
+      if (this.isValidRepo(repo)) {
+        delete this.errors[`repository${i}`]
+      } else {
+        this.errors[`repository${i}`] = true
+        this.flashErrorMessage(`Invalid repository: #${i}`)
+      }
     }
+
     if (this.anyErrors()) {
       this.optionsForm.classList.add('error')
     } else {
@@ -33,9 +36,18 @@ class OptionsPage {
   }
 
   findElements() {
-    this.repoInput = document.getElementById('repository1')
-    this.defaultBranchInput = document.getElementById('default-branch1')
-    this.repoLogo = document.getElementById('repo-logo')
+    this.repoInput1 = document.getElementById('repository1')
+    this.repoInput2 = document.getElementById('repository2')
+    this.repoInput3 = document.getElementById('repository3')
+    this.repoInput4 = document.getElementById('repository4')
+    this.defaultBranchInput1 = document.getElementById('default-branch1')
+    this.defaultBranchInput2 = document.getElementById('default-branch2')
+    this.defaultBranchInput3 = document.getElementById('default-branch3')
+    this.defaultBranchInput4 = document.getElementById('default-branch4')
+    this.repoLogo1 = document.getElementById('repo-logo1')
+    this.repoLogo2 = document.getElementById('repo-logo2')
+    this.repoLogo3 = document.getElementById('repo-logo3')
+    this.repoLogo4 = document.getElementById('repo-logo4')
     this.orgInput = document.getElementById('organization')
     this.orgLogo = document.getElementById('org-logo')
     this.optionsForm = document.getElementById('options-form')
@@ -66,7 +78,7 @@ class OptionsPage {
   focusField() {
     const hash = window.location.hash
     if (hash === '#select-repository') {
-      this.repoInput.focus()
+      this.repoInput1.focus()
     } else if (hash === '#select-organization') {
       this.orgInput.focus()
     }
@@ -78,13 +90,15 @@ class OptionsPage {
   }
 
   hookUpHandlers() {
+    for (let i = 1; i <= 4; i++) {
+      this[`repoInput${i}`].addEventListener('keyup', e => this.onRepoKeyup(e, i))
+      this[`defaultBranchInput${i}`].addEventListener('keyup', e => this.onDefaultBranchKeyup(e, i))
+      this[`repoLogo${i}`].addEventListener('load', () => this.onRepoLogoLoad(i))
+      this[`repoLogo${i}`].addEventListener('error', () => this.onRepoLogoError(i))
+    }
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
-    this.repoInput.addEventListener('keyup', e => this.onRepoKeyup(e))
     this.orgInput.addEventListener('keyup', e => this.onOrgKeyup(e))
-    this.defaultBranchInput.addEventListener('keyup', e => this.onDefaultBranchKeyup(e))
-    this.repoLogo.addEventListener('load', () => this.onRepoLogoLoad())
     this.orgLogo.addEventListener('load', () => this.onOrgLogoLoad())
-    this.repoLogo.addEventListener('error', () => this.onRepoLogoError())
     this.orgLogo.addEventListener('error', () => this.onOrgLogoError())
   }
 
@@ -94,12 +108,12 @@ class OptionsPage {
     this.orgLogo.alt = org
   }
 
-  loadRepoLogo(rawRepo) {
+  loadRepoLogo(rawRepo, i) {
     let user = rawRepo.split('/')[0]
     if (user && user.length > 0) {
       user = encodeURIComponent(user)
-      this.repoLogo.src = `https://github.com/${user}.png`
-      this.repoLogo.alt = user
+      this[`repoLogo${i}`].src = `https://github.com/${user}.png`
+      this[`repoLogo${i}`].alt = user
     }
   }
 
@@ -113,14 +127,14 @@ class OptionsPage {
     this.orgLogo.alt = ''
   }
 
-  showBadRepoLogo() {
-    this.repoLogo.src = 'bad-user.png'
-    this.repoLogo.alt = ''
+  showBadRepoLogo(i) {
+    this[`repoLogo${i}`].src = 'bad-user.png'
+    this[`repoLogo${i}`].alt = ''
   }
 
-  showDefaultRepoLogo() {
-    this.repoLogo.src = 'unknown-user.png'
-    this.repoLogo.alt = ''
+  showDefaultRepoLogo(i) {
+    this[`repoLogo${i}`].src = 'unknown-user.png'
+    this[`repoLogo${i}`].alt = ''
   }
 
   onOrgKeyup(event) {
@@ -133,41 +147,41 @@ class OptionsPage {
     }, 750)
   }
 
-  onDefaultBranchKeyup(event) {
-    if (this.defaultBranchTimer) {
-      clearTimeout(this.defaultBranchTimer)
+  onDefaultBranchKeyup(event, i) {
+    if (this[`defaultBranchTimer${i}`]) {
+      clearTimeout(this[`defaultBranchTimer${i}`])
     }
-    this.defaultBranchTimer = setTimeout(() => {
+    this[`defaultBranchTimer${i}`] = setTimeout(() => {
       this.checkFormValidity()
     }, 750)
   }
 
-  onRepoKeyup(event) {
-    if (this.repoInputTimer) {
-      clearTimeout(this.repoInputTimer)
+  onRepoKeyup(event, i) {
+    if (this[`repoInput${i}Timer`]) {
+      clearTimeout(this[`repoInput${i}Timer`])
     }
-    this.repoInputTimer = setTimeout(() => {
-      this.setRepoLogoSource()
+    this[`repoInput${i}Timer`] = setTimeout(() => {
+      this.setRepoLogoSource(i)
       this.checkFormValidity()
     }, 750)
   }
 
-  onRepoLogoLoad() {
-    if (this.isBadLogo(this.repoLogo.src)) {
+  onRepoLogoLoad(i) {
+    if (this.isBadLogo(this[`repoLogo${i}`].src)) {
       return
     }
-    delete this.errors.repositoryLogo
+    delete this.errors[`repositoryLogo${i}`]
     if (!this.anyErrors()) {
       this.optionsForm.classList.remove('error')
     }
   }
 
-  onRepoLogoError() {
-    this.showBadRepoLogo()
-    this.errors.repositoryLogo = true
-    const repo = (this.repoInput.value || '').trim()
+  onRepoLogoError(i) {
+    this.showBadRepoLogo(i)
+    this.errors[`repositoryLogo${i}`] = true
+    const repo = (this[`repoInput${i}`].value || '').trim()
     const user = encodeURIComponent(repo.split('/')[0] || '')
-    this.flashErrorMessage(`Invalid repository: can't find "${user}"`)
+    this.flashErrorMessage(`Invalid repository #${i}: can't find "${user}"`)
     this.checkFormValidity()
   }
 
@@ -202,12 +216,12 @@ class OptionsPage {
     }
   }
 
-  setRepoLogoSource() {
-    const repo = (this.repoInput.value || '').trim()
+  setRepoLogoSource(i) {
+    const repo = (this[`repoInput${i}`].value || '').trim()
     if (repo.length < 1) {
-      this.showDefaultRepoLogo()
+      this.showDefaultRepoLogo(i)
     } else {
-      this.loadRepoLogo(repo)
+      this.loadRepoLogo(repo, i)
     }
   }
 
@@ -220,25 +234,53 @@ class OptionsPage {
     if (this.optionsForm.classList.contains('error')) {
       return
     }
-    const options = {
-      repository: (this.repoInput.value || '').trim(),
-      organization: (this.orgInput.value || '').trim(),
-      defaultBranch: (this.defaultBranchInput.value || '').trim()
-    }
-    HubnavStorage.save(options).then(() => this.flashSaveNotice())
+    HubnavStorage.load().then(currentOptions => {
+      const repository1 = (this.repoInput1.value || '').trim()
+      const repository2 = (this.repoInput2.value || '').trim()
+      const repository3 = (this.repoInput3.value || '').trim()
+      const repository4 = (this.repoInput4.value || '').trim()
+      let repository = currentOptions.repository
+      if (!repository) {
+        if (repository1.length > 0) {
+          repository = repository1
+        } else if (repository2.length > 0) {
+          repository = repository2
+        } else if (repository3.length > 0) {
+          repository = repository3
+        } else if (repository4.length > 0) {
+          repository = repository4
+        }
+      }
+      const newOptions = {
+        repository,
+        repository1,
+        repository2,
+        repository3,
+        repository4,
+        organization: (this.orgInput.value || '').trim(),
+        defaultBranch1: (this.defaultBranchInput1.value || '').trim(),
+        defaultBranch2: (this.defaultBranchInput2.value || '').trim(),
+        defaultBranch3: (this.defaultBranchInput3.value || '').trim(),
+        defaultBranch4: (this.defaultBranchInput4.value || '').trim()
+      }
+      HubnavStorage.save(newOptions).then(() => this.flashSaveNotice())
+    })
   }
 
   restoreOptions() {
     HubnavStorage.load().then(options => {
-      if (options.repository && options.repository.length > 0) {
-        this.repoInput.value = options.repository
-        this.loadRepoLogo(options.repository)
+      for (let i = 1; i <= 4; i++) {
+        const repo = options[`repository${i}`]
+        if (repo && repo.length > 0) {
+          this[`repoInput${i}`].value = repo
+          this.loadRepoLogo(repo, i)
+        }
+        this[`defaultBranchInput${i}`].value = options[`defaultBranch${i}`] || 'master'
       }
       if (options.organization && options.organization.length > 0) {
         this.orgInput.value = options.organization
         this.loadOrgLogo(options.organization)
       }
-      this.defaultBranchInput.value = options.defaultBranch || 'master'
     })
   }
 

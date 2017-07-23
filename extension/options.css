@@ -31,8 +31,9 @@
   width: 400px;
   left: 50%;
   margin-left: -200px;
-  position: absolute;
-  top: -1.5em;
+  position: fixed;
+  top: 20px;
+  z-index: 1;
   background-color: #a2feb2;
   color: #111;
   border: 1px solid #999;
