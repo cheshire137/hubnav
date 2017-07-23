@@ -268,17 +268,13 @@ class OptionsPage {
       if (repository4.length > 0) {
         defaultBranch4 = (this.defaultBranchInput4.value || '').trim()
       }
-      let defaultBranch = currentOptions.defaultBranch
-      if (!defaultBranch || defaultBranch.length < 1) {
-        if (defaultBranch1.length > 0) {
-          defaultBranch = defaultBranch1
-        } else if (defaultBranch2.length > 0) {
-          defaultBranch = defaultBranch2
-        } else if (defaultBranch3.length > 0) {
-          defaultBranch = defaultBranch3
-        } else if (defaultBranch4.length > 0) {
-          defaultBranch = defaultBranch4
-        }
+      let defaultBranch = defaultBranch1
+      if (repository === repository2) {
+        defaultBranch = defaultBranch2
+      } else if (repository === repository3) {
+        defaultBranch = defaultBranch3
+      } else if (repository === repository4) {
+        defaultBranch = defaultBranch4
       }
       const newOptions = { repository, repository1, repository2, repository3, repository4,
                            organization, defaultBranch1, defaultBranch2, defaultBranch3,
