@@ -15,6 +15,8 @@ class PopupPage {
     this.pShortcuts = document.querySelectorAll('.p-shortcut')
     this.repoCommands = document.getElementById('repo-commands')
     this.orgCommands = document.getElementById('org-commands')
+    this.orgLogo = document.getElementById('org-logo')
+    this.repoLogo = document.getElementById('repo-logo')
   }
 
   executeShortcut(action) {
@@ -129,13 +131,30 @@ class PopupPage {
     HubnavStorage.load().then(options => {
       if (options.repository && options.repository.length > 0) {
         this.repoCommands.style.display = 'block'
+        this.loadRepoLogo(options.repository)
       }
       if (options.organization && options.organization.length > 0) {
         this.orgCommands.style.display = 'block'
+        this.loadOrgLogo(options.organization)
       }
       this.updateRepoReferences(options.repository)
       this.updateOrgReferences(options.organization)
     })
+  }
+
+  loadOrgLogo(rawOrg) {
+    const org = encodeURIComponent(rawOrg)
+    this.orgLogo.src = `https://github.com/${org}.png`
+    this.orgLogo.alt = org
+  }
+
+  loadRepoLogo(rawRepo) {
+    let user = rawRepo.split('/')[0]
+    if (user && user.length > 0) {
+      user = encodeURIComponent(user)
+      this.repoLogo.src = `https://github.com/${user}.png`
+      this.repoLogo.alt = user
+    }
   }
 
   updateRepoReferences(repo) {

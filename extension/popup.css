@@ -35,7 +35,7 @@
 }
 
 .shortcuts-list dd:not(:last-child) {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .repository,
@@ -53,7 +53,7 @@
 }
 
 .subtitle:not(:last-child), .title:not(:last-child) {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .subtitle.is-6 {
@@ -63,4 +63,17 @@
 .content dl:not(:last-child),
 .content dl:last-child {
   margin-bottom: 1.25rem;
+}
+
+.user-logo {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin-right: 5px;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
+.content {
+  line-height: 1.3;
 }
