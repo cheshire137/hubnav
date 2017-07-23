@@ -13,6 +13,7 @@ class PopupPage {
     this.oShortcuts = document.querySelectorAll('.o-shortcut')
     this.iShortcuts = document.querySelectorAll('.i-shortcut')
     this.pShortcuts = document.querySelectorAll('.p-shortcut')
+    this.hShortcuts = document.querySelectorAll('.h-shortcut')
     this.repoCommands = document.getElementById('repo-commands')
     this.orgCommands = document.getElementById('org-commands')
     this.orgLogo = document.getElementById('org-logo')
@@ -41,6 +42,17 @@ class PopupPage {
   openRepoSelect() {
     this.highlightShortcut(this.rShortcuts)
     this.openOptions('select-repository')
+  }
+
+  openRepository() {
+    HubnavStorage.load().then(options => {
+      if (options.repository && options.repository.length > 0) {
+        this.highlightShortcut(this.hShortcuts)
+        this.openTab(this.repoUrl(options.repository))
+      } else {
+        this.openRepoSelect()
+      }
+    })
   }
 
   openGlobalSearch() {
@@ -106,7 +118,7 @@ class PopupPage {
     const parts = repo.split('/')
     const owner = encodeURIComponent(parts[0])
     const name = encodeURIComponent(parts[1])
-    return `https://github.com/${owner}/${name}${path}`
+    return `https://github.com/${owner}/${name}${path || ''}`
   }
 
   setup() {
@@ -125,6 +137,8 @@ class PopupPage {
         this.openIssues()
       } else if (event.key === 'p') {
         this.openPullRequests()
+      } else if (event.key === 'h') {
+        this.openRepository()
       }
     })
 
