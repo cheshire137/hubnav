@@ -2,6 +2,10 @@
 
 A Chrome extension for navigating github.com via keyboard shortcuts.
 
+**[Install from the Chrome Web Store](https://chrome.google.com/webstore/detail/hubnav/aanefongalfonofnpgkgcibhogmgnckm)**
+
+Use keyboard shortcuts to quickly access issues, pull requests, and the file finder for up to four of your most frequented GitHub repositories. Shortcuts are also available for accessing the repositories, teams, and members of your GitHub organization as well as for GitHub search.
+
 ![screenshot of popup](https://raw.githubusercontent.com/cheshire137/hubnav/master/screenshotPopup.png)
 
 ## How to Use
@@ -16,23 +20,34 @@ A Chrome extension for navigating github.com via keyboard shortcuts.
 
 2. Navigate to your desired GitHub page via shortcuts:
 
-    - **o** - customize options for the extension, including setting your default GitHub organization and up to four repositories to quickly swap between
-    - **f** - open file finder for your selected repository
-    - **t** - open teams for your selected organization
+    **General commands:**
+
+    - **o** - customize settings for the extension
     - **s** - open global GitHub search
+
+    **Repository commands:**
+
+    - **f** - open file finder for your selected repository
     - **i** - open issues for your selected repository
-    - **Shift I** - view closed issues for your selected repository
+    - **Shift i** - view closed issues for your selected repository
     - **Ctrl i** - create a new issue in your selected repository
     - **p** - open pull requests for your selected repository
-    - **Shift P** - view merged pull requests in your selected repository
+    - **Shift p** - view merged pull requests in your selected repository
     - **Ctrl p** - create a new pull request in your selected repository
     - **h** - open home page of your selected repository
+
+    **Organization commands:**
+
+    - **t** - open teams for your selected organization
     - **m** - view members of your selected organization
     - **r** - view repositories in your selected organization
-    - **1** - switch to your first specified repository
-    - **2** - switch to your second specified repository
-    - **3** - switch to your third specified repository
-    - **4** - switch to your fourth specified repository
+
+    **Quick repository switching:**
+
+    - **1** - switch to your first repository
+    - **2** - switch to your second repository
+    - **3** - switch to your third repository
+    - **4** - switch to your fourth repository
 
 ## How to Develop
 
