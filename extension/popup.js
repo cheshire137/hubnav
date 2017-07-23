@@ -47,3 +47,42 @@ document.addEventListener('keydown', function(event) {
     openOptions('select-repository')
   }
 })
+
+class PopupPage {
+  constructor() {
+    this.findElements()
+  }
+
+  findElements() {
+    this.repoReferences = document.querySelectorAll('.repository')
+    this.orgReferences = document.querySelectorAll('.organization')
+  }
+
+  setup() {
+    HubnavStorage.load().then(options => {
+      this.updateRepoReferences(options.repository)
+      this.updateOrgReferences(options.organization)
+    })
+  }
+
+  updateRepoReferences(repo) {
+    if (repo && repo.length > 0) {
+      for (let i = 0; i < this.repoReferences.length; i++) {
+        this.repoReferences[i].textContent = repo
+      }
+    }
+  }
+
+  updateOrgReferences(org) {
+    if (org && org.length > 0) {
+      for (let i = 0; i < this.orgReferences.length; i++) {
+        this.orgReferences[i].textContent = org
+      }
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const page = new PopupPage()
+  page.setup()
+})
