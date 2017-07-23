@@ -177,8 +177,12 @@ class PopupPage {
   }
 
   openOptions(hash) {
-    this.runAfterDelay(() => chrome.tabs.create({ url }))
-    this.openTab(`chrome-extension://${chrome.runtime.id}/options.html#${hash}`)
+    let path = `chrome-extension://${chrome.runtime.id}/options.html`
+    if (hash && hash.length > 0) {
+      path += `#${hash}`
+    }
+    this.highlightShortcut(this.oShortcuts)
+    this.openTab(path)
   }
 
   openTab(url) {
@@ -235,7 +239,7 @@ class PopupPage {
     } else if (key === 's') {
       this.openGlobalSearch()
     } else if (key === 'o') {
-      this.openOrgSelect()
+      this.openOptions()
     } else if (key === 'i') {
       this.openIssues()
     } else if (key === 'p') {
