@@ -11,6 +11,7 @@ class PopupPage {
     this.sShortcuts = document.querySelectorAll('.s-shortcut')
     this.rShortcuts = document.querySelectorAll('.r-shortcut')
     this.oShortcuts = document.querySelectorAll('.o-shortcut')
+    this.iShortcuts = document.querySelectorAll('.i-shortcut')
   }
 
   executeShortcut(action) {
@@ -20,20 +21,11 @@ class PopupPage {
     this.shortcutTimer = setTimeout(action, 400)
   }
 
-  openOptions(hash) {
-    const url = `chrome-extension://${chrome.runtime.id}/options.html#${hash}`
-    this.executeShortcut(() => chrome.tabs.create({ url }))
-  }
-
   openFileFinder() {
     HubnavStorage.load().then(options => {
       if (options.repository && options.repository.length > 0) {
         this.highlightShortcut(this.fShortcuts)
-        const parts = options.repository.split('/')
-        const owner = encodeURIComponent(parts[0])
-        const name = encodeURIComponent(parts[1])
-        const url = `https://github.com/${owner}/${name}/find/master`
-        this.executeShortcut(() => chrome.tabs.create({ url }))
+        this.openTab(this.repoUrl(options.repository, '/find/master'))
       } else {
         this.openRepoSelect()
       }
@@ -47,8 +39,7 @@ class PopupPage {
 
   openGlobalSearch() {
     this.highlightShortcut(this.sShortcuts)
-    const url = 'https://github.com/search/'
-    this.executeShortcut(() => chrome.tabs.create({ url }))
+    this.openTab('https://github.com/search')
   }
 
   openTeams() {
@@ -56,8 +47,7 @@ class PopupPage {
       if (options.organization && options.organization.length > 0) {
         this.highlightShortcut(this.tShortcuts)
         const org = encodeURIComponent(options.organization)
-        const url = `https://github.com/orgs/${org}/teams`
-        this.executeShortcut(() => chrome.tabs.create({ url }))
+        this.openTab(`https://github.com/orgs/${org}/teams`)
       } else {
         this.openOrgSelect()
       }
@@ -75,6 +65,33 @@ class PopupPage {
     this.openOptions('select-organization')
   }
 
+  openIssues() {
+    HubnavStorage.load().then(options => {
+      if (options.repository && options.repository.length > 0) {
+        this.highlightShortcut(this.iShortcuts)
+        this.openTab(this.repoUrl(options.repository, '/issues'))
+      } else {
+        this.openRepoSelect()
+      }
+    })
+  }
+
+  openOptions(hash) {
+    this.executeShortcut(() => chrome.tabs.create({ url }))
+    this.openTab(`chrome-extension://${chrome.runtime.id}/options.html#${hash}`)
+  }
+
+  openTab(url) {
+    this.executeShortcut(() => chrome.tabs.create({ url }))
+  }
+
+  repoUrl(repo, path) {
+    const parts = repo.split('/')
+    const owner = encodeURIComponent(parts[0])
+    const name = encodeURIComponent(parts[1])
+    return `https://github.com/${owner}/${name}${path}`
+  }
+
   setup() {
     document.addEventListener('keydown', event => {
       if (event.key === 'f') {
@@ -87,6 +104,8 @@ class PopupPage {
         this.openOrgSelect()
       } else if (event.key === 'r') {
         this.openRepoSelect()
+      } else if (event.key === 'i') {
+        this.openIssues()
       }
     })
 
