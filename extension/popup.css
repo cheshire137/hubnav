@@ -1,6 +1,17 @@
 .hero-body,
 .section {
-  padding: 0.5rem 0.75rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.hero-body {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.section {
+  padding-top: 1.25rem;
+  padding-bottom: 0;
 }
 
 .shortcuts-list dt {
@@ -19,9 +30,12 @@
 
 .shortcuts-list dd {
   margin-left: 2em;
-  margin-bottom: 0.5em;
   border-radius: 3px;
   padding: 0.2em 0.4em;
+}
+
+.shortcuts-list dd:not(:last-child) {
+  margin-bottom: 0.5rem;
 }
 
 .repository,
@@ -32,4 +46,21 @@
 .shortcut.highlighted {
   background-color: #edfea2;
   color: #111;
+}
+
+.content h2:not(:first-child) {
+  margin-top: 0;
+}
+
+.subtitle:not(:last-child), .title:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+.subtitle.is-6 {
+  font-weight: 500;
+}
+
+.content dl:not(:last-child),
+.content dl:last-child {
+  margin-bottom: 1.25rem;
 }
