@@ -24,6 +24,14 @@
   padding: 0.2em;
 }
 
+.shortcut {
+  cursor: pointer;
+}
+
+.shortcut:hover {
+  text-decoration: underline;
+}
+
 .shortcuts-list dd {
   margin-left: 1.9em;
   border-radius: 3px;

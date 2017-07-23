@@ -18,9 +18,10 @@ class PopupPage {
     this.orgCommands = document.getElementById('org-commands')
     this.orgLogo = document.getElementById('org-logo')
     this.repoLogo = document.getElementById('repo-logo')
+    this.shortcuts = document.querySelectorAll('.shortcut')
   }
 
-  executeShortcut(action) {
+  runAfterDelay(action) {
     if (this.shortcutTimer) {
       clearTimeout(this.shortcutTimer)
     }
@@ -106,12 +107,23 @@ class PopupPage {
   }
 
   openOptions(hash) {
-    this.executeShortcut(() => chrome.tabs.create({ url }))
+    this.runAfterDelay(() => chrome.tabs.create({ url }))
     this.openTab(`chrome-extension://${chrome.runtime.id}/options.html#${hash}`)
   }
 
   openTab(url) {
-    this.executeShortcut(() => chrome.tabs.create({ url }))
+    this.runAfterDelay(() => chrome.tabs.create({ url }))
+  }
+
+  onShortcutClick(event) {
+    event.preventDefault()
+    const keyClass = event.currentTarget.className.split(' ').
+      filter(cls => cls.indexOf('-shortcut') === 1)[0]
+    if (!keyClass) {
+      return
+    }
+    const key = keyClass.split('-shortcut')[0]
+    this.executeShortcut(key)
   }
 
   repoUrl(repo, path) {
@@ -121,26 +133,34 @@ class PopupPage {
     return `https://github.com/${owner}/${name}${path || ''}`
   }
 
+  executeShortcut(key) {
+    if (key === 'f') {
+      this.openFileFinder()
+    } else if (key === 't') {
+      this.openTeams()
+    } else if (key === 's') {
+      this.openGlobalSearch()
+    } else if (key === 'o') {
+      this.openOrgSelect()
+    } else if (key === 'r') {
+      this.openRepoSelect()
+    } else if (key === 'i') {
+      this.openIssues()
+    } else if (key === 'p') {
+      this.openPullRequests()
+    } else if (key === 'h') {
+      this.openRepository()
+    }
+  }
+
   setup() {
     document.addEventListener('keydown', event => {
-      if (event.key === 'f') {
-        this.openFileFinder()
-      } else if (event.key === 't') {
-        this.openTeams()
-      } else if (event.key === 's') {
-        this.openGlobalSearch()
-      } else if (event.key === 'o') {
-        this.openOrgSelect()
-      } else if (event.key === 'r') {
-        this.openRepoSelect()
-      } else if (event.key === 'i') {
-        this.openIssues()
-      } else if (event.key === 'p') {
-        this.openPullRequests()
-      } else if (event.key === 'h') {
-        this.openRepository()
-      }
+      this.executeShortcut(event.key)
     })
+
+    for (let i = 0; i < this.shortcuts.length; i++) {
+      this.shortcuts[i].addEventListener('click', e => this.onShortcutClick(e))
+    }
 
     HubnavStorage.load().then(options => {
       if (options.repository && options.repository.length > 0) {
