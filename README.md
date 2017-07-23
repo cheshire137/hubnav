@@ -16,3 +16,4 @@ A Chrome extension for navigating github.com via keyboard shortcuts.
     - **t** - open teams for your selected organization
     - **s** - open global GitHub search
     - **i** - open issues for your selected repository
+    - **p** - open pull requests for your selected repository

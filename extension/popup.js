@@ -12,6 +12,7 @@ class PopupPage {
     this.rShortcuts = document.querySelectorAll('.r-shortcut')
     this.oShortcuts = document.querySelectorAll('.o-shortcut')
     this.iShortcuts = document.querySelectorAll('.i-shortcut')
+    this.pShortcuts = document.querySelectorAll('.p-shortcut')
   }
 
   executeShortcut(action) {
@@ -76,6 +77,17 @@ class PopupPage {
     })
   }
 
+  openPullRequests() {
+    HubnavStorage.load().then(options => {
+      if (options.repository && options.repository.length > 0) {
+        this.highlightShortcut(this.pShortcuts)
+        this.openTab(this.repoUrl(options.repository, '/pulls'))
+      } else {
+        this.openRepoSelect()
+      }
+    })
+  }
+
   openOptions(hash) {
     this.executeShortcut(() => chrome.tabs.create({ url }))
     this.openTab(`chrome-extension://${chrome.runtime.id}/options.html#${hash}`)
@@ -106,6 +118,8 @@ class PopupPage {
         this.openRepoSelect()
       } else if (event.key === 'i') {
         this.openIssues()
+      } else if (event.key === 'p') {
+        this.openPullRequests()
       }
     })
 
