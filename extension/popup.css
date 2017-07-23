@@ -1,12 +1,35 @@
-.hero-body {
+.hero-body,
+.section {
   padding: 0.5rem 0.75rem;
 }
 
 .shortcuts-list dt {
   font-family: "Consolas", "Menlo", "Monaco", "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, sans-serif;
+  float: left;
+  width: 1em;
+  overflow: hidden;
+  clear: left;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 0.1em;
+  border-radius: 3px;
+  padding: 0.2em 0;
+}
+
+.shortcuts-list dd {
+  margin-left: 2em;
+  margin-bottom: 0.5em;
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
 }
 
 .repository,
 .organization {
   font-weight: 700;
+}
+
+.shortcut.highlighted {
+  background-color: #edfea2;
+  color: #111;
 }
