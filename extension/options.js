@@ -208,7 +208,22 @@ class OptionsPage {
       repository: (this.repoInput.value || '').trim(),
       organization: (this.orgInput.value || '').trim()
     }
-    HubnavStorage.save(options).then(() => this.flashSaveNotice())
+    HubnavStorage.save(options).then(() => {
+      this.flashSaveNotice()
+      this.getDefaultBranch()
+    })
+  }
+
+  getDefaultBranch() {
+    const repo = (this.repoInput.value || '').trim()
+    if (repo.length < 1) {
+      return
+    }
+    const api = new GitHubAPI()
+    const query = 'defaultBranchRef { name }'
+    api.getRepository(repo, query).then(data => {
+      console.log('data', data)
+    })
   }
 
   restoreOptions() {
