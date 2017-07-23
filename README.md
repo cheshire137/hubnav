@@ -12,7 +12,7 @@ A Chrome extension for navigating github.com via keyboard shortcuts.
     - In Windows/Linux: **Alt-H**
 2. Navigate to your desired GitHub page via shortcuts:
 
-    - **r** - select your default GitHub repository
+    - **r** - specify up to four GitHub repositories to quickly swap between
     - **o** - select your default GitHub organization
     - **f** - open file finder for your selected repository
     - **t** - open teams for your selected organization
@@ -21,3 +21,7 @@ A Chrome extension for navigating github.com via keyboard shortcuts.
     - **p** - open pull requests for your selected repository
     - **h** - open home page of your selected repository
     - **m** - view members of your selected organization
+    - **1** - switch to your first specified repository
+    - **2** - switch to your second specified repository
+    - **3** - switch to your third specified repository
+    - **4** - switch to your fourth specified repository
