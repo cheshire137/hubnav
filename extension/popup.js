@@ -26,7 +26,8 @@ class PopupPage {
     HubnavStorage.load().then(options => {
       if (options.repository && options.repository.length > 0) {
         this.highlightShortcut(this.fShortcuts)
-        this.openTab(this.repoUrl(options.repository, '/find/master'))
+        const defaultBranch = options.defaultBranch || 'master'
+        this.openTab(this.repoUrl(options.repository, `/find/${defaultBranch}`))
       } else {
         this.openRepoSelect()
       }

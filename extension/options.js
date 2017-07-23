@@ -35,6 +35,7 @@ class OptionsPage {
 
   findElements() {
     this.repoInput = document.getElementById('repository')
+    this.defaultBranchInput = document.getElementById('default-branch')
     this.repoLogo = document.getElementById('repo-logo')
     this.orgInput = document.getElementById('organization')
     this.orgLogo = document.getElementById('org-logo')
@@ -206,7 +207,8 @@ class OptionsPage {
     }
     const options = {
       repository: (this.repoInput.value || '').trim(),
-      organization: (this.orgInput.value || '').trim()
+      organization: (this.orgInput.value || '').trim(),
+      defaultBranch: (this.defaultBranchInput.value || '').trim()
     }
     HubnavStorage.save(options).then(() => this.flashSaveNotice())
   }
@@ -221,6 +223,7 @@ class OptionsPage {
         this.orgInput.value = options.organization
         this.loadOrgLogo(options.organization)
       }
+      this.defaultBranchInput.value = options.defaultBranch || 'master'
     })
   }
 
