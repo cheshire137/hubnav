@@ -26,10 +26,9 @@ class OptionsPage {
     }
     if (this.anyErrors()) {
       this.optionsForm.classList.add('error')
-      this.submitButton.disabled = true
     } else {
       this.optionsForm.classList.remove('error')
-      this.submitButton.disabled = false
+      this.saveOptions()
     }
   }
 
@@ -41,7 +40,6 @@ class OptionsPage {
     this.orgLogo = document.getElementById('org-logo')
     this.optionsForm = document.getElementById('options-form')
     this.notification = document.getElementById('notification')
-    this.submitButton = document.getElementById('submit-button')
   }
 
   flashNotification(message, isError) {
@@ -75,9 +73,9 @@ class OptionsPage {
 
   hookUpHandlers() {
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
-    this.submitButton.addEventListener('click', e => e.currentTarget.blur())
     this.repoInput.addEventListener('keyup', e => this.onRepoKeyup(e))
     this.orgInput.addEventListener('keyup', e => this.onOrgKeyup(e))
+    this.defaultBranchInput.addEventListener('keyup', e => this.onDefaultBranchKeyup(e))
     this.repoLogo.addEventListener('load', () => this.onRepoLogoLoad())
     this.orgLogo.addEventListener('load', () => this.onOrgLogoLoad())
     this.repoLogo.addEventListener('error', () => this.onRepoLogoError())
@@ -129,6 +127,15 @@ class OptionsPage {
     }, 750)
   }
 
+  onDefaultBranchKeyup(event) {
+    if (this.defaultBranchTimer) {
+      clearTimeout(this.defaultBranchTimer)
+    }
+    this.defaultBranchTimer = setTimeout(() => {
+      this.checkFormValidity()
+    }, 750)
+  }
+
   onRepoKeyup(event) {
     if (this.repoInputTimer) {
       clearTimeout(this.repoInputTimer)
@@ -146,7 +153,6 @@ class OptionsPage {
     delete this.errors.repositoryLogo
     if (!this.anyErrors()) {
       this.optionsForm.classList.remove('error')
-      this.submitButton.disabled = false
     }
   }
 
@@ -170,7 +176,6 @@ class OptionsPage {
     delete this.errors.organizationLogo
     if (!this.anyErrors()) {
       this.optionsForm.classList.remove('error')
-      this.submitButton.disabled = false
     }
   }
 
@@ -202,6 +207,10 @@ class OptionsPage {
 
   onSubmit(event) {
     event.preventDefault()
+    this.saveOptions()
+  }
+
+  saveOptions() {
     if (this.optionsForm.classList.contains('error')) {
       return
     }
