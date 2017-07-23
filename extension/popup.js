@@ -125,7 +125,11 @@ class PopupPage {
     HubnavStorage.load().then(options => {
       if (options.repository && options.repository.length > 0) {
         this.highlightShortcut(this.iShortcuts)
-        this.openTab(this.repoUrl(options.repository, '/issues'))
+        let path = '/issues'
+        if (this.shiftPressed) {
+          path += '?q=is%3Aissue+is%3Aclosed'
+        }
+        this.openTab(this.repoUrl(options.repository, path))
       } else {
         this.openRepoSelect()
       }
@@ -138,7 +142,7 @@ class PopupPage {
         this.highlightShortcut(this.pShortcuts)
         let path = '/pulls'
         if (this.shiftPressed) {
-          path += '?q=is%3Amerged'
+          path += '?is%3Apr%20is%3Amerged'
         }
         this.openTab(this.repoUrl(options.repository, path))
       } else {
