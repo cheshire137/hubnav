@@ -13,6 +13,8 @@ class PopupPage {
     this.oShortcuts = document.querySelectorAll('.o-shortcut')
     this.iShortcuts = document.querySelectorAll('.i-shortcut')
     this.pShortcuts = document.querySelectorAll('.p-shortcut')
+    this.repoCommands = document.getElementById('repo-commands')
+    this.orgCommands = document.getElementById('org-commands')
   }
 
   executeShortcut(action) {
@@ -125,6 +127,12 @@ class PopupPage {
     })
 
     HubnavStorage.load().then(options => {
+      if (options.repository && options.repository.length > 0) {
+        this.repoCommands.style.display = 'block'
+      }
+      if (options.organization && options.organization.length > 0) {
+        this.orgCommands.style.display = 'block'
+      }
       this.updateRepoReferences(options.repository)
       this.updateOrgReferences(options.organization)
     })
