@@ -1,5 +1,5 @@
 .hero-body {
-  padding: 0.5rem 0.75rem;
+  padding: 0.3rem 0.75rem;
 }
 
 .section {
@@ -60,6 +60,11 @@
   margin-bottom: 0.25rem;
 }
 
+.title.is-6 {
+  font-weight: 500;
+  font-size: 1rem;
+}
+
 .subtitle.is-6 {
   font-weight: 500;
   display: flex;
@@ -74,7 +79,7 @@
 
 .content dl:not(:last-child),
 .content dl:last-child {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .user-logo {
