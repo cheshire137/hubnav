@@ -7,9 +7,6 @@
   "permissions": [
     "storage", "tabs", "*://*.github.com/*"
   ],
-  "background": {
-    "scripts": ["storage.js", "background.js"]
-  },
   "browser_action": {
     "default_icon": "icon48.png",
     "default_popup": "popup.html",
@@ -36,25 +33,5 @@
     "_execute_browser_action": {
       "suggested_key": "Alt+H"
     }
-    // "select-repository": {
-    //   "suggested_key": "Alt+Shift+R",
-    //   "description": "Select default GitHub repository"
-    // },
-    // "select-organization": {
-    //   "suggested_key": "Alt+Shift+O",
-    //   "description": "Select default GitHub organization"
-    // },
-    // "global-search": {
-    //   "suggested_key": "Alt+Shift+S",
-    //   "description": "Open GitHub's global search"
-    // },
-    // "file-finder": {
-    //   "suggested_key": "Alt+Shift+F",
-    //   "description": "Open file finder for your selected repository"
-    // }
-    // "view-teams": {
-    //   "suggested_key": "Alt+Shift+T",
-    //   "description": "Browse teams in your selected organization"
-    // }
   }
 }
