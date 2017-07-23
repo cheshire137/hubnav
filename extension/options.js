@@ -36,6 +36,8 @@ class OptionsPage {
   }
 
   findElements() {
+    this.shortcutTipContainer = document.getElementById('shortcut-tip-container')
+    this.shortcut = document.getElementById('shortcut')
     this.repoInput1 = document.getElementById('repository1')
     this.repoInput2 = document.getElementById('repository2')
     this.repoInput3 = document.getElementById('repository3')
@@ -336,12 +338,23 @@ class OptionsPage {
     this.focusField()
     this.hookUpHandlers()
     this.restoreOptions()
+    this.showShortcutTip()
     this.displayCurrentVersion()
   }
 
   displayCurrentVersion() {
     const manifest = chrome.runtime.getManifest()
     this.versionEl.textContent = manifest.version
+  }
+
+  showShortcutTip() {
+    chrome.commands.getAll(commands => {
+      const popupCommand = commands.filter(c => c.name === '_execute_browser_action')[0]
+      if (popupCommand && popupCommand.shortcut && popupCommand.shortcut.length > 0) {
+        this.shortcut.textContent = popupCommand.shortcut
+        this.shortcutTipContainer.style.display = 'block'
+      }
+    })
   }
 }
 

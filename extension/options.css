@@ -76,3 +76,8 @@
   width: 36px;
   height: 36px;
 }
+
+.hero-body .title:not(.is-spaced) + .subtitle {
+  margin-left: 47px;
+  margin-top: -1.2rem;
+}
