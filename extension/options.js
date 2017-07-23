@@ -252,6 +252,10 @@ class OptionsPage {
           repository = repository4
         }
       }
+      // Ensure active repository is one of the four options
+      if ([repository1, repository2, repository3, repository4].indexOf(repository) < 0) {
+        repository = repository1
+      }
       let defaultBranch1 = ''
       if (repository1.length > 0) {
         defaultBranch1 = (this.defaultBranchInput1.value || '').trim()
