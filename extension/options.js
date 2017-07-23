@@ -88,11 +88,6 @@ class OptionsPage {
     }
   }
 
-  getManifest() {
-    const url = chrome.extension.getURL('manifest.json')
-    return window.fetch(url).then(response => response.json())
-  }
-
   hookUpHandlers() {
     for (let i = 1; i <= 4; i++) {
       this[`repoInput${i}`].addEventListener('keyup', e => this.onRepoKeyup(e, i))
@@ -341,9 +336,12 @@ class OptionsPage {
     this.focusField()
     this.hookUpHandlers()
     this.restoreOptions()
-    this.getManifest().then(manifest => {
-      this.versionEl.textContent = manifest.version
-    })
+    this.displayCurrentVersion()
+  }
+
+  displayCurrentVersion() {
+    const manifest = chrome.runtime.getManifest()
+    this.versionEl.textContent = manifest.version
   }
 }
 
