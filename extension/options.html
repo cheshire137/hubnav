@@ -10,8 +10,6 @@
   <link href="options.css" rel="stylesheet" media="screen">
 </head>
 <body>
-  <div id="notification" style="display: none" class="notification">
-  </div>
   <section class="hero">
     <div class="hero-body">
       <div class="container">
@@ -23,12 +21,13 @@
       </div>
     </div>
   </section>
-  <form id="options-form">
+  <form id="options-form" class="content">
+    <div id="notification" style="display: none" class="notification"></div>
     <section class="section">
       <div class="container">
         <div class="columns">
           <div class="column is-8 is-offset-2">
-            <h2 class="subtitle">Repository Options</h2>
+            <h2 class="subtitle is-4">Repository Options</h2>
             <div class="field">
               <label class="label" for="repository">Set your GitHub repository:</label>
               <div class="control with-image">
@@ -56,7 +55,7 @@
       <div class="container">
         <div class="columns">
           <div class="column is-8 is-offset-2">
-            <h2 class="subtitle">Organization Options</h2>
+            <h2 class="subtitle is-4">Organization Options</h2>
             <div class="field">
               <label class="label" for="organization">Set your GitHub organization:</label>
               <div class="control with-image">

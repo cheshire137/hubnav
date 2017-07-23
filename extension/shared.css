@@ -6,21 +6,6 @@
   background-color: #fed1a2;
 }
 
-.notification {
-  width: 400px;
-  left: 50%;
-  margin-left: -200px;
-  position: absolute;
-  top: 40px;
-  background-color: #a2feb2;
-  color: #111;
-}
-
-.notification.error {
-  background-color: #FEB5A2;
-  color: #111;
-}
-
 .button.is-primary {
   background-color: #feefa2;
   color: #111;

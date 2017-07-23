@@ -22,3 +22,24 @@
 .section:not(:last-child) {
   padding: 3rem 1.5rem 0 1.5rem;
 }
+
+.content {
+  position: relative;
+}
+
+.notification {
+  width: 400px;
+  left: 50%;
+  margin-left: -200px;
+  position: absolute;
+  top: -1.5em;
+  background-color: #a2feb2;
+  color: #111;
+  border: 1px solid #999;
+  padding: 0.75rem 2.5rem 0.75rem 1.5rem;
+}
+
+.notification.error {
+  background-color: #FEB5A2;
+  color: #111;
+}
