@@ -33,8 +33,8 @@ class OptionsPage {
   }
 
   findElements() {
-    this.repoInput = document.getElementById('repository')
-    this.defaultBranchInput = document.getElementById('default-branch')
+    this.repoInput = document.getElementById('repository1')
+    this.defaultBranchInput = document.getElementById('default-branch1')
     this.repoLogo = document.getElementById('repo-logo')
     this.orgInput = document.getElementById('organization')
     this.orgLogo = document.getElementById('org-logo')

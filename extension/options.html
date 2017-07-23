@@ -23,34 +23,7 @@
   </section>
   <form id="options-form" class="content">
     <div id="notification" style="display: none" class="notification"></div>
-    <section class="section">
-      <div class="container">
-        <div class="columns">
-          <div class="column is-8 is-offset-2">
-            <h2 class="subtitle is-4">Repository Options</h2>
-            <div class="field">
-              <label class="label" for="repository">Set your GitHub repository:</label>
-              <div class="control with-image">
-                <img width="36" height="36" id="repo-logo" class="user-logo" src="unknown-user.png">
-                <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs/bootstrap" id="repository">
-              </div>
-              <p class="help">
-                Used with commands like browsing a repository's issues.
-              </p>
-            </div>
-            <div class="field">
-              <label class="label" for="default-branch">Default branch:</label>
-              <div class="control">
-                <input class="input" autocomplete="off" type="text" placeholder="e.g., master" id="default-branch">
-              </div>
-              <p class="help">
-                Used with branch-specific commands, like the file finder.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+
     <section class="section">
       <div class="container">
         <div class="columns">
@@ -66,6 +39,174 @@
                 Used with commands like viewing the teams in an organization.
               </p>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-8 is-offset-2">
+            <h2 class="subtitle is-4">Repository Options</h2>
+            <p>Save up to four different repositories. You can switch quickly between them.</p>
+
+            <div class="flex-row">
+              <h3 class="subtitle is-5">#1</h3>
+              <div class="fields">
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" for="repository1">Repository:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-expanded">
+                      <div class="field">
+                        <div class="control with-image">
+                          <img width="36" height="36" id="repo-logo" class="user-logo" src="unknown-user.png">
+                          <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs/bootstrap" id="repository1">
+                        </div>
+                      </div>
+                      <p class="help">
+                        Used with commands like browsing a repository's issues.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" for="default-branch1">Branch:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <input class="input" autocomplete="off" type="text" placeholder="e.g., master" id="default-branch1">
+                      </div>
+                    </div>
+                    <p class="help">
+                      Used with branch-specific commands, like the file finder.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-row">
+              <h3 class="subtitle is-5">#2</h3>
+              <div class="fields">
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" for="repository2">Repository:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-expanded">
+                      <div class="field">
+                        <div class="control with-image">
+                          <img width="36" height="36" id="repo-logo" class="user-logo" src="unknown-user.png">
+                          <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs/bootstrap" id="repository2">
+                        </div>
+                      </div>
+                      <p class="help">
+                        Used with commands like browsing a repository's issues.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" for="default-branch2">Branch:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <input class="input" autocomplete="off" type="text" placeholder="e.g., master" id="default-branch2">
+                      </div>
+                    </div>
+                    <p class="help">
+                      Used with branch-specific commands, like the file finder.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-row">
+              <h3 class="subtitle is-5">#3</h3>
+              <div class="fields">
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" for="repository3">Repository:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-expanded">
+                      <div class="field">
+                        <div class="control with-image">
+                          <img width="36" height="36" id="repo-logo" class="user-logo" src="unknown-user.png">
+                          <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs/bootstrap" id="repository3">
+                        </div>
+                      </div>
+                      <p class="help">
+                        Used with commands like browsing a repository's issues.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" for="default-branch3">Branch:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <input class="input" autocomplete="off" type="text" placeholder="e.g., master" id="default-branch3">
+                      </div>
+                    </div>
+                    <p class="help">
+                      Used with branch-specific commands, like the file finder.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-row">
+              <h3 class="subtitle is-5">#4</h3>
+              <div class="fields">
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" for="repository4">Repository:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-expanded">
+                      <div class="field">
+                        <div class="control with-image">
+                          <img width="36" height="36" id="repo-logo" class="user-logo" src="unknown-user.png">
+                          <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs/bootstrap" id="repository4">
+                        </div>
+                      </div>
+                      <p class="help">
+                        Used with commands like browsing a repository's issues.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" for="default-branch4">Branch:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <input class="input" autocomplete="off" type="text" placeholder="e.g., master" id="default-branch4">
+                      </div>
+                    </div>
+                    <p class="help">
+                      Used with branch-specific commands, like the file finder.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>

@@ -43,3 +43,20 @@
   background-color: #FEB5A2;
   color: #111;
 }
+
+.flex-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-row .subtitle {
+  width: 5em;
+  text-align: center;
+}
+
+.flex-row + .flex-row {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
