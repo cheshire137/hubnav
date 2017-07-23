@@ -53,6 +53,10 @@ class OptionsPage {
     this.optionsForm = document.getElementById('options-form')
     this.notification = document.getElementById('notification')
     this.versionEl = document.getElementById('extension-version')
+    this.closedIssues = document.getElementById('closed-issues')
+    this.newIssue = document.getElementById('new-issue')
+    this.mergedPullRequests = document.getElementById('merged-pull-requests')
+    this.newPullRequest = document.getElementById('new-pull-request')
   }
 
   flashNotification(message, isError) {
@@ -100,6 +104,10 @@ class OptionsPage {
     this.orgInput.addEventListener('keyup', e => this.onOrgKeyup(e))
     this.orgLogo.addEventListener('load', () => this.onOrgLogoLoad())
     this.orgLogo.addEventListener('error', () => this.onOrgLogoError())
+    this.closedIssues.addEventListener('change', () => this.checkFormValidity())
+    this.newIssue.addEventListener('change', () => this.checkFormValidity())
+    this.mergedPullRequests.addEventListener('change', () => this.checkFormValidity())
+    this.newPullRequest.addEventListener('change', () => this.checkFormValidity())
   }
 
   loadOrgLogo(rawOrg) {
@@ -280,9 +288,14 @@ class OptionsPage {
       } else if (repository === repository4) {
         defaultBranch = defaultBranch4
       }
+      const closedIssues = this.closedIssues.checked
+      const newIssue = this.newIssue.checked
+      const mergedPullRequests = this.mergedPullRequests.checked
+      const newPullRequest = this.newPullRequest.checked
       const newOptions = { repository, repository1, repository2, repository3, repository4,
                            organization, defaultBranch1, defaultBranch2, defaultBranch3,
-                           defaultBranch4, defaultBranch }
+                           defaultBranch4, defaultBranch, closedIssues, newIssue,
+                           mergedPullRequests, newPullRequest }
       HubnavStorage.save(newOptions).then(() => this.flashSaveNotice())
     })
   }
@@ -300,6 +313,26 @@ class OptionsPage {
       if (options.organization && options.organization.length > 0) {
         this.orgInput.value = options.organization
         this.loadOrgLogo(options.organization)
+      }
+      if (typeof options.closedIssues === 'boolean') {
+        this.closedIssues.checked = options.closedIssues
+      } else {
+        this.closedIssues.checked = true
+      }
+      if (typeof options.newIssue === 'boolean') {
+        this.newIssue.checked = options.newIssue
+      } else {
+        this.newIssue.checked = true
+      }
+      if (typeof options.mergedPullRequests === 'boolean') {
+        this.mergedPullRequests.checked = options.mergedPullRequests
+      } else {
+        this.mergedPullRequests.checked = true
+      }
+      if (typeof options.newPullRequest === 'boolean') {
+        this.newPullRequest.checked = options.newPullRequest
+      } else {
+        this.newPullRequest.checked = true
       }
     })
   }
