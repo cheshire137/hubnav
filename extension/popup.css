@@ -1,5 +1,5 @@
 .hero-body {
-  padding: 0.3rem 0.75rem;
+  padding: 0.25rem 0.75rem;
 }
 
 .section {
@@ -76,8 +76,12 @@
   margin-top: 0;
 }
 
-.subtitle:not(:last-child), .title:not(:last-child) {
+.title:not(:last-child) {
   margin-bottom: 0.25rem;
+}
+
+.subtitle:not(:last-child) {
+  margin-bottom: 0;
 }
 
 .title.is-6 {
@@ -89,8 +93,9 @@
   font-weight: 500;
   display: flex;
   align-items: center;
+  line-height: 1;
   justify-content: space-between;
-  padding: 0.3em 0.75rem;
+  padding: 0.2em 0.75rem;
   background-color: #efefef;
 }
 
@@ -121,6 +126,16 @@
   font-size: 0.875rem;
 }
 
+.repo-switch .subtitle.is-6 {
+  margin-bottom: 0.25rem;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+}
+
+.repo-switch .shortcuts-list dd:not(:last-child) {
+  margin-bottom: 0.1rem;
+}
+
 .octicon {
   display: inline-block;
   vertical-align: text-top;
@@ -129,6 +144,7 @@
 
 .shortcut .octicon {
   color: #777;
+  padding-top: 1px;
 }
 
 .grow {
