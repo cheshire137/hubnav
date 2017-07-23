@@ -236,8 +236,6 @@ class PopupPage {
       this.openGlobalSearch()
     } else if (key === 'o') {
       this.openOrgSelect()
-    } else if (key === 'r') {
-      this.openRepoSelect()
     } else if (key === 'i') {
       this.openIssues()
     } else if (key === 'p') {
