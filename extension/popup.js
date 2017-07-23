@@ -19,6 +19,10 @@ class PopupPage {
     this.pShortcuts = document.querySelectorAll('.shortcut-p')
     this.hShortcuts = document.querySelectorAll('.shortcut-h')
     this.mShortcuts = document.querySelectorAll('.shortcut-m')
+    this.shortcuts1 = document.querySelectorAll('.shortcut-1')
+    this.shortcuts2 = document.querySelectorAll('.shortcut-2')
+    this.shortcuts3 = document.querySelectorAll('.shortcut-3')
+    this.shortcuts4 = document.querySelectorAll('.shortcut-4')
     this.repoCommands = document.getElementById('repo-commands')
     this.orgCommands = document.getElementById('org-commands')
     this.orgLogo = document.getElementById('org-logo')
@@ -31,7 +35,13 @@ class PopupPage {
     if (this.shortcutTimer) {
       clearTimeout(this.shortcutTimer)
     }
-    this.shortcutTimer = setTimeout(action, 400)
+    this.shortcutTimer = setTimeout(() => {
+      const highlightedShortcuts = document.querySelectorAll('.shortcut.highlighted')
+      for (let i = 0; i < highlightedShortcuts.length; i++) {
+        highlightedShortcuts[i].classList.remove('highlighted')
+      }
+      action()
+    }, 400)
   }
 
   openFileFinder() {
@@ -148,7 +158,8 @@ class PopupPage {
         newOptions.defaultBranch = newDefaultBranch
       }
       HubnavStorage.save(newOptions).then(() => {
-        this.loadActiveRepository(newOptions.repository)
+        this.highlightShortcut(this[`shortcuts${i}`])
+        this.runAfterDelay(() => this.loadActiveRepository(newOptions.repository))
       })
     })
   }

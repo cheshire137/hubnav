@@ -74,7 +74,7 @@
 
 .content dl:not(:last-child),
 .content dl:last-child {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .user-logo {
