@@ -2,6 +2,7 @@ class PopupPage {
   constructor() {
     this.findElements()
     this.shiftPressed = false
+    this.ctrlPressed = false
     this.commandSelected = false
   }
 
@@ -43,6 +44,7 @@ class PopupPage {
       for (let i = 0; i < highlights.length; i++) {
         highlights[i].classList.remove('highlighted')
       }
+      this.ctrlPressed = false
       this.shiftPressed = false
       action()
     }, 400)
@@ -101,7 +103,7 @@ class PopupPage {
   }
 
   highlightModifier(shortcut) {
-    if (!this.shiftPressed) {
+    if (!this.shiftPressed && !this.ctrlPressed) {
       return
     }
 
@@ -110,7 +112,13 @@ class PopupPage {
       return
     }
 
-    const modifier = parent.querySelector('.shift-modifier')
+    let modifier = null
+    if (this.shiftPressed) {
+      modifier = parent.querySelector('.shift-modifier')
+    } else if (this.ctrlPressed) {
+      modifier = parent.querySelector('.ctrl-modifier')
+    }
+
     if (modifier) {
       modifier.classList.add('highlighted')
     }
@@ -128,6 +136,8 @@ class PopupPage {
         let path = '/issues'
         if (this.shiftPressed) {
           path += '?q=is%3Aissue+is%3Aclosed'
+        } else if (this.ctrlPressed) {
+          path += '/new'
         }
         this.openTab(this.repoUrl(options.repository, path))
       } else {
@@ -237,6 +247,8 @@ class PopupPage {
       this.quickRepositorySwitch(key)
     } else if (key === 'shift') {
       this.shiftPressed = true
+    } else if (key === 'control') {
+      this.ctrlPressed = true
     }
   }
 
