@@ -12,12 +12,6 @@
     "default_popup": "popup.html",
     "default_title": "Hubnav"
   },
-  "content_scripts": [
-    {
-      "matches": ["*://*.github.com/*"],
-      "js": ["storage.js", "content.js"]
-    }
-  ],
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
