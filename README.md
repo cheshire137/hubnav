@@ -6,7 +6,7 @@ A Chrome extension for navigating github.com via keyboard shortcuts.
 
 ### macOS
 
-- **Option-Shift-G** - open extension popup
+- **Option-H** - open extension popup
 - **Option-Shift-R** - select GitHub repository
 - **Option-Shift-O** - select GitHub organization
 - **Option-Shift-F** - open file finder for selected repository
@@ -15,7 +15,7 @@ A Chrome extension for navigating github.com via keyboard shortcuts.
 
 ### Windows/Linux
 
-- **Alt-Shift-G** - open extension popup
+- **Alt-H** - open extension popup
 - **Alt-Shift-R** - select GitHub repository
 - **Alt-Shift-O** - select GitHub organization
 - **Alt-Shift-F** - open file finder for selected repository
