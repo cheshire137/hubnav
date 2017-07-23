@@ -10,8 +10,12 @@
   padding: 0 0.75rem;
 }
 
-.shortcuts-list dt {
+.shortcuts-list dt,
+.modifier-key {
   font-family: "Consolas", "Menlo", "Monaco", "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, sans-serif;
+}
+
+.shortcuts-list dt {
   float: left;
   width: 1em;
   overflow: hidden;
@@ -45,12 +49,25 @@
   margin-bottom: 0.25rem;
 }
 
+.shortcuts-list dd .modifier {
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.modifier-key {
+  background-color: #eee;
+  padding: 0.1em 0.3em;
+  border-radius: 1px;
+}
+
 .repository,
 .organization {
   font-weight: 700;
 }
 
-.shortcut.highlighted {
+.shortcut.highlighted,
+.modifier.highlighted,
+.modifier.highlighted .modifier-key {
   background-color: #edfea2;
   color: #111;
 }

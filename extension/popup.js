@@ -1,6 +1,8 @@
 class PopupPage {
   constructor() {
     this.findElements()
+    this.shiftPressed = false
+    this.commandSelected = false
   }
 
   findElements() {
@@ -32,14 +34,16 @@ class PopupPage {
   }
 
   runAfterDelay(action) {
+    this.commandSelected = true
     if (this.shortcutTimer) {
       clearTimeout(this.shortcutTimer)
     }
     this.shortcutTimer = setTimeout(() => {
-      const highlightedShortcuts = document.querySelectorAll('.shortcut.highlighted')
-      for (let i = 0; i < highlightedShortcuts.length; i++) {
-        highlightedShortcuts[i].classList.remove('highlighted')
+      const highlights = document.querySelectorAll('.highlighted')
+      for (let i = 0; i < highlights.length; i++) {
+        highlights[i].classList.remove('highlighted')
       }
+      this.shiftPressed = false
       action()
     }, 400)
   }
@@ -92,6 +96,23 @@ class PopupPage {
   highlightShortcut(shortcuts) {
     for (let i = 0; i < shortcuts.length; i++) {
       shortcuts[i].classList.add('highlighted')
+      this.highlightModifier(shortcuts[i])
+    }
+  }
+
+  highlightModifier(shortcut) {
+    if (!this.shiftPressed) {
+      return
+    }
+
+    const parent = shortcut.parentNode
+    if (!parent.classList.contains('with-modifier')) {
+      return
+    }
+
+    const modifier = parent.querySelector('.shift-modifier')
+    if (modifier) {
+      modifier.classList.add('highlighted')
     }
   }
 
@@ -115,7 +136,11 @@ class PopupPage {
     HubnavStorage.load().then(options => {
       if (options.repository && options.repository.length > 0) {
         this.highlightShortcut(this.pShortcuts)
-        this.openTab(this.repoUrl(options.repository, '/pulls'))
+        let path = '/pulls'
+        if (this.shiftPressed) {
+          path += '?q=is%3Amerged'
+        }
+        this.openTab(this.repoUrl(options.repository, path))
       } else {
         this.openRepoSelect()
       }
@@ -183,6 +208,9 @@ class PopupPage {
   }
 
   executeShortcut(key) {
+    if (this.commandSelected) {
+      return
+    }
     if (key === 'f') {
       this.openFileFinder()
     } else if (key === 't') {
@@ -203,6 +231,8 @@ class PopupPage {
       this.openOrgMembers()
     } else if (['1', '2', '3', '4'].indexOf(key) > -1) {
       this.quickRepositorySwitch(key)
+    } else if (key === 'shift') {
+      this.shiftPressed = true
     }
   }
 
@@ -214,7 +244,7 @@ class PopupPage {
 
   setup() {
     document.addEventListener('keydown', event => {
-      this.executeShortcut(event.key)
+      this.executeShortcut(event.key.toLowerCase())
     })
 
     for (let i = 0; i < this.shortcuts.length; i++) {
