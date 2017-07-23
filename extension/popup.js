@@ -14,6 +14,7 @@ class PopupPage {
     this.iShortcuts = document.querySelectorAll('.i-shortcut')
     this.pShortcuts = document.querySelectorAll('.p-shortcut')
     this.hShortcuts = document.querySelectorAll('.h-shortcut')
+    this.mShortcuts = document.querySelectorAll('.m-shortcut')
     this.repoCommands = document.getElementById('repo-commands')
     this.orgCommands = document.getElementById('org-commands')
     this.orgLogo = document.getElementById('org-logo')
@@ -106,6 +107,18 @@ class PopupPage {
     })
   }
 
+  openOrgMembers() {
+    HubnavStorage.load().then(options => {
+      if (options.organization && options.organization.length > 0) {
+        this.highlightShortcut(this.mShortcuts)
+        const org = encodeURIComponent(options.organization)
+        this.openTab(`https://github.com/orgs/${org}/people`)
+      } else {
+        this.openOrgSelect()
+      }
+    })
+  }
+
   openOptions(hash) {
     this.runAfterDelay(() => chrome.tabs.create({ url }))
     this.openTab(`chrome-extension://${chrome.runtime.id}/options.html#${hash}`)
@@ -150,6 +163,8 @@ class PopupPage {
       this.openPullRequests()
     } else if (key === 'h') {
       this.openRepository()
+    } else if (key === 'm') {
+      this.openOrgMembers()
     }
   }
 

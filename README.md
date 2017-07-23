@@ -20,3 +20,4 @@ A Chrome extension for navigating github.com via keyboard shortcuts.
     - **i** - open issues for your selected repository
     - **p** - open pull requests for your selected repository
     - **h** - open home page of your selected repository
+    - **m** - view members of your selected organization
