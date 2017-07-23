@@ -176,6 +176,18 @@ class PopupPage {
     })
   }
 
+  openOrgRepositories() {
+    HubnavStorage.load().then(options => {
+      if (options.organization && options.organization.length > 0) {
+        this.highlightShortcut(this.rShortcuts)
+        const org = encodeURIComponent(options.organization)
+        this.openTab(`https://github.com/search?q=org%3A${org}&type=Repositories`)
+      } else {
+        this.openOrgSelect()
+      }
+    })
+  }
+
   openOptions(hash) {
     let path = `chrome-extension://${chrome.runtime.id}/options.html`
     if (hash && hash.length > 0) {
@@ -248,6 +260,8 @@ class PopupPage {
       this.openRepository()
     } else if (key === 'm') {
       this.openOrgMembers()
+    } else if (key === 'r') {
+      this.openOrgRepositories()
     } else if (['1', '2', '3', '4'].indexOf(key) > -1) {
       this.quickRepositorySwitch(key)
     } else if (key === 'shift') {

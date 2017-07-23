@@ -24,6 +24,7 @@ A Chrome extension for navigating github.com via keyboard shortcuts.
     - **Ctrl p** - create a new pull request in your selected repository
     - **h** - open home page of your selected repository
     - **m** - view members of your selected organization
+    - **r** - view repositories in your selected organization
     - **1** - switch to your first specified repository
     - **2** - switch to your second specified repository
     - **3** - switch to your third specified repository
