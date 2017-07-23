@@ -1,3 +1,7 @@
+body {
+  min-width: 300px;
+}
+
 .hero-body {
   padding: 0.25rem 0.75rem;
 }
@@ -12,12 +16,12 @@
 
 .shortcuts-list dt,
 .modifier-key {
+  background-color: #eee;
   font-family: "Consolas", "Menlo", "Monaco", "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, sans-serif;
 }
 
 .shortcuts-list dt {
   float: left;
-  width: 1em;
   overflow: hidden;
   clear: left;
   text-align: right;
@@ -25,7 +29,7 @@
   white-space: nowrap;
   margin-top: 0.1em;
   border-radius: 3px;
-  padding: 0.2em;
+  padding: 0.2em 0.5em;
   font-weight: 700;
 }
 
@@ -55,7 +59,6 @@
 }
 
 .modifier-key {
-  background-color: #eee;
   padding: 0.1em 0.3em;
   border-radius: 1px;
 }
@@ -81,7 +84,7 @@
 }
 
 .subtitle:not(:last-child) {
-  margin-bottom: 0;
+  margin-bottom: 0.25rem;
 }
 
 .title.is-6 {
@@ -127,7 +130,6 @@
 }
 
 .repo-switch .subtitle.is-6 {
-  margin-bottom: 0.25rem;
   padding-top: 0.3em;
   padding-bottom: 0.3em;
 }
