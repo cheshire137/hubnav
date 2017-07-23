@@ -159,3 +159,19 @@ body {
 .shortcut .letter {
   font-weight: 700;
 }
+
+.welcome p {
+  padding: 0 0.75rem;
+}
+
+.welcome p + p {
+  margin-top: 0.5rem;
+}
+
+.content .welcome p:not(:last-child) {
+  margin-bottom: 0;
+}
+
+.welcome p:last-child {
+  margin-bottom: 0.5rem;
+}

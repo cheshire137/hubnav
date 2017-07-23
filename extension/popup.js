@@ -13,6 +13,7 @@ class PopupPage {
     }
     this.repo = document.getElementById('repository')
     this.org = document.getElementById('organization')
+    this.welcome = document.getElementById('welcome')
     this.fShortcuts = document.querySelectorAll('.shortcut-f')
     this.tShortcuts = document.querySelectorAll('.shortcut-t')
     this.sShortcuts = document.querySelectorAll('.shortcut-s')
@@ -291,6 +292,10 @@ class PopupPage {
     }
 
     HubnavStorage.load().then(options => {
+      if (!options.repository && !options.organization) {
+        this.welcome.style.display = 'block'
+      }
+
       if (options.repository && options.repository.length > 0) {
         this.loadActiveRepository(options.repository)
       }
