@@ -1,9 +1,19 @@
-.button {
-  transition: background-color 0.1s ease-in-out;
+a,
+a:link,
+a:visited,
+a:active {
+  color: #DA8328;
+  text-decoration: none;
+  transition: color 0.1s ease-in-out;
 }
 
-.hero {
-  background-color: #fed1a2;
+a:hover,
+a:focus {
+  color: #22D541;
+}
+
+.button {
+  transition: background-color 0.1s ease-in-out;
 }
 
 .button.is-primary {
@@ -22,6 +32,10 @@
   color: #111;
 }
 
+.hero {
+  background-color: #feefa2;
+}
+
 .input:focus {
-  border-color: #fed1a2;
+  border-color: #22D541;
 }
