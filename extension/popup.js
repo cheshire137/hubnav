@@ -46,6 +46,7 @@ class PopupPage {
       }
       this.ctrlPressed = false
       this.shiftPressed = false
+      this.commandSelected = false
       action()
     }, 400)
   }
