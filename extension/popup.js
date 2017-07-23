@@ -154,6 +154,8 @@ class PopupPage {
         let path = '/pulls'
         if (this.shiftPressed) {
           path += '?is%3Apr%20is%3Amerged'
+        } else if (this.ctrlPressed) {
+          path = '/compare'
         }
         this.openTab(this.repoUrl(options.repository, path))
       } else {
