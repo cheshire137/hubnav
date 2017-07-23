@@ -43,28 +43,24 @@ class OptionsPage {
     this.submitButton = document.getElementById('submit-button')
   }
 
-  flashSaveNotice() {
+  flashNotification(message, isError) {
     if (this.notificationTimer) {
       clearTimeout(this.notificationTimer)
     }
-    this.notification.classList.remove('error')
-    this.notification.textContent = 'Saved!'
-    this.notification.style.display = 'block'
-    this.notificationTimer = setTimeout(() => {
-      this.notification.style.display = 'none'
-    }, 1500)
-  }
-
-  flashErrorMessage(message) {
-    if (this.notificationTimer) {
-      clearTimeout(this.notificationTimer)
-    }
-    this.notification.classList.add('error')
+    this.notification.classList.toggle('error', isError)
     this.notification.textContent = message
     this.notification.style.display = 'block'
     this.notificationTimer = setTimeout(() => {
       this.notification.style.display = 'none'
-    }, 1500)
+    }, 2000)
+  }
+
+  flashSaveNotice() {
+    this.flashNotification('Saved!', false)
+  }
+
+  flashErrorMessage(message) {
+    this.flashNotification(message, true)
   }
 
   focusField() {
