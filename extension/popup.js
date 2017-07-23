@@ -32,6 +32,10 @@ class PopupPage {
     this.repoLogo = document.getElementById('repo-logo')
     this.shortcuts = document.querySelectorAll('.shortcut')
     this.repoSwitch = document.getElementById('repo-switch')
+    this.closedIssues = document.getElementById('closed-issues')
+    this.newIssue = document.getElementById('new-issue')
+    this.mergedPullRequests = document.getElementById('merged-pull-requests')
+    this.newPullRequest = document.getElementById('new-pull-request')
   }
 
   runAfterDelay(action) {
@@ -295,6 +299,22 @@ class PopupPage {
         this.orgCommands.style.display = 'block'
         this.loadOrgLogo(options.organization)
         this.org.textContent = options.organization
+      }
+
+      if (typeof options.closedIssues === 'boolean' && !options.closedIssues) {
+        this.closedIssues.style.display = 'none'
+      }
+
+      if (typeof options.newIssue === 'boolean' && !options.newIssue) {
+        this.newIssue.style.display = 'none'
+      }
+
+      if (typeof options.mergedPullRequests === 'boolean' && !options.mergedPullRequests) {
+        this.mergedPullRequests.style.display = 'none'
+      }
+
+      if (typeof options.newPullRequest === 'boolean' && !options.newPullRequest) {
+        this.newPullRequest.style.display = 'none'
       }
 
       let repoCount = 0
