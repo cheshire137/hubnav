@@ -40,6 +40,7 @@ class OptionsPage {
     this.orgLogo = document.getElementById('org-logo')
     this.optionsForm = document.getElementById('options-form')
     this.notification = document.getElementById('notification')
+    this.versionEl = document.getElementById('extension-version')
   }
 
   flashNotification(message, isError) {
@@ -69,6 +70,11 @@ class OptionsPage {
     } else if (hash === '#select-organization') {
       this.orgInput.focus()
     }
+  }
+
+  getManifest() {
+    const url = chrome.extension.getURL('manifest.json')
+    return window.fetch(url).then(response => response.json())
   }
 
   hookUpHandlers() {
@@ -240,6 +246,9 @@ class OptionsPage {
     this.focusField()
     this.hookUpHandlers()
     this.restoreOptions()
+    this.getManifest().then(manifest => {
+      this.versionEl.textContent = manifest.version
+    })
   }
 }
 

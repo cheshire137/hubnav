@@ -10,3 +10,11 @@
   display: flex;
   align-items: center;
 }
+
+.footer {
+  font-size: 13px;
+}
+
+.separator {
+  padding: 0 1em;
+}
