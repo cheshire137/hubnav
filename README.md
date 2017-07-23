@@ -2,7 +2,7 @@
 
 A Chrome extension for navigating github.com via keyboard shortcuts.
 
-![screenshot of popup](https://raw.githubusercontent.com/cheshire137/hubnav/master/screenshot.png)
+![screenshot of popup](https://raw.githubusercontent.com/cheshire137/hubnav/master/screenshot-popup.png)
 
 ## How to Use
 
