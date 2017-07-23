@@ -104,7 +104,7 @@ class OptionsPage {
 
   loadOrgLogo(rawOrg) {
     const org = encodeURIComponent(rawOrg)
-    this.orgLogo.src = `https://github.com/${org}.png`
+    this.orgLogo.src = `https://github.com/${org}.png?size=72`
     this.orgLogo.alt = org
   }
 
@@ -112,7 +112,7 @@ class OptionsPage {
     let user = rawRepo.split('/')[0]
     if (user && user.length > 0) {
       user = encodeURIComponent(user)
-      this[`repoLogo${i}`].src = `https://github.com/${user}.png`
+      this[`repoLogo${i}`].src = `https://github.com/${user}.png?size=72`
       this[`repoLogo${i}`].alt = user
     }
   }
