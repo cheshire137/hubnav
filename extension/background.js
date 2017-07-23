@@ -22,6 +22,18 @@ function openGlobalSearch() {
   chrome.tabs.create({ url })
 }
 
+function openTeams() {
+  HubnavStorage.load().then(options => {
+    if (options.organization && options.organization.length > 0) {
+      const org = encodeURIComponent(options.organization)
+      const url = `https://github.com/orgs/${org}/teams`
+      chrome.tabs.create({ url })
+    } else {
+      openOptions('select-organization')
+    }
+  })
+}
+
 chrome.commands.onCommand.addListener(function(command) {
   if (command === 'select-repository') {
     openOptions('select-repository')
@@ -31,6 +43,8 @@ chrome.commands.onCommand.addListener(function(command) {
     openGlobalSearch()
   } else if (command === 'file-finder') {
     openFileFinder()
+  } else if (command === 'view-teams') {
+    openTeams()
   } else {
     console.debug('unhandled command:', command)
   }

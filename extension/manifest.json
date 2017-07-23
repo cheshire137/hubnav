@@ -33,6 +33,9 @@
     "unknown-user.png"
   ],
   "commands": {
+    "_execute_browser_action": {
+      "suggested_key": "Alt+Shift+G"
+    },
     "select-repository": {
       "suggested_key": "Alt+Shift+R",
       "description": "Select default GitHub repository"
@@ -41,13 +44,17 @@
       "suggested_key": "Alt+Shift+O",
       "description": "Select default GitHub organization"
     },
-    "global-search": {
-      "suggested_key": "Alt+Shift+S",
-      "description": "Open GitHub's global search"
-    },
+    // "global-search": {
+    //   "suggested_key": "Alt+Shift+S",
+    //   "description": "Open GitHub's global search"
+    // },
     "file-finder": {
       "suggested_key": "Alt+Shift+F",
       "description": "Open file finder for your selected repository"
     }
+    // "view-teams": {
+    //   "suggested_key": "Alt+Shift+T",
+    //   "description": "Browse teams in your selected organization"
+    // }
   }
 }
