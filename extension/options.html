@@ -15,43 +15,51 @@
   <section class="hero">
     <div class="hero-body">
       <div class="container">
-        <h1 class="title">Hubnav Options</h1>
+        <div class="columns">
+          <div class="column is-8 is-offset-2">
+            <h1 class="title">Hubnav Options</h1>
+          </div>
+        </div>
       </div>
     </div>
   </section>
   <section class="section">
     <div class="container">
-      <form id="options-form">
-        <div class="field">
-          <label class="label" for="repository">Set default GitHub repository:</label>
-          <div class="control with-image">
-            <img width="36" height="36" id="repo-logo" class="user-logo" src="unknown-user.png">
-            <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs/bootstrap" id="repository">
-          </div>
-          <p class="help">
-            Repository-based commands like opening the file finder will default to this repository.
-          </p>
+      <div class="columns">
+        <div class="column is-8 is-offset-2">
+          <form id="options-form">
+            <div class="field">
+              <label class="label" for="repository">Set default GitHub repository:</label>
+              <div class="control with-image">
+                <img width="36" height="36" id="repo-logo" class="user-logo" src="unknown-user.png">
+                <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs/bootstrap" id="repository">
+              </div>
+              <p class="help">
+                Repository-based commands like opening the file finder will default to this repository.
+              </p>
+            </div>
+            <div class="field">
+              <label class="label" for="default-branch">Repository's default branch:</label>
+              <div class="control">
+                <input class="input" autocomplete="off" type="text" placeholder="e.g., master" id="default-branch">
+              </div>
+              <p class="help">
+                Will be used for opening the file finder.
+              </p>
+            </div>
+            <div class="field">
+              <label class="label" for="organization">Set default GitHub organization:</label>
+              <div class="control with-image">
+                <img width="36" height="36" id="org-logo" class="user-logo" src="unknown-user.png">
+                <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs" id="organization">
+              </div>
+              <p class="help">
+                Organization-based commands like opening the teams page will default to this organization.
+              </p>
+            </div>
+          </form>
         </div>
-        <div class="field">
-          <label class="label" for="default-branch">Repository's default branch:</label>
-          <div class="control">
-            <input class="input" autocomplete="off" type="text" placeholder="e.g., master" id="default-branch">
-          </div>
-          <p class="help">
-            Will be used for opening the file finder.
-          </p>
-        </div>
-        <div class="field">
-          <label class="label" for="organization">Set default GitHub organization:</label>
-          <div class="control with-image">
-            <img width="36" height="36" id="org-logo" class="user-logo" src="unknown-user.png">
-            <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs" id="organization">
-          </div>
-          <p class="help">
-            Organization-based commands like opening the teams page will default to this organization.
-          </p>
-        </div>
-      </form>
+      </div>
     </div>
   </section>
   <footer class="footer has-text-centered">
