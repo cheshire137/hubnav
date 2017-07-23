@@ -318,7 +318,7 @@ class PopupPage {
 
   loadOrgLogo(rawOrg) {
     const org = encodeURIComponent(rawOrg)
-    this.orgLogo.src = `https://github.com/${org}.png?size=40`
+    this.orgLogo.src = `https://github.com/${org}.png?size=36`
     this.orgLogo.alt = org
   }
 
@@ -326,7 +326,7 @@ class PopupPage {
     let user = rawRepo.split('/')[0]
     if (user && user.length > 0) {
       user = encodeURIComponent(user)
-      imgTag.src = `https://github.com/${user}.png?size=40`
+      imgTag.src = `https://github.com/${user}.png?size=36`
       imgTag.alt = user
     }
   }
