@@ -22,42 +22,73 @@
     <div class="container content">
       <div id="repo-commands" style="display: none">
         <h2 class="subtitle is-6">
-          <img width="36" height="36" id="repo-logo" class="user-logo" src="unknown-user.png">
-          <span id="repository"></span>
+          <span class="grow">
+            <img width="36" height="36" id="repo-logo" class="user-logo" src="unknown-user.png">
+            <span id="repository"></span>
+          </span>
         </h2>
         <dl class="shortcuts-list">
           <dt class="shortcut-f shortcut">f</dt>
-          <dd class="shortcut-f shortcut">open file finder</dd>
+          <dd class="shortcut-f shortcut">
+            <span class="grow">open file finder</span>
+            <svg class="octicon octicon-file-directory" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M13 4H7V3c0-.66-.31-1-1-1H1c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1zM6 4H1V3h5v1z"></path></svg>
+          </dd>
           <dt class="shortcut-i shortcut">i</dt>
-          <dd class="shortcut-i shortcut">open issues</dd>
+          <dd class="shortcut-i shortcut">
+            <span class="grow">open issues</span>
+            <svg class="octicon octicon-issue-opened" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"></path></svg>
+          </dd>
           <dt class="shortcut-p shortcut">p</dt>
-          <dd class="shortcut-p shortcut">open pull requests</dd>
+          <dd class="shortcut-p shortcut">
+            <span class="grow">open pull requests</span>
+            <svg class="octicon octicon-git-pull-request" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z"></path></svg>
+          </dd>
           <dt class="shortcut-h shortcut">h</dt>
-          <dd class="shortcut-h shortcut">browse repository</dd>
+          <dd class="shortcut-h shortcut">
+            <span class="grow">browse repository</span>
+            <svg class="octicon octicon-repo" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
+          </dd>
         </dl>
       </div>
 
       <div id="org-commands" style="display: none">
         <h2 class="subtitle is-6">
-          <img width="36" height="36" id="org-logo" class="user-logo" src="unknown-user.png">
-          <span id="organization"></span>
+          <span class="grow">
+            <img width="36" height="36" id="org-logo" class="user-logo" src="unknown-user.png">
+            <span id="organization"></span>
+          </span>
         </h2>
         <dl class="shortcuts-list">
           <dt class="shortcut-t shortcut">t</dt>
-          <dd class="shortcut-t shortcut">open teams</dd>
+          <dd class="shortcut-t shortcut">
+            <span class="grow">open teams</span>
+            <svg class="octicon octicon-jersey" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4.5 6l-.5.5v5l.5.5h2l.5-.5v-5L6.5 6h-2zM6 11H5V7h1v4zm6.27-7.25C12.05 2.37 11.96 1.12 12 0H9.02c0 .27-.13.48-.39.69-.25.2-.63.3-1.13.3-.5 0-.88-.09-1.13-.3-.23-.2-.36-.42-.36-.69H3c.05 1.13-.03 2.38-.25 3.75C2.55 5.13 1.95 5.88 1 6v9c.02.27.11.48.31.69.2.21.42.3.69.31h11c.27-.02.48-.11.69-.31.21-.2.3-.42.31-.69V6c-.95-.13-1.53-.88-1.75-2.25h.02zM13 15H2V7c.89-.5 1.48-1.25 1.72-2.25S4.03 2.5 4 1h1c-.02.78.16 1.47.52 2.06.36.58 1.02.89 2 .94.98-.02 1.64-.33 2-.94.36-.59.5-1.28.48-2.06h1c.02 1.42.13 2.55.33 3.38.2.81.69 2 1.67 2.63v8V15zM8.5 6l-.5.5v5l.5.5h2l.5-.5v-5l-.5-.5h-2zm1.5 5H9V7h1v4z"></path></svg>
+          </dd>
           <dt class="shortcut-m shortcut">m</dt>
-          <dd class="shortcut-m shortcut">browse members</dd>
+          <dd class="shortcut-m shortcut">
+            <span class="grow">browse members</span>
+            <svg class="octicon octicon-person" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 14.002a.998.998 0 0 1-.998.998H1.001A1 1 0 0 1 0 13.999V13c0-2.633 4-4 4-4s.229-.409 0-1c-.841-.62-.944-1.59-1-4 .173-2.413 1.867-3 3-3s2.827.586 3 3c-.056 2.41-.159 3.38-1 4-.229.59 0 1 0 1s4 1.367 4 4v1.002z"></path></svg>
+          </dd>
         </dl>
       </div>
 
       <h2 class="subtitle is-6">General</h2>
       <dl class="shortcuts-list">
         <dt class="shortcut-s shortcut">s</dt>
-        <dd class="shortcut-s shortcut">open global search</dd>
+        <dd class="shortcut-s shortcut">
+          <span class="grow">open global search</span>
+          <svg class="octicon octicon-search" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M15.7 13.3l-3.81-3.83A5.93 5.93 0 0 0 13 6c0-3.31-2.69-6-6-6S1 2.69 1 6s2.69 6 6 6c1.3 0 2.48-.41 3.47-1.11l3.83 3.81c.19.2.45.3.7.3.25 0 .52-.09.7-.3a.996.996 0 0 0 0-1.41v.01zM7 10.7c-2.59 0-4.7-2.11-4.7-4.7 0-2.59 2.11-4.7 4.7-4.7 2.59 0 4.7 2.11 4.7 4.7 0 2.59-2.11 4.7-4.7 4.7z"></path></svg>
+        </dd>
         <dt class="shortcut-r shortcut">r</dt>
-        <dd class="shortcut-r shortcut">change repository</dd>
+        <dd class="shortcut-r shortcut">
+          <span class="grow">change repository</span>
+          <svg class="octicon octicon-repo-pull" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M13 8V6H7V4h6V2l3 3-3 3zM4 2H3v1h1V2zm7 5h1v6c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1v2h-1V1H2v9h9V7zm0 4H1v2h2v-1h3v1h5v-2zM4 6H3v1h1V6zm0-2H3v1h1V4zM3 9h1V8H3v1z"></path></svg>
+        </dd>
         <dt class="shortcut-o shortcut">o</dt>
-        <dd class="shortcut-o shortcut">change organization</dd>
+        <dd class="shortcut-o shortcut">
+          <span class="grow">change organization</span>
+          <svg width="16" height="16" class="octicon octicon-organization" viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M16 12.999c0 .439-.45 1-1 1H7.995c-.539 0-.994-.447-.995-.999H1c-.54 0-1-.561-1-1 0-2.634 3-4 3-4s.229-.409 0-1c-.841-.621-1.058-.59-1-3 .058-2.419 1.367-3 2.5-3s2.442.58 2.5 3c.058 2.41-.159 2.379-1 3-.229.59 0 1 0 1s1.549.711 2.42 2.088C9.196 9.369 10 8.999 10 8.999s.229-.409 0-1c-.841-.62-1.058-.59-1-3 .058-2.419 1.367-3 2.5-3s2.437.581 2.495 3c.059 2.41-.158 2.38-1 3-.229.59 0 1 0 1s3.005 1.366 3.005 4"></path></svg>
+        </dd>
       </dl>
 
       <div id="repo-switch" class="repo-switch" style="display: none">

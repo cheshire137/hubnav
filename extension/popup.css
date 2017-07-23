@@ -26,6 +26,8 @@
 
 .shortcut {
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .shortcut:hover {
@@ -69,6 +71,7 @@
   font-weight: 500;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0.3em 0.75rem;
   background-color: #efefef;
 }
@@ -98,4 +101,18 @@
 .repo-switch,
 .repo-switch .subtitle.is-6 {
   font-size: 0.875rem;
+}
+
+.octicon {
+  display: inline-block;
+  vertical-align: text-top;
+  fill: currentColor;
+}
+
+.shortcut .octicon {
+  color: #777;
+}
+
+.grow {
+  flex-grow: 1;
 }
