@@ -127,17 +127,17 @@ body {
   line-height: 1.3;
 }
 
-.repo-switch,
-.repo-switch .subtitle.is-6 {
+.context-switch,
+.context-switch .subtitle.is-6 {
   font-size: 0.875rem;
 }
 
-.repo-switch .subtitle.is-6 {
+.context-switch .subtitle.is-6 {
   padding-top: 0.3em;
   padding-bottom: 0.3em;
 }
 
-.repo-switch .shortcuts-list dd:not(:last-child) {
+.context-switch .shortcuts-list dd:not(:last-child) {
   margin-bottom: 0.1rem;
 }
 

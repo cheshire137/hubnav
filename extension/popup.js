@@ -7,6 +7,8 @@ class PopupPage {
   }
 
   findElements() {
+    // Context switching:
+    this.contextSwitch = document.getElementById('context-switch')
     for (let i of REPO_SHORTCUTS) {
       this[`repo${i}`] = document.getElementById(`repo${i}`)
       this[`repoLogo${i}`] = document.getElementById(`repo-logo${i}`)
@@ -15,9 +17,15 @@ class PopupPage {
       this[`user${i}`] = document.getElementById(`user${i}`)
       this[`userLogo${i}`] = document.getElementById(`user-logo${i}`)
     }
+
+    // Active context:
     this.repo = document.getElementById('repository')
+    this.user = document.getElementById('user')
     this.org = document.getElementById('organization')
-    this.welcome = document.getElementById('welcome')
+    this.repoLogo = document.getElementById('repo-logo')
+    this.userLogo = document.getElementById('user-logo')
+
+    // Shortcuts:
     this.fShortcuts = document.querySelectorAll('.shortcut-f')
     this.tShortcuts = document.querySelectorAll('.shortcut-t')
     this.sShortcuts = document.querySelectorAll('.shortcut-s')
@@ -34,16 +42,21 @@ class PopupPage {
     this.shortcuts8 = document.querySelectorAll('.shortcut-8')
     this.shortcuts9 = document.querySelectorAll('.shortcut-9')
     this.shortcuts0 = document.querySelectorAll('.shortcut-0')
-    this.repoCommands = document.getElementById('repo-commands')
-    this.orgCommands = document.getElementById('org-commands')
-    this.orgLogo = document.getElementById('org-logo')
-    this.repoLogo = document.getElementById('repo-logo')
-    this.shortcuts = document.querySelectorAll('.shortcut')
-    this.repoSwitch = document.getElementById('repo-switch')
+
+    // Modifiers:
     this.closedIssues = document.getElementById('closed-issues')
     this.newIssue = document.getElementById('new-issue')
     this.mergedPullRequests = document.getElementById('merged-pull-requests')
     this.newPullRequest = document.getElementById('new-pull-request')
+
+    // Containers:
+    this.repoCommands = document.getElementById('repo-commands')
+    this.userCommands = document.getElementById('user-commands')
+    this.orgCommands = document.getElementById('org-commands')
+
+    this.welcome = document.getElementById('welcome')
+    this.orgLogo = document.getElementById('org-logo')
+    this.shortcuts = document.querySelectorAll('.shortcut')
   }
 
   runAfterDelay(action) {
@@ -213,6 +226,23 @@ class PopupPage {
     this.runAfterDelay(() => chrome.tabs.create({ url }))
   }
 
+  quickUserSwitch(i) {
+    HubnavStorage.load().then(currentOptions => {
+      const newOptions = {}
+      for (let key in currentOptions) {
+        newOptions[key] = currentOptions[key]
+      }
+      const newUser = currentOptions[`user${i}`]
+      if (newUser && newUser.length > 0) {
+        newOptions.user = newUser
+      }
+      HubnavStorage.save(newOptions).then(() => {
+        this.highlightShortcut(this[`shortcuts${i}`])
+        this.runAfterDelay(() => this.loadActiveUser(newOptions.user))
+      })
+    })
+  }
+
   quickRepositorySwitch(i) {
     HubnavStorage.load().then(currentOptions => {
       const newOptions = {}
@@ -276,6 +306,8 @@ class PopupPage {
       this.openOrgRepositories()
     } else if (REPO_SHORTCUTS.indexOf(key) > -1) {
       this.quickRepositorySwitch(key)
+    } else if (USER_SHORTCUTS.indexOf(key) > -1) {
+      this.quickUserSwitch(key)
     } else if (key === 'shift') {
       this.shiftPressed = true
     } else if (key === 'control') {
@@ -283,8 +315,16 @@ class PopupPage {
     }
   }
 
+  loadActiveUser(user) {
+    this.repoCommands.style.display = 'none'
+    this.userCommands.style.display = 'block'
+    this.loadUserLogo(user, this.userLogo)
+    this.user.textContent = user
+  }
+
   loadActiveRepository(repo) {
     this.repoCommands.style.display = 'block'
+    this.userCommands.style.display = 'none'
     this.loadRepoLogo(repo, this.repoLogo)
     this.repo.textContent = repo
   }
@@ -355,7 +395,7 @@ class PopupPage {
         }
       }
       if (contextCount > 1) {
-        this.repoSwitch.style.display = 'block'
+        this.contextSwitch.style.display = 'block'
       }
     })
   }
