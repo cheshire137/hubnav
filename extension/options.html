@@ -14,7 +14,7 @@
     <div class="hero-body">
       <div class="container">
         <div class="columns">
-          <div class="column is-8 is-offset-2">
+          <div class="column is-10 is-offset-1">
             <h1 class="title">
               <img src="icon128.png" class="logo" width="36" height="36" alt="">
               Hubnav Options
@@ -27,14 +27,27 @@
       </div>
     </div>
   </section>
-  <form id="options-form" class="content">
+  <form id="options-form">
     <div id="notification" style="display: none" class="notification"></div>
 
-    <section class="section">
-      <div class="container">
-        <div class="columns">
-          <div class="column is-8 is-offset-2">
-            <h2 class="subtitle is-4">Organization Options</h2>
+    <div class="container">
+      <div class="columns">
+        <div class="column is-2 is-offset-1">
+          <section class="section sidebar-section">
+            <aside class="menu">
+              <ul class="menu-list">
+                <li><a href="#organization-section">Organization</a></li>
+                <li><a href="#repositories-section">Repositories</a></li>
+                <li><a href="#users-section">Users</a></li>
+                <li><a href="#displayed-commands-section">Displayed Commands</a></li>
+              </ul>
+            </aside>
+          </section>
+        </div>
+        <div class="column is-8">
+
+          <section class="section content">
+            <h2 class="subtitle is-4"><a name="organization-section"></a>Organization</h2>
             <div class="field">
               <label class="label" for="organization">Set your GitHub organization:</label>
               <div class="control with-image">
@@ -45,17 +58,11 @@
                 Used with commands like viewing the teams in an organization.
               </p>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
+          </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="columns">
-          <div class="column is-8 is-offset-2">
-            <h2 class="subtitle is-4">Repository Options</h2>
-            <p>Save up to four different repositories. You can switch quickly between them.</p>
+          <section class="section content">
+            <h2 class="subtitle is-4"><a name="repositories-section"></a>Repositories</h2>
+            <p>Save up to four different GitHub repositories. You can switch quickly between them.</p>
 
             <div class="flex-row">
               <h3 class="subtitle is-5">#1</h3>
@@ -213,16 +220,15 @@
               </div>
             </div>
 
-          </div>
-        </div>
-      </div>
-    </section>
+          </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="columns">
-          <div class="column is-8 is-offset-2">
-            <h2 class="subtitle is-4">Displayed Commands</h2>
+          <section class="section content">
+            <h2 class="subtitle is-4"><a name="users-section"></a>Users</h2>
+            <p>Save up to three different GitHub users. You can switch quickly between them.</p>
+          </section>
+
+          <section class="section content">
+            <h2 class="subtitle is-4"><a name="displayed-commands-section"></a>Displayed Commands</h2>
             <p>Choose which commands are displayed in the popup. Commands are still available when hidden.</p>
             <label class="checkbox">
               <input type="checkbox" id="closed-issues">
@@ -240,11 +246,11 @@
               <input type="checkbox" id="new-pull-request">
               New pull request
             </label>
-          </div>
-        </div>
-      </div>
-    </section>
+          </section>
 
+        </div><!--/column-->
+      </div><!--/columns-->
+    </div><!--/container-->
   </form>
   <footer class="footer has-text-centered">
     <div class="container">

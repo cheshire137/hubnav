@@ -23,6 +23,11 @@
   padding: 3rem 1.5rem 0 1.5rem;
 }
 
+.sidebar-section {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .content {
   position: relative;
 }
@@ -49,6 +54,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.flex-row .fields {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
 }
 
 .flex-row .subtitle {
@@ -80,4 +91,9 @@
 .hero-body .title:not(.is-spaced) + .subtitle {
   margin-left: 47px;
   margin-top: -1.2rem;
+}
+
+.menu-list a:hover {
+  background-color: #F8FFDA;
+  color: #DA8328;
 }
