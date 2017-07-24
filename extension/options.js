@@ -36,20 +36,13 @@ class OptionsPage {
   }
 
   findElements() {
+    for (let i = 1; i <= 4; i++) {
+      this[`repoInput${i}`] = document.getElementById(`repository${i}`)
+      this[`defaultBranchInput${i}`] = document.getElementById(`default-branch${i}`)
+      this[`repoLogo${i}`] = document.getElementById(`repo-logo${i}`)
+    }
     this.shortcutTipContainer = document.getElementById('shortcut-tip-container')
     this.shortcut = document.getElementById('shortcut')
-    this.repoInput1 = document.getElementById('repository1')
-    this.repoInput2 = document.getElementById('repository2')
-    this.repoInput3 = document.getElementById('repository3')
-    this.repoInput4 = document.getElementById('repository4')
-    this.defaultBranchInput1 = document.getElementById('default-branch1')
-    this.defaultBranchInput2 = document.getElementById('default-branch2')
-    this.defaultBranchInput3 = document.getElementById('default-branch3')
-    this.defaultBranchInput4 = document.getElementById('default-branch4')
-    this.repoLogo1 = document.getElementById('repo-logo1')
-    this.repoLogo2 = document.getElementById('repo-logo2')
-    this.repoLogo3 = document.getElementById('repo-logo3')
-    this.repoLogo4 = document.getElementById('repo-logo4')
     this.orgInput = document.getElementById('organization')
     this.orgLogo = document.getElementById('org-logo')
     this.optionsForm = document.getElementById('options-form')
