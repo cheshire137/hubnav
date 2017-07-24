@@ -1,3 +1,5 @@
+const USER_SHORTCUTS = ['8', '9', '0']
+
 class OptionsPage {
   constructor() {
     this.findElements()
@@ -40,6 +42,10 @@ class OptionsPage {
       this[`repoInput${i}`] = document.getElementById(`repository${i}`)
       this[`defaultBranchInput${i}`] = document.getElementById(`default-branch${i}`)
       this[`repoLogo${i}`] = document.getElementById(`repo-logo${i}`)
+    }
+    for (let i of USER_SHORTCUTS) {
+      this[`userInput${i}`] = document.getElementById(`user${i}`)
+      this[`userLogo${i}`] = document.getElementById(`user-logo-${i}`)
     }
     this.shortcutTipContainer = document.getElementById('shortcut-tip-container')
     this.shortcut = document.getElementById('shortcut')
@@ -90,6 +96,11 @@ class OptionsPage {
       this[`repoLogo${i}`].addEventListener('load', () => this.onRepoLogoLoad(i))
       this[`repoLogo${i}`].addEventListener('error', () => this.onRepoLogoError(i))
     }
+    for (let i of USER_SHORTCUTS) {
+      this[`userInput${i}`].addEventListener('keyup', e => this.onUserKeyup(e, i))
+      this[`userLogo${i}`].addEventListener('load', () => this.onUserLogoLoad(i))
+      this[`userLogo${i}`].addEventListener('error', () => this.onUserLogoError(i))
+    }
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
     this.orgInput.addEventListener('keyup', e => this.onOrgKeyup(e))
     this.orgLogo.addEventListener('load', () => this.onOrgLogoLoad())
@@ -115,6 +126,12 @@ class OptionsPage {
     }
   }
 
+  loadUserLogo(rawUser, i) {
+    const user = encodeURIComponent(rawUser)
+    this[`userLogo${i}`].src = `https://github.com/${user}.png?size=72`
+    this[`userLogo${i}`].alt = user
+  }
+
   showBadOrgLogo() {
     this.orgLogo.src = 'bad-user.png'
     this.orgLogo.alt = ''
@@ -128,6 +145,16 @@ class OptionsPage {
   showBadRepoLogo(i) {
     this[`repoLogo${i}`].src = 'bad-user.png'
     this[`repoLogo${i}`].alt = ''
+  }
+
+  showBadUserLogo(i) {
+    this[`userLogo${i}`].src = 'bad-user.png'
+    this[`userLogo${i}`].alt = ''
+  }
+
+  showDefaultUserLogo(i) {
+    this[`userLogo${i}`].src = 'unknown-user.png'
+    this[`userLogo${i}`].alt = ''
   }
 
   showDefaultRepoLogo(i) {
@@ -154,6 +181,16 @@ class OptionsPage {
     }, 750)
   }
 
+  onUserKeyup(event, i) {
+    if (this[`userInput${i}Timer`]) {
+      clearTimeout(this[`userInput${i}Timer`])
+    }
+    this[`userInput${i}Timer`] = setTimeout(() => {
+      this.setUserLogoSource(i)
+      this.checkFormValidity()
+    }, 750)
+  }
+
   onRepoKeyup(event, i) {
     if (this[`repoInput${i}Timer`]) {
       clearTimeout(this[`repoInput${i}Timer`])
@@ -164,6 +201,16 @@ class OptionsPage {
     }, 750)
   }
 
+  onUserLogoLoad(i) {
+    if (this.isBadLogo(this[`userLogo${i}`].src)) {
+      return
+    }
+    delete this.errors[`userLogo${i}`]
+    if (!this.anyErrors()) {
+      this.optionsForm.classList.remove('error')
+    }
+  }
+
   onRepoLogoLoad(i) {
     if (this.isBadLogo(this[`repoLogo${i}`].src)) {
       return
@@ -172,6 +219,14 @@ class OptionsPage {
     if (!this.anyErrors()) {
       this.optionsForm.classList.remove('error')
     }
+  }
+
+  onUserLogoError(i) {
+    this.showBadUserLogo(i)
+    this.errors[`userLogo${i}`] = true
+    const user = encodeURIComponent((this[`userInput${i}`].value || '').trim())
+    this.flashErrorMessage(`Invalid user: can't find "${user}"`)
+    this.checkFormValidity()
   }
 
   onRepoLogoError(i) {
@@ -211,6 +266,15 @@ class OptionsPage {
       this.showDefaultOrgLogo()
     } else {
       this.loadOrgLogo(org)
+    }
+  }
+
+  setUserLogoSource(i) {
+    const user = (this[`userInput${i}`].value || '').trim()
+    if (user.length < 1) {
+      this.showDefaultUserLogo(i)
+    } else {
+      this.loadUserLogo(user, i)
     }
   }
 
@@ -278,6 +342,9 @@ class OptionsPage {
       } else if (repository === repository4) {
         defaultBranch = defaultBranch4
       }
+      const user8 = (this.userInput8.value || '').trim()
+      const user9 = (this.userInput9.value || '').trim()
+      const user0 = (this.userInput0.value || '').trim()
       const closedIssues = this.closedIssues.checked
       const newIssue = this.newIssue.checked
       const mergedPullRequests = this.mergedPullRequests.checked
@@ -285,7 +352,7 @@ class OptionsPage {
       const newOptions = { repository, repository1, repository2, repository3, repository4,
                            organization, defaultBranch1, defaultBranch2, defaultBranch3,
                            defaultBranch4, defaultBranch, closedIssues, newIssue,
-                           mergedPullRequests, newPullRequest }
+                           mergedPullRequests, newPullRequest, user8, user9, user0 }
       HubnavStorage.save(newOptions).then(() => this.flashSaveNotice())
     })
   }
@@ -299,6 +366,13 @@ class OptionsPage {
           this.loadRepoLogo(repo, i)
         }
         this[`defaultBranchInput${i}`].value = options[`defaultBranch${i}`] || 'master'
+      }
+      for (let i of USER_SHORTCUTS) {
+        const user = options[`user${i}`]
+        if (user && user.length > 0) {
+          this[`userInput${i}`].value = user
+          this.loadUserLogo(user, i)
+        }
       }
       if (options.organization && options.organization.length > 0) {
         this.orgInput.value = options.organization
