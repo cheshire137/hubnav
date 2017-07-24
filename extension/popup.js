@@ -1,3 +1,5 @@
+const USER_SHORTCUTS = ['8', '9', '0']
+
 class PopupPage {
   constructor() {
     this.findElements()
@@ -10,6 +12,10 @@ class PopupPage {
     for (let i = 1; i <= 4; i++) {
       this[`repo${i}`] = document.getElementById(`repo${i}`)
       this[`repoLogo${i}`] = document.getElementById(`repo-logo${i}`)
+    }
+    for (let i of USER_SHORTCUTS) {
+      this[`user${i}`] = document.getElementById(`user${i}`)
+      this[`userLogo${i}`] = document.getElementById(`user-logo${i}`)
     }
     this.repo = document.getElementById('repository')
     this.org = document.getElementById('organization')
@@ -27,6 +33,9 @@ class PopupPage {
     this.shortcuts2 = document.querySelectorAll('.shortcut-2')
     this.shortcuts3 = document.querySelectorAll('.shortcut-3')
     this.shortcuts4 = document.querySelectorAll('.shortcut-4')
+    this.shortcuts8 = document.querySelectorAll('.shortcut-8')
+    this.shortcuts9 = document.querySelectorAll('.shortcut-9')
+    this.shortcuts0 = document.querySelectorAll('.shortcut-0')
     this.repoCommands = document.getElementById('repo-commands')
     this.orgCommands = document.getElementById('org-commands')
     this.orgLogo = document.getElementById('org-logo')
@@ -322,11 +331,11 @@ class PopupPage {
         this.newPullRequest.style.display = 'none'
       }
 
-      let repoCount = 0
+      let contextCount = 0
       for (let i = 1; i <= 4; i++) {
         const repo = options[`repository${i}`]
         if (repo && repo.length > 0) {
-          repoCount++
+          contextCount++
           const repoRefs = document.querySelectorAll(`.shortcut-${i}`)
           for (let j = 0; j < repoRefs.length; j++) {
             repoRefs[j].style.display = 'block'
@@ -335,25 +344,39 @@ class PopupPage {
           this.loadRepoLogo(repo, this[`repoLogo${i}`])
         }
       }
-      if (repoCount > 1) {
+      for (let i of USER_SHORTCUTS) {
+        const user = options[`user${i}`]
+        if (user && user.length > 0) {
+          contextCount++
+          const userRefs = document.querySelectorAll(`.shortcut-${i}`)
+          for (let j = 0; j < userRefs.length; j++) {
+            userRefs[j].style.display = 'block'
+          }
+          this[`user${i}`].textContent = user
+          this.loadUserLogo(user, this[`userLogo${i}`])
+        }
+      }
+      if (contextCount > 1) {
         this.repoSwitch.style.display = 'block'
       }
     })
   }
 
   loadOrgLogo(rawOrg) {
-    const org = encodeURIComponent(rawOrg)
-    this.orgLogo.src = `https://github.com/${org}.png?size=36`
-    this.orgLogo.alt = org
+    this.loadUserLogo(rawOrg, this.orgLogo)
   }
 
   loadRepoLogo(rawRepo, imgTag) {
     let user = rawRepo.split('/')[0]
     if (user && user.length > 0) {
-      user = encodeURIComponent(user)
-      imgTag.src = `https://github.com/${user}.png?size=36`
-      imgTag.alt = user
+      this.loadUserLogo(user, imgTag)
     }
+  }
+
+  loadUserLogo(rawUser, imgTag) {
+    const user = encodeURIComponent(rawUser)
+    imgTag.src = `https://github.com/${user}.png?size=36`
+    imgTag.alt = user
   }
 }
 
