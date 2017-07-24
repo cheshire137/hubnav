@@ -141,6 +141,10 @@ body {
   margin-bottom: 0.1rem;
 }
 
+.content .context-switch dl.shortcuts-list:not(:last-child) {
+  margin-bottom: 0;
+}
+
 .octicon {
   display: inline-block;
   vertical-align: text-top;

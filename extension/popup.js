@@ -35,6 +35,7 @@ class PopupPage {
     this.pShortcuts = document.querySelectorAll('.shortcut-p')
     this.hShortcuts = document.querySelectorAll('.shortcut-h')
     this.mShortcuts = document.querySelectorAll('.shortcut-m')
+    this.uShortcuts = document.querySelectorAll('.shortcut-u')
     this.shortcuts1 = document.querySelectorAll('.shortcut-1')
     this.shortcuts2 = document.querySelectorAll('.shortcut-2')
     this.shortcuts3 = document.querySelectorAll('.shortcut-3')
@@ -172,6 +173,18 @@ class PopupPage {
     })
   }
 
+  openUserProfile() {
+    HubnavStorage.load().then(options => {
+      if (options.user && options.user.length > 0) {
+        this.highlightShortcut(this.uShortcuts)
+        const user = encodeURIComponent(options.user)
+        this.openTab(`https://github.com/${user}`)
+      } else {
+        this.openOptions()
+      }
+    })
+  }
+
   openPullRequests() {
     HubnavStorage.load().then(options => {
       if (options.repository && options.repository.length > 0) {
@@ -236,6 +249,7 @@ class PopupPage {
       if (newUser && newUser.length > 0) {
         newOptions.user = newUser
       }
+      newOptions.active = 'user'
       HubnavStorage.save(newOptions).then(() => {
         this.highlightShortcut(this[`shortcuts${i}`])
         this.runAfterDelay(() => this.loadActiveUser(newOptions.user))
@@ -257,6 +271,7 @@ class PopupPage {
       if (newDefaultBranch && newDefaultBranch.length > 0) {
         newOptions.defaultBranch = newDefaultBranch
       }
+      newOptions.active = 'repository'
       HubnavStorage.save(newOptions).then(() => {
         this.highlightShortcut(this[`shortcuts${i}`])
         this.runAfterDelay(() => this.loadActiveRepository(newOptions.repository))
@@ -298,6 +313,8 @@ class PopupPage {
       this.openIssues()
     } else if (key === 'p') {
       this.openPullRequests()
+    } else if (key === 'u') {
+      this.openUserProfile()
     } else if (key === 'h') {
       this.openRepository()
     } else if (key === 'm') {
@@ -339,12 +356,20 @@ class PopupPage {
     }
 
     HubnavStorage.load().then(options => {
-      if (!options.repository && !options.organization) {
+      if (!options.repository && !options.organization && !options.user) {
         this.welcome.style.display = 'block'
       }
 
-      if (options.repository && options.repository.length > 0) {
-        this.loadActiveRepository(options.repository)
+      if (options.active && options.active === 'user') {
+        if (options.user && options.user.length > 0) {
+          this.loadActiveUser(options.user)
+        } else if (options.repository && options.repository.length > 0) {
+          this.loadActiveRepository(options.repository)
+        }
+      } else {
+        if (options.repository && options.repository.length > 0) {
+          this.loadActiveRepository(options.repository)
+        }
       }
 
       if (options.organization && options.organization.length > 0) {
