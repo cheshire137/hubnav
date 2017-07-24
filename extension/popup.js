@@ -1,5 +1,3 @@
-const USER_SHORTCUTS = ['8', '9', '0']
-
 class PopupPage {
   constructor() {
     this.findElements()
@@ -9,7 +7,7 @@ class PopupPage {
   }
 
   findElements() {
-    for (let i = 1; i <= 4; i++) {
+    for (let i of REPO_SHORTCUTS) {
       this[`repo${i}`] = document.getElementById(`repo${i}`)
       this[`repoLogo${i}`] = document.getElementById(`repo-logo${i}`)
     }
@@ -276,7 +274,7 @@ class PopupPage {
       this.openOrgMembers()
     } else if (key === 'r') {
       this.openOrgRepositories()
-    } else if (['1', '2', '3', '4'].indexOf(key) > -1) {
+    } else if (REPO_SHORTCUTS.indexOf(key) > -1) {
       this.quickRepositorySwitch(key)
     } else if (key === 'shift') {
       this.shiftPressed = true
@@ -332,7 +330,7 @@ class PopupPage {
       }
 
       let contextCount = 0
-      for (let i = 1; i <= 4; i++) {
+      for (let i of REPO_SHORTCUTS) {
         const repo = options[`repository${i}`]
         if (repo && repo.length > 0) {
           contextCount++

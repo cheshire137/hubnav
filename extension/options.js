@@ -1,5 +1,3 @@
-const USER_SHORTCUTS = ['8', '9', '0']
-
 class OptionsPage {
   constructor() {
     this.findElements()
@@ -19,7 +17,7 @@ class OptionsPage {
   }
 
   checkFormValidity() {
-    for (let i = 1; i <= 4; i++) {
+    for (let i of REPO_SHORTCUTS) {
       const repo = (this[`repoInput${i}`].value || '').trim()
       if (this.isValidRepo(repo)) {
         delete this.errors[`repository${i}`]
@@ -38,7 +36,7 @@ class OptionsPage {
   }
 
   findElements() {
-    for (let i = 1; i <= 4; i++) {
+    for (let i of REPO_SHORTCUTS) {
       this[`repoInput${i}`] = document.getElementById(`repository${i}`)
       this[`defaultBranchInput${i}`] = document.getElementById(`default-branch${i}`)
       this[`repoLogo${i}`] = document.getElementById(`repo-logo${i}`)
@@ -90,7 +88,7 @@ class OptionsPage {
   }
 
   hookUpHandlers() {
-    for (let i = 1; i <= 4; i++) {
+    for (let i of REPO_SHORTCUTS) {
       this[`repoInput${i}`].addEventListener('keyup', e => this.onRepoKeyup(e, i))
       this[`defaultBranchInput${i}`].addEventListener('keyup', e => this.onDefaultBranchKeyup(e, i))
       this[`repoLogo${i}`].addEventListener('load', () => this.onRepoLogoLoad(i))
@@ -359,7 +357,7 @@ class OptionsPage {
 
   restoreOptions() {
     HubnavStorage.load().then(options => {
-      for (let i = 1; i <= 4; i++) {
+      for (let i of REPO_SHORTCUTS) {
         const repo = options[`repository${i}`]
         if (repo && repo.length > 0) {
           this[`repoInput${i}`].value = repo
