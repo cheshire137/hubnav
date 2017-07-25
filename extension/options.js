@@ -44,6 +44,7 @@ class OptionsPage {
     for (let i of USER_SHORTCUTS) {
       this[`userInput${i}`] = document.getElementById(`user${i}`)
       this[`userLogo${i}`] = document.getElementById(`user-logo${i}`)
+      this[`userIsOrg${i}`] = document.getElementById(`user${i}-is-org`)
     }
     this.shortcutTipContainer = document.getElementById('shortcut-tip-container')
     this.shortcut = document.getElementById('shortcut')
@@ -87,6 +88,7 @@ class OptionsPage {
       this[`userInput${i}`].addEventListener('keyup', e => this.onUserKeyup(e, i))
       this[`userLogo${i}`].addEventListener('load', () => this.onUserLogoLoad(i))
       this[`userLogo${i}`].addEventListener('error', () => this.onUserLogoError(i))
+      this[`userIsOrg${i}`].addEventListener('change', () => this.checkFormValidity())
     }
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
     this.closedIssues.addEventListener('change', () => this.checkFormValidity())
@@ -275,14 +277,26 @@ class OptionsPage {
       const user8 = (this.userInput8.value || '').trim()
       const user9 = (this.userInput9.value || '').trim()
       const user0 = (this.userInput0.value || '').trim()
+      let userIsOrg8 = this.userIsOrg8.checked
+      if (user8.length < 1) {
+        userIsOrg8 = false
+      }
+      let userIsOrg9 = this.userIsOrg9.checked
+      if (user9.length < 1) {
+        userIsOrg9 = false
+      }
+      let userIsOrg0 = this.userIsOrg0.checked
+      if (user0.length < 1) {
+        userIsOrg0 = false
+      }
       const closedIssues = this.closedIssues.checked
       const newIssue = this.newIssue.checked
       const mergedPullRequests = this.mergedPullRequests.checked
       const newPullRequest = this.newPullRequest.checked
       const newOptions = { repository, repository1, repository2, repository3, repository4,
-                           defaultBranch1, defaultBranch2, defaultBranch3,
-                           defaultBranch4, defaultBranch, closedIssues, newIssue,
-                           mergedPullRequests, newPullRequest, user8, user9, user0 }
+                           defaultBranch1, defaultBranch2, defaultBranch3, defaultBranch4,
+                           defaultBranch, closedIssues, newIssue, mergedPullRequests,
+                           newPullRequest, user8, user9, user0, userIsOrg8, userIsOrg9, userIsOrg0 }
       HubnavStorage.save(newOptions).then(() => this.flashSaveNotice())
     })
   }
@@ -302,6 +316,11 @@ class OptionsPage {
         if (user && user.length > 0) {
           this[`userInput${i}`].value = user
           this.loadUserLogo(user, i)
+          let isOrg = false
+          if (typeof options[`userIsOrg${i}`] === 'boolean') {
+            isOrg = options[`userIsOrg${i}`]
+          }
+          this[`userIsOrg${i}`].checked = isOrg
         }
       }
       if (typeof options.closedIssues === 'boolean') {
