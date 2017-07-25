@@ -36,9 +36,8 @@
           <section class="section sidebar-section">
             <aside class="menu">
               <ul class="menu-list">
-                <li><a href="#organization-section">Organization</a></li>
                 <li><a href="#repositories-section">Repositories</a></li>
-                <li><a href="#users-section">Users</a></li>
+                <li><a href="#users-and-organizations-section">Users and Organizations</a></li>
                 <li><a href="#displayed-commands-section">Displayed Commands</a></li>
               </ul>
             </aside>
@@ -47,25 +46,11 @@
         <div class="column is-8">
 
           <section class="section content">
-            <h2 class="subtitle is-4"><a name="organization-section"></a>Organization</h2>
-            <div class="field">
-              <label class="label" for="organization">Set your GitHub organization:</label>
-              <div class="control with-image">
-                <img width="36" height="36" id="org-logo" class="user-logo" src="unknown-user.png">
-                <input class="input" autocomplete="off" type="text" placeholder="e.g., twbs" id="organization">
-              </div>
-              <p class="help">
-                Used with commands like viewing the teams in an organization.
-              </p>
-            </div>
-          </section>
-
-          <section class="section content">
             <h2 class="subtitle is-4"><a name="repositories-section"></a>Repositories</h2>
             <p>Save up to four different GitHub repositories. You can switch quickly between them.</p>
 
             <div class="flex-row">
-              <h3 class="subtitle is-5">#1</h3>
+              <h3 class="subtitle is-5">Shortcut 1</h3>
               <div class="fields">
                 <div class="field is-horizontal">
                   <div class="field-label is-normal">
@@ -104,7 +89,7 @@
             </div>
 
             <div class="flex-row">
-              <h3 class="subtitle is-5">#2</h3>
+              <h3 class="subtitle is-5">Shortcut 2</h3>
               <div class="fields">
                 <div class="field is-horizontal">
                   <div class="field-label is-normal">
@@ -143,7 +128,7 @@
             </div>
 
             <div class="flex-row">
-              <h3 class="subtitle is-5">#3</h3>
+              <h3 class="subtitle is-5">Shortcut 3</h3>
               <div class="fields">
                 <div class="field is-horizontal">
                   <div class="field-label is-normal">
@@ -182,7 +167,7 @@
             </div>
 
             <div class="flex-row">
-              <h3 class="subtitle is-5">#4</h3>
+              <h3 class="subtitle is-5">Shortcut 4</h3>
               <div class="fields">
                 <div class="field is-horizontal">
                   <div class="field-label is-normal">
@@ -223,62 +208,95 @@
           </section>
 
           <section class="section content">
-            <h2 class="subtitle is-4"><a name="users-section"></a>Users</h2>
-            <p>Save up to three different GitHub users. You can switch quickly between them.</p>
+            <h2 class="subtitle is-4"><a name="users-and-organizations-section"></a>Users and Organizations</h2>
+            <p>Save up to three different GitHub users or organizations. You can switch quickly between them.</p>
 
-            <div class="field is-horizontal">
-              <div class="field-label is-normal">
-                <label class="label" for="user8">User name 1:</label>
-              </div>
-              <div class="field-body">
-                <div class="field is-expanded">
-                  <div class="field">
-                    <div class="control with-image">
-                      <img width="36" height="36" id="user-logo-8" class="user-logo" src="unknown-user.png">
-                      <input class="input" autocomplete="off" type="text" placeholder="e.g., cheshire137" id="user8">
+            <div class="flex-row">
+              <h3 class="subtitle is-5">Shortcut 8</h3>
+              <div class="fields">
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" for="user8">Login:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-expanded">
+                      <div class="field">
+                        <div class="control with-image">
+                          <img width="36" height="36" id="user-logo8" class="user-logo" src="unknown-user.png">
+                          <input class="input" autocomplete="off" type="text" placeholder="e.g., cheshire137" id="user8">
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <p class="help">
-                    Used with commands like browsing a user's pull requests.
-                  </p>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal"></div>
+                  <div class="field-body">
+                    <label class="checkbox">
+                      <input type="checkbox" id="user8-is-org">
+                      This is an organization
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="field is-horizontal">
-              <div class="field-label is-normal">
-                <label class="label" for="user9">User name 2:</label>
-              </div>
-              <div class="field-body">
-                <div class="field is-expanded">
-                  <div class="field">
-                    <div class="control with-image">
-                      <img width="36" height="36" id="user-logo-9" class="user-logo" src="unknown-user.png">
-                      <input class="input" autocomplete="off" type="text" placeholder="e.g., cheshire137" id="user9">
+            <div class="flex-row">
+              <h3 class="subtitle is-5">Shortcut 9</h3>
+              <div class="fields">
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" for="user9">Login:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-expanded">
+                      <div class="field">
+                        <div class="control with-image">
+                          <img width="36" height="36" id="user-logo9" class="user-logo" src="unknown-user.png">
+                          <input class="input" autocomplete="off" type="text" placeholder="e.g., cheshire137" id="user9">
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <p class="help">
-                    Used with commands like browsing a user's pull requests.
-                  </p>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal"></div>
+                  <div class="field-body">
+                    <label class="checkbox">
+                      <input type="checkbox" id="user9-is-org">
+                      This is an organization
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div class="field is-horizontal">
-              <div class="field-label is-normal">
-                <label class="label" for="user0">User name 3:</label>
-              </div>
-              <div class="field-body">
-                <div class="field is-expanded">
-                  <div class="field">
-                    <div class="control with-image">
-                      <img width="36" height="36" id="user-logo-0" class="user-logo" src="unknown-user.png">
-                      <input class="input" autocomplete="off" type="text" placeholder="e.g., cheshire137" id="user0">
+            <div class="flex-row">
+              <h3 class="subtitle is-5">Shortcut 0</h3>
+              <div class="fields">
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label" for="user0">Login:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-expanded">
+                      <div class="field">
+                        <div class="control with-image">
+                          <img width="36" height="36" id="user-logo0" class="user-logo" src="unknown-user.png">
+                          <input class="input" autocomplete="off" type="text" placeholder="e.g., cheshire137" id="user0">
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <p class="help">
-                    Used with commands like browsing a user's pull requests.
-                  </p>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal"></div>
+                  <div class="field-body">
+                    <label class="checkbox">
+                      <input type="checkbox" id="user0-is-org">
+                      This is an organization
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>

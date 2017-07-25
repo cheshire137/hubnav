@@ -43,12 +43,10 @@ class OptionsPage {
     }
     for (let i of USER_SHORTCUTS) {
       this[`userInput${i}`] = document.getElementById(`user${i}`)
-      this[`userLogo${i}`] = document.getElementById(`user-logo-${i}`)
+      this[`userLogo${i}`] = document.getElementById(`user-logo${i}`)
     }
     this.shortcutTipContainer = document.getElementById('shortcut-tip-container')
     this.shortcut = document.getElementById('shortcut')
-    this.orgInput = document.getElementById('organization')
-    this.orgLogo = document.getElementById('org-logo')
     this.optionsForm = document.getElementById('options-form')
     this.notification = document.getElementById('notification')
     this.versionEl = document.getElementById('extension-version')
@@ -78,15 +76,6 @@ class OptionsPage {
     this.flashNotification(message, true)
   }
 
-  focusField() {
-    const hash = window.location.hash
-    if (hash === '#select-repository') {
-      this.repoInput1.focus()
-    } else if (hash === '#select-organization') {
-      this.orgInput.focus()
-    }
-  }
-
   hookUpHandlers() {
     for (let i of REPO_SHORTCUTS) {
       this[`repoInput${i}`].addEventListener('keyup', e => this.onRepoKeyup(e, i))
@@ -100,19 +89,10 @@ class OptionsPage {
       this[`userLogo${i}`].addEventListener('error', () => this.onUserLogoError(i))
     }
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
-    this.orgInput.addEventListener('keyup', e => this.onOrgKeyup(e))
-    this.orgLogo.addEventListener('load', () => this.onOrgLogoLoad())
-    this.orgLogo.addEventListener('error', () => this.onOrgLogoError())
     this.closedIssues.addEventListener('change', () => this.checkFormValidity())
     this.newIssue.addEventListener('change', () => this.checkFormValidity())
     this.mergedPullRequests.addEventListener('change', () => this.checkFormValidity())
     this.newPullRequest.addEventListener('change', () => this.checkFormValidity())
-  }
-
-  loadOrgLogo(rawOrg) {
-    const org = encodeURIComponent(rawOrg)
-    this.orgLogo.src = `https://github.com/${org}.png?size=72`
-    this.orgLogo.alt = org
   }
 
   loadRepoLogo(rawRepo, i) {
@@ -128,16 +108,6 @@ class OptionsPage {
     const user = encodeURIComponent(rawUser)
     this[`userLogo${i}`].src = `https://github.com/${user}.png?size=72`
     this[`userLogo${i}`].alt = user
-  }
-
-  showBadOrgLogo() {
-    this.orgLogo.src = 'bad-user.png'
-    this.orgLogo.alt = ''
-  }
-
-  showDefaultOrgLogo() {
-    this.orgLogo.src = 'unknown-user.png'
-    this.orgLogo.alt = ''
   }
 
   showBadRepoLogo(i) {
@@ -158,16 +128,6 @@ class OptionsPage {
   showDefaultRepoLogo(i) {
     this[`repoLogo${i}`].src = 'unknown-user.png'
     this[`repoLogo${i}`].alt = ''
-  }
-
-  onOrgKeyup(event) {
-    if (this.orgInputTimer) {
-      clearTimeout(this.orgInputTimer)
-    }
-    this.orgInputTimer = setTimeout(() => {
-      this.setOrgLogoSource()
-      this.checkFormValidity()
-    }, 750)
   }
 
   onDefaultBranchKeyup(event, i) {
@@ -240,33 +200,6 @@ class OptionsPage {
     return url === `chrome-extension://${chrome.runtime.id}/bad-user.png`
   }
 
-  onOrgLogoLoad() {
-    if (this.isBadLogo(this.orgLogo.src)) {
-      return
-    }
-    delete this.errors.organizationLogo
-    if (!this.anyErrors()) {
-      this.optionsForm.classList.remove('error')
-    }
-  }
-
-  onOrgLogoError() {
-    this.showBadOrgLogo()
-    this.errors.organizationLogo = true
-    const org = encodeURIComponent((this.orgInput.value || '').trim())
-    this.flashErrorMessage(`Can't find organization "${org}"`)
-    this.checkFormValidity()
-  }
-
-  setOrgLogoSource() {
-    const org = (this.orgInput.value || '').trim()
-    if (org.length < 1) {
-      this.showDefaultOrgLogo()
-    } else {
-      this.loadOrgLogo(org)
-    }
-  }
-
   setUserLogoSource(i) {
     const user = (this[`userInput${i}`].value || '').trim()
     if (user.length < 1) {
@@ -295,7 +228,6 @@ class OptionsPage {
       return
     }
     HubnavStorage.load().then(currentOptions => {
-      const organization = (this.orgInput.value || '').trim()
       const repository1 = (this.repoInput1.value || '').trim()
       const repository2 = (this.repoInput2.value || '').trim()
       const repository3 = (this.repoInput3.value || '').trim()
@@ -348,7 +280,7 @@ class OptionsPage {
       const mergedPullRequests = this.mergedPullRequests.checked
       const newPullRequest = this.newPullRequest.checked
       const newOptions = { repository, repository1, repository2, repository3, repository4,
-                           organization, defaultBranch1, defaultBranch2, defaultBranch3,
+                           defaultBranch1, defaultBranch2, defaultBranch3,
                            defaultBranch4, defaultBranch, closedIssues, newIssue,
                            mergedPullRequests, newPullRequest, user8, user9, user0 }
       HubnavStorage.save(newOptions).then(() => this.flashSaveNotice())
@@ -371,10 +303,6 @@ class OptionsPage {
           this[`userInput${i}`].value = user
           this.loadUserLogo(user, i)
         }
-      }
-      if (options.organization && options.organization.length > 0) {
-        this.orgInput.value = options.organization
-        this.loadOrgLogo(options.organization)
       }
       if (typeof options.closedIssues === 'boolean') {
         this.closedIssues.checked = options.closedIssues
@@ -400,7 +328,7 @@ class OptionsPage {
   }
 
   setup() {
-    this.focusField()
+    this.repoInput1.focus()
     this.hookUpHandlers()
     this.restoreOptions()
     this.showShortcutTip()
