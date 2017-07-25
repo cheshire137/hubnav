@@ -24,6 +24,7 @@ class PopupPage {
     this.org = document.getElementById('organization')
     this.repoLogo = document.getElementById('repo-logo')
     this.userLogo = document.getElementById('user-logo')
+    this.orgLogo = document.getElementById('org-logo')
 
     // Shortcuts:
     this.fShortcuts = document.querySelectorAll('.shortcut-f')
@@ -56,7 +57,6 @@ class PopupPage {
     this.orgCommands = document.getElementById('org-commands')
 
     this.welcome = document.getElementById('welcome')
-    this.orgLogo = document.getElementById('org-logo')
     this.shortcuts = document.querySelectorAll('.shortcut')
   }
 
@@ -151,11 +151,6 @@ class PopupPage {
     }
   }
 
-  openOrgSelect() {
-    this.highlightShortcut(this.oShortcuts)
-    this.openOptions('select-organization')
-  }
-
   openIssues() {
     HubnavStorage.load().then(options => {
       if (options.repository && options.repository.length > 0) {
@@ -209,19 +204,25 @@ class PopupPage {
         const org = encodeURIComponent(options.organization)
         this.openTab(`https://github.com/orgs/${org}/people`)
       } else {
-        this.openOrgSelect()
+        this.openOptions()
       }
     })
   }
 
-  openOrgRepositories() {
+  openRepositories() {
     HubnavStorage.load().then(options => {
-      if (options.organization && options.organization.length > 0) {
+      if (options.user && options.user.length > 0) {
         this.highlightShortcut(this.rShortcuts)
-        const org = encodeURIComponent(options.organization)
-        this.openTab(`https://github.com/search?q=org%3A${org}&type=Repositories`)
+        const user = encodeURIComponent(options.user)
+        let path = 'https://github.com/search?type=Repositories&q='
+        if (options.userIsOrg) {
+          path += `org%3A${user}`
+        } else {
+          path += `user%3A${user}`
+        }
+        this.openTab(path)
       } else {
-        this.openOrgSelect()
+        this.openOptions()
       }
     })
   }
@@ -245,14 +246,27 @@ class PopupPage {
       for (let key in currentOptions) {
         newOptions[key] = currentOptions[key]
       }
+
       const newUser = currentOptions[`user${i}`]
       if (newUser && newUser.length > 0) {
         newOptions.user = newUser
+        newOptions.userIsOrg = currentOptions[`userIsOrg${i}`]
       }
-      newOptions.active = 'user'
+      if (newOptions.userIsOrg) {
+        newOptions.active = 'organization'
+      } else {
+        newOptions.active = 'user'
+      }
+
       HubnavStorage.save(newOptions).then(() => {
         this.highlightShortcut(this[`shortcuts${i}`])
-        this.runAfterDelay(() => this.loadActiveUser(newOptions.user))
+        this.runAfterDelay(() => {
+          if (newOptions.userIsOrg) {
+            this.loadActiveOrganization(newOptions.user)
+          } else {
+            this.loadActiveUser(newOptions.user)
+          }
+        })
       })
     })
   }
@@ -320,7 +334,7 @@ class PopupPage {
     } else if (key === 'm') {
       this.openOrgMembers()
     } else if (key === 'r') {
-      this.openOrgRepositories()
+      this.openRepositories()
     } else if (REPO_SHORTCUTS.indexOf(key) > -1) {
       this.quickRepositorySwitch(key)
     } else if (USER_SHORTCUTS.indexOf(key) > -1) {
@@ -332,9 +346,18 @@ class PopupPage {
     }
   }
 
+  loadActiveOrganization(org) {
+    this.repoCommands.style.display = 'none'
+    this.userCommands.style.display = 'none'
+    this.orgCommands.style.display = 'block'
+    this.loadUserLogo(org, this.orgLogo)
+    this.org.textContent = org
+  }
+
   loadActiveUser(user) {
     this.repoCommands.style.display = 'none'
     this.userCommands.style.display = 'block'
+    this.orgCommands.style.display = 'none'
     this.loadUserLogo(user, this.userLogo)
     this.user.textContent = user
   }
@@ -342,6 +365,7 @@ class PopupPage {
   loadActiveRepository(repo) {
     this.repoCommands.style.display = 'block'
     this.userCommands.style.display = 'none'
+    this.orgCommands.style.display = 'none'
     this.loadRepoLogo(repo, this.repoLogo)
     this.repo.textContent = repo
   }
@@ -360,22 +384,26 @@ class PopupPage {
         this.welcome.style.display = 'block'
       }
 
-      if (options.active && options.active === 'user') {
-        if (options.user && options.user.length > 0) {
-          this.loadActiveUser(options.user)
-        } else if (options.repository && options.repository.length > 0) {
+      if (options.active && typeof options.active === 'string') {
+        if (options.active === 'user' && options.user && options.user.length > 0) {
+          if (options.userIsOrg) {
+            this.loadActiveOrganization(options.user)
+          } else {
+            this.loadActiveUser(options.user)
+          }
+        } else if (options.active === 'repository' && options.repository && options.repository.length > 0) {
           this.loadActiveRepository(options.repository)
         }
-      } else {
+      } else { // no active context
         if (options.repository && options.repository.length > 0) {
           this.loadActiveRepository(options.repository)
+        } else if (options.user && options.user.length > 0) {
+          if (options.userIsOrg) {
+            this.loadActiveOrganization(options.user)
+          } else {
+            this.loadActiveUser(options.user)
+          }
         }
-      }
-
-      if (options.organization && options.organization.length > 0) {
-        this.orgCommands.style.display = 'block'
-        this.loadOrgLogo(options.organization)
-        this.org.textContent = options.organization
       }
 
       if (typeof options.closedIssues === 'boolean' && !options.closedIssues) {
@@ -407,6 +435,7 @@ class PopupPage {
           this.loadRepoLogo(repo, this[`repoLogo${i}`])
         }
       }
+
       for (let i of USER_SHORTCUTS) {
         const user = options[`user${i}`]
         if (user && user.length > 0) {
@@ -419,6 +448,7 @@ class PopupPage {
           this.loadUserLogo(user, this[`userLogo${i}`])
         }
       }
+
       if (contextCount > 1) {
         this.contextSwitch.style.display = 'block'
       }
