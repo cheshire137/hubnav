@@ -289,14 +289,43 @@ class OptionsPage {
       if (user0.length < 1) {
         userIsOrg0 = false
       }
+      let user = currentOptions.user
+      if (!user || user.length < 1) {
+        if (user8.length > 0) {
+          user = user8
+        } else if (user9.length > 0) {
+          user = user9
+        } else if (user0.length > 0) {
+          user = user0
+        }
+      }
+      // Ensure active user is one of the three options
+      if ([user8, user9, user0].indexOf(user) < 0) {
+        user = user8
+      }
+      let userIsOrg = userIsOrg8
+      if (user === user9) {
+        userIsOrg = userIsOrg9
+      } else if (user === user0) {
+        userIsOrg = userIsOrg0
+      }
+      let active = currentOptions.active
+      if (!active) {
+        if (repository && repository.length > 0) {
+          active = 'repository'
+        } else if (user && user.length > 0) {
+          active = userIsOrg ? 'organization' : 'user'
+        }
+      }
       const closedIssues = this.closedIssues.checked
       const newIssue = this.newIssue.checked
       const mergedPullRequests = this.mergedPullRequests.checked
       const newPullRequest = this.newPullRequest.checked
       const newOptions = { repository, repository1, repository2, repository3, repository4,
                            defaultBranch1, defaultBranch2, defaultBranch3, defaultBranch4,
-                           defaultBranch, closedIssues, newIssue, mergedPullRequests,
-                           newPullRequest, user8, user9, user0, userIsOrg8, userIsOrg9, userIsOrg0 }
+                           defaultBranch, closedIssues, newIssue, mergedPullRequests, active,
+                           newPullRequest, user8, user9, user0, userIsOrg8, userIsOrg9, userIsOrg0,
+                           user, userIsOrg }
       HubnavStorage.save(newOptions).then(() => this.flashSaveNotice())
     })
   }
