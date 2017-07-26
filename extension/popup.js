@@ -46,7 +46,7 @@ class PopupPage {
     this.shortcuts0 = document.querySelectorAll('.shortcut-0')
 
     // Modifiers:
-    this.closedIssues = document.getElementById('closed-issues')
+    this.closedIssueModifers = document.querySelectorAll('.closed-issues')
     this.newIssue = document.getElementById('new-issue')
     this.mergedPRModifiers = document.querySelectorAll('.merged-pull-requests')
     this.closedPRModifiers = document.querySelectorAll('.closed-pull-requests')
@@ -154,12 +154,26 @@ class PopupPage {
 
   openIssues() {
     HubnavStorage.load().then(options => {
-      if (options.repository && options.repository.length > 0) {
+      if (options.active === 'user' && options.user && options.user.length > 0) {
+        this.highlightShortcut(this.iShortcuts)
+        let state = 'is%3Aopen'
+        if (this.shiftPressed) { // closed
+          state = 'is%3Aclosed'
+        }
+        let params = `?s=updated&type=Issues&q=is%3Aissue+${state}`
+        const user = encodeURIComponent(options.user)
+        if (options.userIsOrg) {
+          params += `+org%3A${user}`
+        } else {
+          params += `+author%3A${user}`
+        }
+        this.openTab(`https://github.com/search${params}`)
+      } else if (options.repository && options.repository.length > 0) {
         this.highlightShortcut(this.iShortcuts)
         let path = '/issues'
-        if (this.shiftPressed) {
+        if (this.shiftPressed) { // closed
           path += '?q=is%3Aissue+is%3Aclosed'
-        } else if (this.ctrlPressed) {
+        } else if (this.ctrlPressed) { // new
           path += '/new'
         }
         this.openTab(this.repoUrl(options.repository, path))
@@ -420,7 +434,9 @@ class PopupPage {
       }
 
       if (typeof options.closedIssues === 'boolean' && !options.closedIssues) {
-        this.closedIssues.style.display = 'none'
+        for (let i = 0; i < this.closedIssueModifers.length; i++) {
+          this.closedIssueModifers[i].style.display = 'none'
+        }
       }
 
       if (typeof options.newIssue === 'boolean' && !options.newIssue) {
