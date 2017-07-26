@@ -265,11 +265,7 @@ class PopupPage {
         newOptions.user = newUser
         newOptions.userIsOrg = currentOptions[`userIsOrg${i}`]
       }
-      if (newOptions.userIsOrg) {
-        newOptions.active = 'organization'
-      } else {
-        newOptions.active = 'user'
-      }
+      newOptions.active = 'user'
 
       HubnavStorage.save(newOptions).then(() => {
         this.highlightShortcut(this[`shortcuts${i}`])
@@ -393,7 +389,7 @@ class PopupPage {
     }
 
     HubnavStorage.load().then(options => {
-      if (!options.repository && !options.organization && !options.user) {
+      if (!options.repository && !options.user) {
         this.welcome.style.display = 'block'
       }
 
