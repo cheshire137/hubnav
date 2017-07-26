@@ -50,7 +50,9 @@ class PopupPage {
     this.newIssue = document.getElementById('new-issue')
     this.repoMergedPullRequests = document.getElementById('repo-merged-pull-requests')
     this.userMergedPullRequests = document.getElementById('user-merged-pull-requests')
-    this.closedPullRequests = document.getElementById('closed-pull-requests')
+    this.userClosedPullRequests = document.getElementById('user-closed-pull-requests')
+    this.orgMergedPullRequests = document.getElementById('org-merged-pull-requests')
+    this.orgClosedPullRequests = document.getElementById('org-closed-pull-requests')
     this.newPullRequest = document.getElementById('new-pull-request')
 
     // Containers:
@@ -186,14 +188,19 @@ class PopupPage {
     HubnavStorage.load().then(options => {
       if (options.active === 'user' && options.user && options.user.length > 0) {
         this.highlightShortcut(this.pShortcuts)
-        const user = encodeURIComponent(options.user)
         let state = 'is%3Aopen'
         if (this.shiftPressed) { // merged
           state = 'is%3Amerged'
         } else if (this.ctrlPressed) { // closed, not merged
           state = 'is%3Aclosed+is%3Aunmerged'
         }
-        const params = `?q=author%3A${user}+is%3Apr+${state}&s=updated`
+        let params = `?s=updated&type=Issues&q=is%3Apr+${state}`
+        const user = encodeURIComponent(options.user)
+        if (options.userIsOrg) {
+          params += `+org%3A${user}`
+        } else {
+          params += `+author%3A${user}`
+        }
         this.openTab(`https://github.com/search${params}`)
       } else if (options.repository && options.repository.length > 0) {
         this.highlightShortcut(this.pShortcuts)
@@ -426,10 +433,12 @@ class PopupPage {
       if (typeof options.mergedPullRequests === 'boolean' && !options.mergedPullRequests) {
         this.repoMergedPullRequests.style.display = 'none'
         this.userMergedPullRequests.style.display = 'none'
+        this.orgMergedPullRequests.style.display = 'none'
       }
 
       if (typeof options.closedPullRequests === 'boolean' && !options.closedPullRequests) {
-        this.closedPullRequests.style.display = 'none'
+        this.userClosedPullRequests.style.display = 'none'
+        this.orgClosedPullRequests.style.display = 'none'
       }
 
       if (typeof options.newPullRequest === 'boolean' && !options.newPullRequest) {
