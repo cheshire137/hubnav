@@ -34,9 +34,8 @@ class PopupPage {
     this.oShortcuts = document.querySelectorAll('.shortcut-o')
     this.iShortcuts = document.querySelectorAll('.shortcut-i')
     this.pShortcuts = document.querySelectorAll('.shortcut-p')
-    this.hShortcuts = document.querySelectorAll('.shortcut-h')
     this.mShortcuts = document.querySelectorAll('.shortcut-m')
-    this.uShortcuts = document.querySelectorAll('.shortcut-u')
+    this.vShortcuts = document.querySelectorAll('.shortcut-v')
     this.shortcuts1 = document.querySelectorAll('.shortcut-1')
     this.shortcuts2 = document.querySelectorAll('.shortcut-2')
     this.shortcuts3 = document.querySelectorAll('.shortcut-3')
@@ -93,17 +92,6 @@ class PopupPage {
   openRepoSelect() {
     this.highlightShortcut(this.rShortcuts)
     this.openOptions('select-repository')
-  }
-
-  openRepository() {
-    HubnavStorage.load().then(options => {
-      if (options.repository && options.repository.length > 0) {
-        this.highlightShortcut(this.hShortcuts)
-        this.openTab(this.repoUrl(options.repository))
-      } else {
-        this.openRepoSelect()
-      }
-    })
   }
 
   openGlobalSearch() {
@@ -183,10 +171,13 @@ class PopupPage {
     })
   }
 
-  openUserProfile() {
+  openHomeForContext() {
     HubnavStorage.load().then(options => {
-      if (options.user && options.user.length > 0) {
-        this.highlightShortcut(this.uShortcuts)
+      if (options.active === 'repository' && options.repository && options.repository.length > 0) {
+        this.highlightShortcut(this.vShortcuts)
+        this.openTab(this.repoUrl(options.repository))
+      } else if (options.user && options.user.length > 0) {
+        this.highlightShortcut(this.vShortcuts)
         const user = encodeURIComponent(options.user)
         this.openTab(`https://github.com/${user}`)
       } else {
@@ -354,10 +345,8 @@ class PopupPage {
       this.openIssues()
     } else if (key === 'p') {
       this.openPullRequests()
-    } else if (key === 'u') {
-      this.openUserProfile()
-    } else if (key === 'h') {
-      this.openRepository()
+    } else if (key === 'v') {
+      this.openHomeForContext()
     } else if (key === 'm') {
       this.openOrgMembers()
     } else if (key === 'r') {
