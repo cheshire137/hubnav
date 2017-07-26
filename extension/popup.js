@@ -48,7 +48,9 @@ class PopupPage {
     // Modifiers:
     this.closedIssues = document.getElementById('closed-issues')
     this.newIssue = document.getElementById('new-issue')
-    this.mergedPullRequests = document.getElementById('merged-pull-requests')
+    this.repoMergedPullRequests = document.getElementById('repo-merged-pull-requests')
+    this.userMergedPullRequests = document.getElementById('user-merged-pull-requests')
+    this.closedPullRequests = document.getElementById('closed-pull-requests')
     this.newPullRequest = document.getElementById('new-pull-request')
 
     // Containers:
@@ -182,7 +184,18 @@ class PopupPage {
 
   openPullRequests() {
     HubnavStorage.load().then(options => {
-      if (options.repository && options.repository.length > 0) {
+      if (options.active === 'user' && options.user && options.user.length > 0) {
+        this.highlightShortcut(this.pShortcuts)
+        const user = encodeURIComponent(options.user)
+        let state = 'is%3Aopen'
+        if (this.shiftPressed) { // merged
+          state = 'is%3Amerged'
+        } else if (this.ctrlPressed) { // closed, not merged
+          state = 'is%3Aclosed+is%3Aunmerged'
+        }
+        const params = `?q=author%3A${user}+is%3Apr+${state}&s=updated`
+        this.openTab(`https://github.com/search${params}`)
+      } else if (options.repository && options.repository.length > 0) {
         this.highlightShortcut(this.pShortcuts)
         let path = '/pulls'
         if (this.shiftPressed) {
@@ -415,7 +428,12 @@ class PopupPage {
       }
 
       if (typeof options.mergedPullRequests === 'boolean' && !options.mergedPullRequests) {
-        this.mergedPullRequests.style.display = 'none'
+        this.repoMergedPullRequests.style.display = 'none'
+        this.userMergedPullRequests.style.display = 'none'
+      }
+
+      if (typeof options.closedPullRequests === 'boolean' && !options.closedPullRequests) {
+        this.closedPullRequests.style.display = 'none'
       }
 
       if (typeof options.newPullRequest === 'boolean' && !options.newPullRequest) {

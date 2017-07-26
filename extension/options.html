@@ -13,17 +13,13 @@
   <section class="hero">
     <div class="hero-body">
       <div class="container">
-        <div class="columns">
-          <div class="column is-10 is-offset-1">
-            <h1 class="title">
-              <img src="icon128.png" class="logo" width="36" height="36" alt="">
-              Hubnav Options
-            </h1>
-            <h2 class="subtitle" style="display: none" id="shortcut-tip-container">
-              Tip: use <span id="shortcut"></span> to open the extension.
-            </h2>
-          </div>
-        </div>
+        <h1 class="title">
+          <img src="icon128.png" class="logo" width="36" height="36" alt="">
+          Hubnav Options
+        </h1>
+        <h2 class="subtitle" style="display: none" id="shortcut-tip-container">
+          Tip: use <span id="shortcut"></span> to open the extension.
+        </h2>
       </div>
     </div>
   </section>
@@ -32,7 +28,7 @@
 
     <div class="container">
       <div class="columns">
-        <div class="column is-2 is-offset-1">
+        <div class="column is-3">
           <section class="section sidebar-section">
             <aside class="menu">
               <ul class="menu-list">
@@ -43,7 +39,7 @@
             </aside>
           </section>
         </div>
-        <div class="column is-8">
+        <div class="column is-9">
 
           <section class="section content">
             <h2 class="subtitle is-4"><a name="repositories-section"></a>Repositories</h2>
@@ -306,22 +302,28 @@
           <section class="section content">
             <h2 class="subtitle is-4"><a name="displayed-commands-section"></a>Displayed Commands</h2>
             <p>Choose which commands are displayed in the popup. Commands are still available when hidden.</p>
-            <label class="checkbox">
-              <input type="checkbox" id="closed-issues">
-              Closed issues
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" id="new-issue">
-              New issue
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" id="merged-pull-requests">
-              Merged pull requests
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" id="new-pull-request">
-              New pull request
-            </label>
+            <div class="checkboxes">
+              <label class="checkbox">
+                <input type="checkbox" id="closed-issues">
+                Closed issues
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" id="new-issue">
+                New issue
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" id="merged-pull-requests">
+                Merged pull requests
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" id="closed-pull-requests">
+                Closed pull requests
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" id="new-pull-request">
+                New pull request
+              </label>
+            </div>
           </section>
 
         </div><!--/column-->

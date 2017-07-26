@@ -63,8 +63,7 @@
 }
 
 .flex-row .subtitle {
-  width: 5em;
-  text-align: center;
+  width: 6em;
 }
 
 .flex-row + .flex-row {
@@ -73,8 +72,12 @@
   border-top: 1px solid #eee;
 }
 
-.checkbox + .checkbox {
-  margin-left: 1.5em;
+.checkboxes .checkbox {
+  display: block;
+}
+
+.checkboxes .checkbox + .checkbox {
+  margin-top: 0.75em;
 }
 
 .title {

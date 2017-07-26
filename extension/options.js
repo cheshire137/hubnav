@@ -54,6 +54,7 @@ class OptionsPage {
     this.closedIssues = document.getElementById('closed-issues')
     this.newIssue = document.getElementById('new-issue')
     this.mergedPullRequests = document.getElementById('merged-pull-requests')
+    this.closedPullRequests = document.getElementById('closed-pull-requests')
     this.newPullRequest = document.getElementById('new-pull-request')
   }
 
@@ -94,6 +95,7 @@ class OptionsPage {
     this.closedIssues.addEventListener('change', () => this.checkFormValidity())
     this.newIssue.addEventListener('change', () => this.checkFormValidity())
     this.mergedPullRequests.addEventListener('change', () => this.checkFormValidity())
+    this.closedPullRequests.addEventListener('change', () => this.checkFormValidity())
     this.newPullRequest.addEventListener('change', () => this.checkFormValidity())
   }
 
@@ -320,12 +322,13 @@ class OptionsPage {
       const closedIssues = this.closedIssues.checked
       const newIssue = this.newIssue.checked
       const mergedPullRequests = this.mergedPullRequests.checked
+      const closedPullRequests = this.closedPullRequests.checked
       const newPullRequest = this.newPullRequest.checked
       const newOptions = { repository, repository1, repository2, repository3, repository4,
                            defaultBranch1, defaultBranch2, defaultBranch3, defaultBranch4,
                            defaultBranch, closedIssues, newIssue, mergedPullRequests, active,
                            newPullRequest, user8, user9, user0, userIsOrg8, userIsOrg9, userIsOrg0,
-                           user, userIsOrg }
+                           user, userIsOrg, closedPullRequests }
       HubnavStorage.save(newOptions).then(() => this.flashSaveNotice())
     })
   }
@@ -366,6 +369,11 @@ class OptionsPage {
         this.mergedPullRequests.checked = options.mergedPullRequests
       } else {
         this.mergedPullRequests.checked = true
+      }
+      if (typeof options.closedPullRequests === 'boolean') {
+        this.closedPullRequests.checked = options.closedPullRequests
+      } else {
+        this.closedPullRequests.checked = true
       }
       if (typeof options.newPullRequest === 'boolean') {
         this.newPullRequest.checked = options.newPullRequest
