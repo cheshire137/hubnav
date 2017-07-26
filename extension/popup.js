@@ -48,11 +48,8 @@ class PopupPage {
     // Modifiers:
     this.closedIssues = document.getElementById('closed-issues')
     this.newIssue = document.getElementById('new-issue')
-    this.repoMergedPullRequests = document.getElementById('repo-merged-pull-requests')
-    this.userMergedPullRequests = document.getElementById('user-merged-pull-requests')
-    this.userClosedPullRequests = document.getElementById('user-closed-pull-requests')
-    this.orgMergedPullRequests = document.getElementById('org-merged-pull-requests')
-    this.orgClosedPullRequests = document.getElementById('org-closed-pull-requests')
+    this.mergedPRModifiers = document.querySelectorAll('.merged-pull-requests')
+    this.closedPRModifiers = document.querySelectorAll('.closed-pull-requests')
     this.newPullRequest = document.getElementById('new-pull-request')
 
     // Containers:
@@ -431,14 +428,15 @@ class PopupPage {
       }
 
       if (typeof options.mergedPullRequests === 'boolean' && !options.mergedPullRequests) {
-        this.repoMergedPullRequests.style.display = 'none'
-        this.userMergedPullRequests.style.display = 'none'
-        this.orgMergedPullRequests.style.display = 'none'
+        for (let i = 0; i < this.mergedPRModifiers.length; i++) {
+          this.mergedPRModifiers[i].style.display = 'none'
+        }
       }
 
       if (typeof options.closedPullRequests === 'boolean' && !options.closedPullRequests) {
-        this.userClosedPullRequests.style.display = 'none'
-        this.orgClosedPullRequests.style.display = 'none'
+        for (let i = 0; i < this.closedPRModifiers.length; i++) {
+          this.closedPRModifiers[i].style.display = 'none'
+        }
       }
 
       if (typeof options.newPullRequest === 'boolean' && !options.newPullRequest) {
