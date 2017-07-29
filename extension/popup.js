@@ -7,13 +7,20 @@ class PopupPage {
   }
 
   findElements() {
-    // Context switching:
+    // Context switching and shortcuts:
     this.contextSwitch = document.getElementById('context-switch')
     for (let i of REPO_SHORTCUTS) {
+      this[`shortcuts${i}`] = document.querySelectorAll(`.shortcut-${i}`)
       this[`repo${i}`] = document.getElementById(`repo${i}`)
       this[`repoLogo${i}`] = document.getElementById(`repo-logo${i}`)
     }
+    for (let i of PROJECT_SHORTCUTS) {
+      this[`shortcuts${i}`] = document.querySelectorAll(`.shortcut-${i}`)
+      this[`project${i}`] = document.getElementById(`project${i}`)
+      this[`projectLogo${i}`] = document.getElementById(`project-logo${i}`)
+    }
     for (let i of USER_SHORTCUTS) {
+      this[`shortcuts${i}`] = document.querySelectorAll(`.shortcut-${i}`)
       this[`user${i}`] = document.getElementById(`user${i}`)
       this[`userLogo${i}`] = document.getElementById(`user-logo${i}`)
     }
@@ -22,9 +29,11 @@ class PopupPage {
     this.repo = document.getElementById('repository')
     this.user = document.getElementById('user')
     this.org = document.getElementById('organization')
+    this.project = document.getElementById('project')
     this.repoLogo = document.getElementById('repo-logo')
     this.userLogo = document.getElementById('user-logo')
     this.orgLogo = document.getElementById('org-logo')
+    this.projectLogo = document.getElementById('project-logo')
 
     // Shortcuts:
     this.fShortcuts = document.querySelectorAll('.shortcut-f')
@@ -36,13 +45,6 @@ class PopupPage {
     this.pShortcuts = document.querySelectorAll('.shortcut-p')
     this.mShortcuts = document.querySelectorAll('.shortcut-m')
     this.vShortcuts = document.querySelectorAll('.shortcut-v')
-    this.shortcuts1 = document.querySelectorAll('.shortcut-1')
-    this.shortcuts2 = document.querySelectorAll('.shortcut-2')
-    this.shortcuts3 = document.querySelectorAll('.shortcut-3')
-    this.shortcuts4 = document.querySelectorAll('.shortcut-4')
-    this.shortcuts8 = document.querySelectorAll('.shortcut-8')
-    this.shortcuts9 = document.querySelectorAll('.shortcut-9')
-    this.shortcuts0 = document.querySelectorAll('.shortcut-0')
 
     // Modifiers:
     this.closedIssueModifers = document.querySelectorAll('.closed-issues')
@@ -55,6 +57,7 @@ class PopupPage {
     this.repoCommands = document.getElementById('repo-commands')
     this.userCommands = document.getElementById('user-commands')
     this.orgCommands = document.getElementById('org-commands')
+    this.projectCommands = document.getElementById('project-commands')
 
     this.welcome = document.getElementById('welcome')
     this.shortcuts = document.querySelectorAll('.shortcut')
@@ -289,6 +292,38 @@ class PopupPage {
     })
   }
 
+  quickProjectSwitch(i) {
+    HubnavStorage.load().then(currentOptions => {
+      const newOptions = {}
+      for (let key in currentOptions) {
+        newOptions[key] = currentOptions[key]
+      }
+      const newProjectRepo = currentOptions[`projectRepo${i}`]
+      const newProjectOrg = currentOptions[`projectOrg${i}`]
+      const newProjectNumber = currentOptions[`projectNumber${i}`]
+      if (newProjectRepo && newProjectRepo.length > 0) {
+        newOptions.projectRepo = newProjectRepo
+      }
+      if (newProjectOrg && newProjectOrg.length > 0) {
+        newOptions.projectOrg = newProjectOrg
+      }
+      if (newProjectNumber && newProjectNumber.length > 0) {
+        newOptions.projectNumber = newProjectNumber
+      }
+      newOptions.active = 'project'
+      HubnavStorage.save(newOptions).then(() => {
+        this.highlightShortcut(this[`shortcuts${i}`])
+        this.runAfterDelay(() => {
+          if (newOptions.projectRepo && newOptions.projectRepo.length > 0) {
+            this.loadActiveRepoProject(newOptions.projectRepo, newOptions.projectNumber)
+          } else {
+            this.loadActiveOrgProject(newOptions.projectOrg, newOptions.projectNumber)
+          }
+        })
+      })
+    })
+  }
+
   quickRepositorySwitch(i) {
     HubnavStorage.load().then(currentOptions => {
       const newOptions = {}
@@ -353,6 +388,8 @@ class PopupPage {
       this.openRepositories()
     } else if (REPO_SHORTCUTS.indexOf(key) > -1) {
       this.quickRepositorySwitch(key)
+    } else if (PROJECT_SHORTCUTS.indexOf(key) > -1) {
+      this.quickProjectSwitch(key)
     } else if (USER_SHORTCUTS.indexOf(key) > -1) {
       this.quickUserSwitch(key)
     } else if (key === 'shift') {
@@ -365,14 +402,34 @@ class PopupPage {
   loadActiveOrganization(org) {
     this.repoCommands.style.display = 'none'
     this.userCommands.style.display = 'none'
+    this.projectCommands.style.display = 'none'
     this.orgCommands.style.display = 'block'
     this.loadUserLogo(org, this.orgLogo)
     this.org.textContent = org
   }
 
+  loadActiveRepoProject(repo, number) {
+    this.repoCommands.style.display = 'none'
+    this.userCommands.style.display = 'none'
+    this.projectCommands.style.display = 'block'
+    this.orgCommands.style.display = 'none'
+    this.loadRepoLogo(repo, this.projectLogo)
+    this.project.textContent = `${repo} ${number}`
+  }
+
+  loadActiveOrgProject(org, number) {
+    this.repoCommands.style.display = 'none'
+    this.userCommands.style.display = 'none'
+    this.projectCommands.style.display = 'block'
+    this.orgCommands.style.display = 'none'
+    this.loadUserLogo(org, this.projectLogo)
+    this.project.textContent = `${org} ${number}`
+  }
+
   loadActiveUser(user) {
     this.repoCommands.style.display = 'none'
     this.userCommands.style.display = 'block'
+    this.projectCommands.style.display = 'none'
     this.orgCommands.style.display = 'none'
     this.loadUserLogo(user, this.userLogo)
     this.user.textContent = user
@@ -381,6 +438,7 @@ class PopupPage {
   loadActiveRepository(repo) {
     this.repoCommands.style.display = 'block'
     this.userCommands.style.display = 'none'
+    this.projectCommands.style.display = 'none'
     this.orgCommands.style.display = 'none'
     this.loadRepoLogo(repo, this.repoLogo)
     this.repo.textContent = repo
@@ -407,8 +465,17 @@ class PopupPage {
           } else {
             this.loadActiveUser(options.user)
           }
-        } else if (options.active === 'repository' && options.repository && options.repository.length > 0) {
+        } else if (options.active === 'repository' && options.repository &&
+                   options.repository.length > 0) {
           this.loadActiveRepository(options.repository)
+        } else if (options.active === 'project' && options.projectNumber &&
+                   options.projectNumber.length > 0 &&
+                   options.projectRepo && options.projectRepo.length > 0) {
+          this.loadActiveRepoProject(options.projectRepo, options.projectNumber)
+        } else if (options.active === 'project' && options.projectNumber &&
+                   options.projectNumber.length > 0 &&
+                   options.projectOrg && options.projectOrg.length > 0) {
+          this.loadActiveOrgProject(options.projectOrg, options.projectNumber)
         }
       } else { // no active context
         if (options.repository && options.repository.length > 0) {
@@ -419,6 +486,12 @@ class PopupPage {
           } else {
             this.loadActiveUser(options.user)
           }
+        } else if (options.projectNumber && options.projectNumber.length > 0 &&
+                   options.projectRepo && options.projectRepo.length > 0) {
+          this.loadActiveRepoProject(options.projectRepo, options.projectNumber)
+        } else if (options.projectNumber && options.projectNumber.length > 0 &&
+                   options.projectOrg && options.projectOrg.length > 0) {
+          this.loadActiveRepoProject(options.projectOrg, options.projectNumber)
         }
       }
 
@@ -462,6 +535,26 @@ class PopupPage {
         }
       }
 
+      for (let i of PROJECT_SHORTCUTS) {
+        const number = options[`projectNumber${i}`]
+        if (number && number.length > 0) {
+          contextCount++
+          const repo = options[`projectRepo${i}`]
+          const org = options[`projectOrg${i}`]
+          const projectRefs = document.querySelectorAll(`.shortcut-${i}`)
+          for (let j = 0; j < projectRefs.length; j++) {
+            projectRefs[j].style.display = 'block'
+          }
+          if (repo && repo.length > 0) {
+            this[`project${i}`].textContent = `${repo} #${number}`
+            this.loadRepoLogo(repo, this[`projectLogo${i}`])
+          } else if (org && org.length > 0) {
+            this[`project${i}`].textContent = `${org} #${number}`
+            this.loadUserLogo(org, this[`projectLogo${i}`])
+          }
+        }
+      }
+
       for (let i of USER_SHORTCUTS) {
         const user = options[`user${i}`]
         if (user && user.length > 0) {
@@ -486,7 +579,7 @@ class PopupPage {
   }
 
   loadRepoLogo(rawRepo, imgTag) {
-    let user = rawRepo.split('/')[0]
+    const user = rawRepo.split('/')[0]
     if (user && user.length > 0) {
       this.loadUserLogo(user, imgTag)
     }
