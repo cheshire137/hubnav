@@ -13,6 +13,7 @@ body {
 .shortcuts-list dt,
 .modifier-key {
   background-color: #eee;
+  box-shadow: 1px 1px 0 0 #ddd;
   font-family: "Consolas", "Menlo", "Monaco", "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace, sans-serif;
 }
 
@@ -69,6 +70,7 @@ body {
 .modifier.highlighted .modifier-key {
   background-color: #edfea2;
   color: #111;
+  box-shadow: inset 1px 1px 0 0 #cffea2;
 }
 
 .content h2:not(:first-child) {
