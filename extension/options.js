@@ -448,48 +448,9 @@ class OptionsPage {
       const projectNumber5 = this.projectNumberInput5.value
       const projectNumber6 = this.projectNumberInput6.value
       const projectNumber7 = this.projectNumberInput7.value
-      let projectRepo = currentOptions.projectRepo
-      if (!projectRepo || projectRepo.length < 1) {
-        if (projectRepo5.length > 0) {
-          projectRepo = projectRepo5
-        } else if (projectRepo6.length > 0) {
-          projectRepo = projectRepo6
-        } else if (projectRepo7.length > 0) {
-          projectRepo = projectRepo7
-        }
-      }
-      // Ensure active project repository is one of the three options
-      if ([projectRepo5, projectRepo6, projectRepo7].indexOf(projectRepo) < 0) {
-        projectRepo = projectRepo5
-      }
-      let projectOrg = currentOptions.projectOrg
-      if (!projectOrg || projectOrg.length < 1) {
-        if (projectOrg5.length > 0) {
-          projectOrg = projectOrg5
-        } else if (projectOrg6.length > 0) {
-          projectOrg = projectOrg6
-        } else if (projectOrg7.length > 0) {
-          projectOrg = projectOrg7
-        }
-      }
-      // Ensure active project organization is one of the three options
-      if ([projectOrg5, projectOrg6, projectOrg7].indexOf(projectOrg) < 0) {
-        projectOrg = projectOrg5
-      }
-      let projectNumber = currentOptions.projectNumber
-      if (!projectNumber || projectNumber.length < 1) {
-        if (projectNumber5.length > 0) {
-          projectNumber = projectNumber5
-        } else if (projectNumber6.length > 0) {
-          projectNumber = projectNumber6
-        } else if (projectNumber7.length > 0) {
-          projectNumber = projectNumber7
-        }
-      }
-      // Ensure active project number is one of the three options
-      if ([projectNumber5, projectNumber6, projectNumber7].indexOf(projectNumber) < 0) {
-        projectNumber = projectNumber5
-      }
+      const projectNumber = currentOptions.projectNumber
+      const projectRepo = currentOptions.projectRepo
+      const projectOrg = currentOptions.projectOrg
 
       const user8 = (this.userInput8.value || '').trim()
       const user9 = (this.userInput9.value || '').trim()

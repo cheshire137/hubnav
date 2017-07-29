@@ -179,10 +179,23 @@ class PopupPage {
       if (options.active === 'repository' && options.repository && options.repository.length > 0) {
         this.highlightShortcut(this.vShortcuts)
         this.openTab(this.repoUrl(options.repository))
-      } else if (options.user && options.user.length > 0) {
+      } else if (options.active === 'user' && options.user && options.user.length > 0) {
         this.highlightShortcut(this.vShortcuts)
         const user = encodeURIComponent(options.user)
         this.openTab(`https://github.com/${user}`)
+      } else if (options.active === 'project' && options.projectNumber &&
+                 options.projectNumber.length > 0 && options.projectRepo &&
+                 options.projectRepo.length > 0) {
+        this.highlightShortcut(this.vShortcuts)
+        const number = encodeURIComponent(options.projectNumber)
+        this.openTab(this.repoUrl(options.projectRepo, `/projects/${number}`))
+      } else if (options.active === 'project' && options.projectNumber &&
+                 options.projectNumber.length > 0 && options.projectOrg &&
+                 options.projectOrg.length > 0) {
+        this.highlightShortcut(this.vShortcuts)
+        const org = encodeURIComponent(options.projectOrg)
+        const number = encodeURIComponent(options.projectNumber)
+        this.openTab(`https://github.com/orgs/${org}/projects/${number}`)
       } else {
         this.openOptions()
       }
@@ -303,9 +316,11 @@ class PopupPage {
       const newProjectNumber = currentOptions[`projectNumber${i}`]
       if (newProjectRepo && newProjectRepo.length > 0) {
         newOptions.projectRepo = newProjectRepo
+        delete newOptions.projectOrg
       }
       if (newProjectOrg && newProjectOrg.length > 0) {
         newOptions.projectOrg = newProjectOrg
+        delete newOptions.projectRepo
       }
       if (newProjectNumber && newProjectNumber.length > 0) {
         newOptions.projectNumber = newProjectNumber
