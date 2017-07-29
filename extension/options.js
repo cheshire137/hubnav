@@ -84,6 +84,7 @@ class OptionsPage {
   findElements() {
     this.reposContainer = document.getElementById('repositories-container')
     this.repoTemplate = document.getElementById('repository-template')
+    this.addRepoButton = document.getElementById('add-repository-button')
     for (let i of PROJECT_SHORTCUTS) {
       this[`projectRepoInput${i}`] = document.getElementById(`project${i}-repo`)
       this[`projectOrgInput${i}`] = document.getElementById(`project${i}-org`)
@@ -146,6 +147,7 @@ class OptionsPage {
       this[`userLogo${i}`].addEventListener('error', () => this.onUserLogoError(i))
       this[`userIsOrg${i}`].addEventListener('change', () => this.checkFormValidity())
     }
+    this.addRepoButton.addEventListener('click', e => this.addRepositoryShortcut(e))
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
     this.closedIssues.addEventListener('change', () => this.checkFormValidity())
     this.newIssue.addEventListener('change', () => this.checkFormValidity())
@@ -531,6 +533,16 @@ class OptionsPage {
     container.appendChild(clone)
   }
 
+  addRepositoryShortcut(event) {
+    event.currentTarget.blur()
+    const numReposLoaded = document.querySelectorAll('.repository-input').length
+    const i = REPO_SHORTCUTS[numReposLoaded]
+    this.addRepository(i, '', 'master')
+    if (numReposLoaded + 1 >= REPO_SHORTCUTS.length) {
+      this.addRepoButton.style.display = 'none'
+    }
+  }
+
   addRepository(i, repo, defaultBranch) {
     this.loadTemplate(this.repoTemplate, this.reposContainer, repoEl => {
       repoEl.querySelector('.i').textContent = i
@@ -563,6 +575,11 @@ class OptionsPage {
           this.addRepository(i, repo, options[`defaultBranch${i}`])
         }
       }
+      const numReposLoaded = document.querySelectorAll('.repository-input').length
+      if (numReposLoaded >= REPO_SHORTCUTS.length) {
+        this.addRepoButton.style.display = 'none'
+      }
+
       for (let i of PROJECT_SHORTCUTS) {
         const projectRepo = options[`projectRepo${i}`]
         if (projectRepo && projectRepo.length > 0) {

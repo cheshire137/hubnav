@@ -109,3 +109,11 @@
   align-items: center;
   display: flex;
 }
+
+.button .octicon {
+  margin-right: 10px;
+}
+
+.add-button {
+  margin-top: 1em;
+}
