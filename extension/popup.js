@@ -188,14 +188,14 @@ class PopupPage {
                  options.projectRepo.length > 0) {
         this.highlightShortcut(this.vShortcuts)
         const number = encodeURIComponent(options.projectNumber)
-        this.openTab(this.repoUrl(options.projectRepo, `/projects/${number}`))
+        this.openTab(this.repoUrl(options.projectRepo, `/projects/${number}?fullscreen=true`))
       } else if (options.active === 'project' && options.projectNumber &&
                  options.projectNumber.length > 0 && options.projectOrg &&
                  options.projectOrg.length > 0) {
         this.highlightShortcut(this.vShortcuts)
         const org = encodeURIComponent(options.projectOrg)
         const number = encodeURIComponent(options.projectNumber)
-        this.openTab(`https://github.com/orgs/${org}/projects/${number}`)
+        this.openTab(`https://github.com/orgs/${org}/projects/${number}?fullscreen=true`)
       } else {
         this.openOptions()
       }
