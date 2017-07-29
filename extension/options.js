@@ -29,6 +29,10 @@ class OptionsPage {
 
     for (let i of PROJECT_SHORTCUTS) {
       const repo = (this[`projectRepoInput${i}`].value || '').trim()
+      const org = (this[`projectOrgInput${i}`].value || '').trim()
+      const number = this[`projectNumberInput${i}`].value
+      const name = (this[`projectNameInput${i}`].value || '').trim()
+
       if (this.isValidRepo(repo)) {
         delete this.errors[`projectRepository${i}`]
       } else {
@@ -36,13 +40,18 @@ class OptionsPage {
         this.flashErrorMessage(`Invalid project repository: shortcut ${i}`)
       }
 
-      const org = (this[`projectOrgInput${i}`].value || '').trim()
-      const number = this[`projectNumberInput${i}`].value
-      if ((org.length > 0 || repo.length > 0) && number.length < 1) {
+      if ((org.length > 0 || repo.length > 0 || name.length > 0) && number.length < 1) {
         this.errors[`projectNumber${i}`] = true
         this.flashErrorMessage(`Must set project number: shortcut ${i}`)
       } else {
         delete this.errors[`projectNumber${i}`]
+      }
+
+      if ((org.length > 0 || repo.length > 0 || number.length > 0) && name.length < 1) {
+        this.errors[`projectName${i}`] = true
+        this.flashErrorMessage(`Must set project name: shortcut ${i}`)
+      } else {
+        delete this.errors[`projectName${i}`]
       }
 
       if (repo.length > 0 && org.length > 0) {
@@ -53,7 +62,7 @@ class OptionsPage {
         delete this.errors[`projectRepoOrgBoth${i}`]
       }
 
-      if (number.length > 0 && org.length < 1 && repo.length < 1) {
+      if ((number.length > 0 || name.length > 0) && org.length < 1 && repo.length < 1) {
         this.errors[`projectRepoOrg${i}`] = true
         this.flashErrorMessage('Must set either repository or organization for project: ' +
                                `shortcut ${i}`)
@@ -82,6 +91,7 @@ class OptionsPage {
       this[`projectRepoLogo${i}`] = document.getElementById(`project${i}-repo-logo`)
       this[`projectOrgLogo${i}`] = document.getElementById(`project${i}-org-logo`)
       this[`projectNumberInput${i}`] = document.getElementById(`project${i}-number`)
+      this[`projectNameInput${i}`] = document.getElementById(`project${i}-name`)
     }
     for (let i of USER_SHORTCUTS) {
       this[`userInput${i}`] = document.getElementById(`user${i}`)
@@ -135,6 +145,7 @@ class OptionsPage {
       this[`projectOrgLogo${i}`].addEventListener('load', () => this.onProjectOrgLogoLoad(i))
       this[`projectOrgLogo${i}`].addEventListener('error', () => this.onProjectOrgLogoError(i))
       this[`projectNumberInput${i}`].addEventListener('change', () => this.checkFormValidity())
+      this[`projectNameInput${i}`].addEventListener('change', () => this.checkFormValidity())
     }
     for (let i of USER_SHORTCUTS) {
       this[`userInput${i}`].addEventListener('keyup', e => this.onUserKeyup(e, i))
@@ -448,9 +459,18 @@ class OptionsPage {
       const projectNumber5 = this.projectNumberInput5.value
       const projectNumber6 = this.projectNumberInput6.value
       const projectNumber7 = this.projectNumberInput7.value
-      const projectNumber = currentOptions.projectNumber
-      const projectRepo = currentOptions.projectRepo
-      const projectOrg = currentOptions.projectOrg
+      const projectName5 = (this.projectNameInput5.value || '').trim()
+      const projectName6 = (this.projectNameInput6.value || '').trim()
+      const projectName7 = (this.projectNameInput7.value || '').trim()
+      let projectNumber = currentOptions.projectNumber
+      let projectRepo = currentOptions.projectRepo
+      let projectOrg = currentOptions.projectOrg
+      const projectName = currentOptions.projectName
+      if ([projectName5, projectName6, projectName7].indexOf(projectName) < 0) {
+        projectNumber = null
+        projectRepo = null
+        projectOrg = null
+      }
 
       const user8 = (this.userInput8.value || '').trim()
       const user9 = (this.userInput9.value || '').trim()
@@ -495,10 +515,12 @@ class OptionsPage {
         } else if (user && user.length > 0) {
           active = userIsOrg ? 'organization' : 'user'
         } else if (projectRepo && projectRepo.length > 0 &&
-                   projectNumber && projectNumber.length > 0) {
+                   projectNumber && projectNumber.length > 0 &&
+                   projectName && projectName.length > 0) {
           active = 'project'
         } else if (projectOrg && projectOrg.length > 0 &&
-                   projectNumber && projectNumber.length > 0) {
+                   projectNumber && projectNumber.length > 0 &&
+                   projectName && projectName.length > 0) {
           active = 'project'
         }
       }
@@ -515,7 +537,8 @@ class OptionsPage {
         mergedPullRequests, active, newPullRequest, user8, user9, user0, userIsOrg8, userIsOrg9,
         userIsOrg0, user, userIsOrg, closedPullRequests, projectRepo5, projectRepo6,
         projectRepo7, projectOrg5, projectOrg6, projectOrg7, projectNumber5, projectNumber6,
-        projectNumber7, projectRepo, projectOrg, projectNumber
+        projectNumber7, projectRepo, projectOrg, projectNumber, projectName, projectName5,
+        projectName6, projectName7
       }
       HubnavStorage.save(newOptions).then(() => this.flashSaveNotice())
     })
@@ -542,6 +565,7 @@ class OptionsPage {
           this[`projectOrgInput${i}`].value = projectOrg
           this.loadProjectOrgLogo(projectOrg, i)
         }
+        this[`projectNameInput${i}`].value = options[`projectName${i}`] || ''
         this[`projectNumberInput${i}`].value = options[`projectNumber${i}`] || ''
       }
       for (let i of USER_SHORTCUTS) {
