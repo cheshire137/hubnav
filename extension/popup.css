@@ -139,6 +139,18 @@ body {
   padding-bottom: 0.3em;
 }
 
+.context-switch .shortcuts-list {
+  padding-right: 0.75rem;
+  border-left: 2px solid #ddd;
+  padding-left: 0.375rem;
+  margin-left: 0.375rem;
+  border-radius: 3px;
+}
+
+.context-switch .shortcuts-list + .shortcuts-list {
+  margin-top: 0.3rem;
+}
+
 .context-switch .shortcuts-list dd:not(:last-child) {
   margin-bottom: 0.1rem;
 }
