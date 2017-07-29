@@ -313,6 +313,7 @@ class PopupPage {
       }
       const newProjectRepo = currentOptions[`projectRepo${i}`]
       const newProjectOrg = currentOptions[`projectOrg${i}`]
+      const newProjectName = currentOptions[`projectName${i}`]
       const newProjectNumber = currentOptions[`projectNumber${i}`]
       if (newProjectRepo && newProjectRepo.length > 0) {
         newOptions.projectRepo = newProjectRepo
@@ -325,14 +326,17 @@ class PopupPage {
       if (newProjectNumber && newProjectNumber.length > 0) {
         newOptions.projectNumber = newProjectNumber
       }
+      if (newProjectName && newProjectName.length > 0) {
+        newOptions.projectName = newProjectName
+      }
       newOptions.active = 'project'
       HubnavStorage.save(newOptions).then(() => {
         this.highlightShortcut(this[`shortcuts${i}`])
         this.runAfterDelay(() => {
           if (newOptions.projectRepo && newOptions.projectRepo.length > 0) {
-            this.loadActiveRepoProject(newOptions.projectRepo, newOptions.projectNumber)
+            this.loadActiveRepoProject(newOptions.projectRepo, newOptions.projectName)
           } else {
-            this.loadActiveOrgProject(newOptions.projectOrg, newOptions.projectNumber)
+            this.loadActiveOrgProject(newOptions.projectOrg, newOptions.projectName)
           }
         })
       })
@@ -423,22 +427,22 @@ class PopupPage {
     this.org.textContent = org
   }
 
-  loadActiveRepoProject(repo, number) {
+  loadActiveRepoProject(repo, name) {
     this.repoCommands.style.display = 'none'
     this.userCommands.style.display = 'none'
     this.projectCommands.style.display = 'block'
     this.orgCommands.style.display = 'none'
     this.loadRepoLogo(repo, this.projectLogo)
-    this.project.textContent = `${repo} ${number}`
+    this.project.textContent = name
   }
 
-  loadActiveOrgProject(org, number) {
+  loadActiveOrgProject(org, name) {
     this.repoCommands.style.display = 'none'
     this.userCommands.style.display = 'none'
     this.projectCommands.style.display = 'block'
     this.orgCommands.style.display = 'none'
     this.loadUserLogo(org, this.projectLogo)
-    this.project.textContent = `${org} ${number}`
+    this.project.textContent = name
   }
 
   loadActiveUser(user) {
@@ -485,12 +489,14 @@ class PopupPage {
           this.loadActiveRepository(options.repository)
         } else if (options.active === 'project' && options.projectNumber &&
                    options.projectNumber.length > 0 &&
-                   options.projectRepo && options.projectRepo.length > 0) {
-          this.loadActiveRepoProject(options.projectRepo, options.projectNumber)
+                   options.projectRepo && options.projectRepo.length > 0 &&
+                   options.projectName && options.projectName.length > 0) {
+          this.loadActiveRepoProject(options.projectRepo, options.projectName)
         } else if (options.active === 'project' && options.projectNumber &&
                    options.projectNumber.length > 0 &&
-                   options.projectOrg && options.projectOrg.length > 0) {
-          this.loadActiveOrgProject(options.projectOrg, options.projectNumber)
+                   options.projectOrg && options.projectOrg.length > 0 &&
+                   options.projectName && options.projectName.length > 0) {
+          this.loadActiveOrgProject(options.projectOrg, options.projectName)
         }
       } else { // no active context
         if (options.repository && options.repository.length > 0) {
@@ -502,11 +508,13 @@ class PopupPage {
             this.loadActiveUser(options.user)
           }
         } else if (options.projectNumber && options.projectNumber.length > 0 &&
-                   options.projectRepo && options.projectRepo.length > 0) {
-          this.loadActiveRepoProject(options.projectRepo, options.projectNumber)
+                   options.projectRepo && options.projectRepo.length > 0 &&
+                   options.projectName && options.projectName.length > 0) {
+          this.loadActiveRepoProject(options.projectRepo, options.projectName)
         } else if (options.projectNumber && options.projectNumber.length > 0 &&
-                   options.projectOrg && options.projectOrg.length > 0) {
-          this.loadActiveRepoProject(options.projectOrg, options.projectNumber)
+                   options.projectOrg && options.projectOrg.length > 0 &&
+                   options.projectName && options.projectName.length > 0) {
+          this.loadActiveRepoProject(options.projectOrg, options.projectName)
         }
       }
 
@@ -551,8 +559,8 @@ class PopupPage {
       }
 
       for (let i of PROJECT_SHORTCUTS) {
-        const number = options[`projectNumber${i}`]
-        if (number && number.length > 0) {
+        const name = options[`projectName${i}`]
+        if (name && name.length > 0) {
           contextCount++
           const repo = options[`projectRepo${i}`]
           const org = options[`projectOrg${i}`]
@@ -560,11 +568,10 @@ class PopupPage {
           for (let j = 0; j < projectRefs.length; j++) {
             projectRefs[j].style.display = 'block'
           }
+          this[`project${i}`].textContent = name
           if (repo && repo.length > 0) {
-            this[`project${i}`].textContent = `${repo} #${number}`
             this.loadRepoLogo(repo, this[`projectLogo${i}`])
           } else if (org && org.length > 0) {
-            this[`project${i}`].textContent = `${org} #${number}`
             this.loadUserLogo(org, this[`projectLogo${i}`])
           }
         }
