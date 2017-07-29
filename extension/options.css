@@ -63,7 +63,7 @@
 }
 
 .flex-row .subtitle {
-  width: 6em;
+  width: 160px;
 }
 
 .flex-row + .flex-row {
@@ -99,4 +99,13 @@
 .menu-list a:hover {
   background-color: #F8FFDA;
   color: #DA8328;
+}
+
+.field.centered {
+  justify-content: center;
+}
+
+.column.centered {
+  align-items: center;
+  display: flex;
 }

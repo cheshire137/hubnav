@@ -384,7 +384,6 @@ class OptionsPage {
   }
 
   setup() {
-    this.repoInput1.focus()
     this.hookUpHandlers()
     this.restoreOptions()
     this.showShortcutTip()
