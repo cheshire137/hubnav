@@ -147,18 +147,19 @@ class PopupPage {
     HubnavStorage.load().then(options => {
       if (options.active === 'user' && options.user && options.user.length > 0) {
         this.highlightShortcut(this.iShortcuts)
-        let state = 'is%3Aopen'
+        let params = '?q=is%3Aissue'
         if (this.shiftPressed) { // closed
-          state = 'is%3Aclosed'
+          params += '+is%3Aclosed'
+        } else { // open
+          params += '+is%3Aopen'
         }
-        let params = `?s=updated&type=Issues&q=is%3Aissue+${state}`
         const user = encodeURIComponent(options.user)
         if (options.userIsOrg) {
           params += `+org%3A${user}`
         } else {
           params += `+author%3A${user}`
         }
-        this.openTab(`https://github.com/search${params}`)
+        this.openTab(`https://github.com/issues${params}`)
 
       } else if (options.active === 'repository' && options.repository &&
                  options.repository.length > 0) {
