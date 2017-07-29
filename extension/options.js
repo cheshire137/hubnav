@@ -93,11 +93,10 @@ class OptionsPage {
     this.projectTemplate = document.getElementById('project-template')
     this.addProjectButton = document.getElementById('add-project-button')
 
-    for (let i of USER_SHORTCUTS) {
-      this[`userInput${i}`] = document.getElementById(`user${i}`)
-      this[`userLogo${i}`] = document.getElementById(`user-logo${i}`)
-      this[`userIsOrg${i}`] = document.getElementById(`user${i}-is-org`)
-    }
+    this.usersContainer = document.getElementById('users-container')
+    this.userTemplate = document.getElementById('user-template')
+    this.addUserButton = document.getElementById('add-user-button')
+
     this.shortcutTipContainer = document.getElementById('shortcut-tip-container')
     this.shortcut = document.getElementById('shortcut')
     this.optionsForm = document.getElementById('options-form')
@@ -131,14 +130,9 @@ class OptionsPage {
   }
 
   hookUpHandlers() {
-    for (let i of USER_SHORTCUTS) {
-      this[`userInput${i}`].addEventListener('keyup', e => this.onUserKeyup(e, i))
-      this[`userLogo${i}`].addEventListener('load', () => this.onUserLogoLoad(i))
-      this[`userLogo${i}`].addEventListener('error', () => this.onUserLogoError(i))
-      this[`userIsOrg${i}`].addEventListener('change', () => this.checkFormValidity())
-    }
     this.addRepoButton.addEventListener('click', e => this.addRepositoryShortcut(e))
     this.addProjectButton.addEventListener('click', e => this.addProjectShortcut(e))
+    this.addUserButton.addEventListener('click', e => this.addUserShortcut(e))
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
     this.closedIssues.addEventListener('change', () => this.checkFormValidity())
     this.newIssue.addEventListener('change', () => this.checkFormValidity())
@@ -165,18 +159,10 @@ class OptionsPage {
     this.loadLogoForUser(org, imgTag)
   }
 
-  loadUserLogo(rawUser, i) {
-    this.loadLogoForUser(rawUser, this[`userLogo${i}`])
-  }
-
   loadLogoForUser(rawUser, img) {
     const user = encodeURIComponent(rawUser)
     img.src = `https://github.com/${user}.png?size=72`
     img.alt = user
-  }
-
-  showBadUserLogo(i) {
-    this.showBadLogoForUser(this[`userLogo${i}`])
   }
 
   showBadLogoForUser(img) {
@@ -206,8 +192,15 @@ class OptionsPage {
     if (this[`userInput${i}Timer`]) {
       clearTimeout(this[`userInput${i}Timer`])
     }
+    const userInput = event.target
+    const imgTag = userInput.closest('.control').querySelector('.user-logo')
     this[`userInput${i}Timer`] = setTimeout(() => {
-      this.setUserLogoSource(i)
+      const user = userInput.value.trim()
+      if (user.length < 1) {
+        this.showDefaultLogoForUser(imgTag)
+      } else {
+        this.loadLogoForUser(user, imgTag)
+      }
       this.checkFormValidity()
     }, 750)
   }
@@ -217,11 +210,11 @@ class OptionsPage {
       clearTimeout(this[`projectOrgInput${i}Timer`])
     }
     const orgInput = event.target
-    const org = orgInput.value.trim()
+    const imgTag = orgInput.closest('.control').querySelector('.project-org-logo')
     const repoInput = orgInput.closest('.project-container').querySelector('.project-repo-input')
-    repoInput.disabled = org.length > 0
     this[`projectOrgInput${i}Timer`] = setTimeout(() => {
-      const imgTag = orgInput.closest('.control').querySelector('.project-org-logo')
+      const org = orgInput.value.trim()
+      repoInput.disabled = org.length > 0
       if (org.length < 1) {
         this.showDefaultLogoForUser(imgTag)
       } else {
@@ -235,10 +228,10 @@ class OptionsPage {
     if (this[`repoInput${i}Timer`]) {
       clearTimeout(this[`repoInput${i}Timer`])
     }
+    const repoInput = event.target
+    const imgTag = repoInput.closest('.control').querySelector('.repository-logo')
     this[`repoInput${i}Timer`] = setTimeout(() => {
-      const repoInput = event.target
       const repo = (repoInput.value || '').trim()
-      const imgTag = repoInput.closest('.control').querySelector('.repository-logo')
       if (repo.length < 1) {
         this.showDefaultLogoForUser(imgTag)
       } else {
@@ -253,11 +246,11 @@ class OptionsPage {
       clearTimeout(this[`projectRepoInput${i}Timer`])
     }
     const repoInput = event.target
-    const repo = repoInput.value.trim()
+    const imgTag = repoInput.closest('.control').querySelector('.project-repo-logo')
     const orgInput = repoInput.closest('.project-container').querySelector('.project-org-input')
-    orgInput.disabled = repo.length > 0
     this[`projectRepoInput${i}Timer`] = setTimeout(() => {
-      const imgTag = repoInput.closest('.control').querySelector('.project-repo-logo')
+      const repo = repoInput.value.trim()
+      orgInput.disabled = repo.length > 0
       if (repo.length < 1) {
         this.showDefaultLogoForUser(imgTag)
       } else {
@@ -267,8 +260,8 @@ class OptionsPage {
     }, 750)
   }
 
-  onUserLogoLoad(i) {
-    if (this.isBadLogo(this[`userLogo${i}`].src)) {
+  onUserLogoLoad(event, i) {
+    if (this.isBadLogo(event.target.src)) {
       return
     }
     delete this.errors[`userLogo${i}`]
@@ -318,10 +311,12 @@ class OptionsPage {
     this.checkFormValidity()
   }
 
-  onUserLogoError(i) {
-    this.showBadUserLogo(i)
+  onUserLogoError(event, i) {
+    const imgTag = event.target
+    this.showBadLogoForUser(imgTag)
     this.errors[`userLogo${i}`] = true
-    const user = encodeURIComponent((this[`userInput${i}`].value || '').trim())
+    const userInput = imgTag.closest('.control').querySelector('.login-input')
+    const user = encodeURIComponent(userInput.value.trim())
     this.flashErrorMessage(`Invalid user: can't find "${user}"`)
     this.checkFormValidity()
   }
@@ -349,15 +344,6 @@ class OptionsPage {
 
   isBadLogo(url) {
     return url === `chrome-extension://${chrome.runtime.id}/bad-user.png`
-  }
-
-  setUserLogoSource(i) {
-    const user = (this[`userInput${i}`].value || '').trim()
-    if (user.length < 1) {
-      this.showDefaultUserLogo(i)
-    } else {
-      this.loadUserLogo(user, i)
-    }
   }
 
   onSubmit(event) {
@@ -451,49 +437,47 @@ class OptionsPage {
         newOptions.projectOrg = null
       }
 
-      newOptions.user8 = (this.userInput8.value || '').trim()
-      newOptions.user9 = (this.userInput9.value || '').trim()
-      newOptions.user0 = (this.userInput0.value || '').trim()
-      newOptions.userIsOrg8 = this.userIsOrg8.checked
-      if (newOptions.user8.length < 1) {
-        newOptions.userIsOrg8 = false
-      }
-      newOptions.userIsOrg9 = this.userIsOrg9.checked
-      if (newOptions.user9.length < 1) {
-        newOptions.userIsOrg9 = false
-      }
-      newOptions.userIsOrg0 = this.userIsOrg0.checked
-      if (newOptions.user0.length < 1) {
-        newOptions.userIsOrg0 = false
-      }
-      newOptions.user = currentOptions.user
-      if (!newOptions.user || newOptions.user.length < 1) {
-        if (newOptions.user8.length > 0) {
-          newOptions.user = newOptions.user8
-        } else if (newOptions.user9.length > 0) {
-          newOptions.user = newOptions.user9
-        } else if (newOptions.user0.length > 0) {
-          newOptions.user = newOptions.user0
+      const userInputs = document.querySelectorAll('.login-input')
+      for (let userInput of userInputs) {
+        const user = userInput.value.trim()
+        if (user && user.length > 0) {
+          const i = userInput.getAttribute('data-key')
+          const container = userInput.closest('.user-container')
+          const isOrg = container.querySelector('.org-checkbox').checked
+          newOptions[`user${i}`] = user
+          newOptions[`userIsOrg${i}`] = isOrg
         }
       }
-      // Ensure active user is one of the three options
-      const userOptions = [newOptions.user8, newOptions.user9, newOptions.user0]
-      if (userOptions.indexOf(newOptions.user) < 0) {
-        newOptions.user = newOptions.user8
+
+      newOptions.user = currentOptions.user
+      const userOptions = []
+      for (let i of USER_SHORTCUTS) {
+        const user = newOptions[`user${i}`]
+        if (user && user.length > 0) {
+          if (!newOptions.user || newOptions.user.length < 1) {
+            newOptions.user = user
+            newOptions.userIsOrg = newOptions[`userIsOrg${i}`]
+          }
+          userOptions.push(user)
+        }
       }
-      newOptions.userIsOrg = newOptions.userIsOrg8
-      if (newOptions.user === newOptions.user9) {
-        newOptions.userIsOrg = newOptions.userIsOrg9
-      } else if (newOptions.user === newOptions.user0) {
-        newOptions.userIsOrg = newOptions.userIsOrg0
+      // Ensure active user is one of the four options
+      if (userOptions.indexOf(newOptions.user) < 0) {
+        newOptions.user = userOptions[0]
+        for (let i of USER_SHORTCUTS) {
+          if (newOptions[`user${i}`] === newOptions.user) {
+            newOptions.userIsOrg = newOptions[`userIsOrg${i}`]
+            break
+          }
+        }
       }
 
       newOptions.active = currentOptions.active
       if (!newOptions.active) {
         if (newOptions.repository && newOptions.repository.length > 0) {
           newOptions.active = 'repository'
-        } else if (user && user.length > 0) {
-          newOptions.active = userIsOrg ? 'organization' : 'user'
+        } else if (newOptions.user && newOptions.user.length > 0) {
+          newOptions.active = newOptions.userIsOrg ? 'organization' : 'user'
         } else if (newOptions.projectRepo && newOptions.projectRepo.length > 0 &&
                    newOptions.projectNumber && newOptions.projectNumber.length > 0 &&
                    newOptions.projectName && newOptions.projectName.length > 0) {
@@ -540,6 +524,17 @@ class OptionsPage {
       shortcut = shortcuts[inputs.length]
     }
     return [shortcut, subsequentNode]
+  }
+
+  addUserShortcut(event) {
+    event.currentTarget.blur()
+    const userInputs = document.querySelectorAll('.login-input')
+    const shortcutAndNode = this.getNextShortcut(userInputs, USER_SHORTCUTS,
+                                                 '.user-container')
+    this.addUser(shortcutAndNode[0], '', false, shortcutAndNode[1])
+    if (userInputs.length + 1 >= USER_SHORTCUTS.length) {
+      this.addUserButton.style.display = 'none'
+    }
   }
 
   addProjectShortcut(event) {
@@ -628,6 +623,36 @@ class OptionsPage {
     this.loadTemplate(this.projectTemplate, this.projectsContainer, populate, subsequentNode)
   }
 
+  addUser(i, user, isOrg, subsequentNode) {
+    const populate = userEl => {
+      userEl.querySelector('.i').textContent = i
+
+      const userLogo = userEl.querySelector('.user-logo')
+      userLogo.addEventListener('load', e => this.onUserLogoLoad(e, i))
+      userLogo.addEventListener('error', e => this.onUserLogoError(e, i))
+      if (user && user.length > 0) {
+        this.loadLogoForUser(user, userLogo)
+      }
+
+      const loginInputID = `userInput${i}`
+      userEl.querySelector('.login-label').htmlFor = loginInputID
+
+      const loginInput = userEl.querySelector('.login-input')
+      loginInput.id = loginInputID
+      loginInput.value = user
+      loginInput.setAttribute('data-key', i)
+      loginInput.addEventListener('keyup', e => this.onUserKeyup(e, i))
+
+      const isOrgCheckbox = userEl.querySelector('.org-checkbox')
+      isOrgCheckbox.checked = isOrg
+      isOrgCheckbox.addEventListener('change', () => this.checkFormValidity())
+
+      const removeButton = userEl.querySelector('.remove-user-button')
+      removeButton.addEventListener('click', e => this.removeUser(e, i))
+    }
+    this.loadTemplate(this.userTemplate, this.usersContainer, populate, subsequentNode)
+  }
+
   addRepository(i, repo, defaultBranch, subsequentNode) {
     const populate = repoEl => {
       repoEl.querySelector('.i').textContent = i
@@ -663,6 +688,10 @@ class OptionsPage {
 
   removeProject(event, i) {
     this.removeShortcut(event, i, '.project-container')
+  }
+
+  removeUser(event, i) {
+    this.removeShortcut(event, i, '.user-container')
   }
 
   removeRepository(event, i) {
@@ -707,15 +736,18 @@ class OptionsPage {
       for (let i of USER_SHORTCUTS) {
         const user = options[`user${i}`]
         if (user && user.length > 0) {
-          this[`userInput${i}`].value = user
-          this.loadUserLogo(user, i)
           let isOrg = false
           if (typeof options[`userIsOrg${i}`] === 'boolean') {
             isOrg = options[`userIsOrg${i}`]
           }
-          this[`userIsOrg${i}`].checked = isOrg
+          this.addUser(i, user, isOrg)
         }
       }
+      const numUsersLoaded = document.querySelectorAll('.login-input').length
+      if (numUsersLoaded >= USER_SHORTCUTS.length) {
+        this.addUserButton.style.display = 'none'
+      }
+
       if (typeof options.closedIssues === 'boolean') {
         this.closedIssues.checked = options.closedIssues
       } else {

@@ -153,8 +153,45 @@
           </div>
         </template>
 
-        <div class="column is-9">
+        <template id="user-template">
+          <div class="flex-row user-container">
+            <h3 class="subtitle is-5">
+              <span>Shortcut <span class="i"></span></span>
+              <button type="button" class="button is-small is-link remove-user-button">
+                <svg class="octicon octicon-x" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z"></path></svg>
+                Remove
+              </button>
+            </h3>
+            <div class="fields">
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label class="label login-label">Login:</label>
+                </div>
+                <div class="field-body">
+                  <div class="field is-expanded">
+                    <div class="field">
+                      <div class="control with-image">
+                        <img width="36" height="36" class="user-logo" src="unknown-user.png">
+                        <input class="input login-input" autocomplete="off" type="text" placeholder="e.g., cheshire137">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label is-normal"></div>
+                <div class="field-body">
+                  <label class="checkbox">
+                    <input type="checkbox" class="org-checkbox">
+                    This is an organization
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
 
+        <div class="column is-9">
           <section class="section content">
             <h2 class="subtitle is-4"><a name="repositories-section"></a>Repositories</h2>
             <p>Save up to four different GitHub repositories. You can switch quickly between them.</p>
@@ -178,97 +215,11 @@
           <section class="section content">
             <h2 class="subtitle is-4"><a name="users-and-organizations-section"></a>Users and Organizations</h2>
             <p>Save up to three different GitHub users or organizations. You can switch quickly between them.</p>
-
-            <div class="flex-row">
-              <h3 class="subtitle is-5">Shortcut 8</h3>
-              <div class="fields">
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal">
-                    <label class="label" for="user8">Login:</label>
-                  </div>
-                  <div class="field-body">
-                    <div class="field is-expanded">
-                      <div class="field">
-                        <div class="control with-image">
-                          <img width="36" height="36" id="user-logo8" class="user-logo" src="unknown-user.png">
-                          <input class="input" autocomplete="off" type="text" placeholder="e.g., cheshire137" id="user8">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal"></div>
-                  <div class="field-body">
-                    <label class="checkbox">
-                      <input type="checkbox" id="user8-is-org">
-                      This is an organization
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex-row">
-              <h3 class="subtitle is-5">Shortcut 9</h3>
-              <div class="fields">
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal">
-                    <label class="label" for="user9">Login:</label>
-                  </div>
-                  <div class="field-body">
-                    <div class="field is-expanded">
-                      <div class="field">
-                        <div class="control with-image">
-                          <img width="36" height="36" id="user-logo9" class="user-logo" src="unknown-user.png">
-                          <input class="input" autocomplete="off" type="text" placeholder="e.g., cheshire137" id="user9">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal"></div>
-                  <div class="field-body">
-                    <label class="checkbox">
-                      <input type="checkbox" id="user9-is-org">
-                      This is an organization
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex-row">
-              <h3 class="subtitle is-5">Shortcut 0</h3>
-              <div class="fields">
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal">
-                    <label class="label" for="user0">Login:</label>
-                  </div>
-                  <div class="field-body">
-                    <div class="field is-expanded">
-                      <div class="field">
-                        <div class="control with-image">
-                          <img width="36" height="36" id="user-logo0" class="user-logo" src="unknown-user.png">
-                          <input class="input" autocomplete="off" type="text" placeholder="e.g., cheshire137" id="user0">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal"></div>
-                  <div class="field-body">
-                    <label class="checkbox">
-                      <input type="checkbox" id="user0-is-org">
-                      This is an organization
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+            <div id="users-container"></div>
+            <button type="button" id="add-user-button" class="add-button button is-link">
+              <svg class="octicon octicon-plus" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5z"></path></svg>
+              Add a user or organization shortcut
+            </button>
           </section>
 
           <section class="section content">
