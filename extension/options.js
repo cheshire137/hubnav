@@ -23,7 +23,42 @@ class OptionsPage {
         delete this.errors[`repository${i}`]
       } else {
         this.errors[`repository${i}`] = true
-        this.flashErrorMessage(`Invalid repository: #${i}`)
+        this.flashErrorMessage(`Invalid repository: shortcut ${i}`)
+      }
+    }
+
+    for (let i of PROJECT_SHORTCUTS) {
+      const repo = (this[`projectRepoInput${i}`].value || '').trim()
+      if (this.isValidRepo(repo)) {
+        delete this.errors[`projectRepository${i}`]
+      } else {
+        this.errors[`projectRepository${i}`] = true
+        this.flashErrorMessage(`Invalid project repository: shortcut ${i}`)
+      }
+
+      const org = (this[`projectOrgInput${i}`].value || '').trim()
+      const number = this[`projectNumberInput${i}`].value
+      if ((org.length > 0 || repo.length > 0) && number.length < 1) {
+        this.errors[`projectNumber${i}`] = true
+        this.flashErrorMessage(`Must set project number: shortcut ${i}`)
+      } else {
+        delete this.errors[`projectNumber${i}`]
+      }
+
+      if (repo.length > 0 && org.length > 0) {
+        this.errors[`projectRepoOrgBoth${i}`] = true
+        this.flashErrorMessage('Must set only one of repository or organization for ' +
+                               `project: shortcut ${i}`)
+      } else {
+        delete this.errors[`projectRepoOrgBoth${i}`]
+      }
+
+      if (number.length > 0 && org.length < 1 && repo.length < 1) {
+        this.errors[`projectRepoOrg${i}`] = true
+        this.flashErrorMessage('Must set either repository or organization for project: ' +
+                               `shortcut ${i}`)
+      } else {
+        delete this.errors[`projectRepoOrg${i}`]
       }
     }
 
@@ -40,6 +75,13 @@ class OptionsPage {
       this[`repoInput${i}`] = document.getElementById(`repository${i}`)
       this[`defaultBranchInput${i}`] = document.getElementById(`default-branch${i}`)
       this[`repoLogo${i}`] = document.getElementById(`repo-logo${i}`)
+    }
+    for (let i of PROJECT_SHORTCUTS) {
+      this[`projectRepoInput${i}`] = document.getElementById(`project${i}-repo`)
+      this[`projectOrgInput${i}`] = document.getElementById(`project${i}-org`)
+      this[`projectRepoLogo${i}`] = document.getElementById(`project${i}-repo-logo`)
+      this[`projectOrgLogo${i}`] = document.getElementById(`project${i}-org-logo`)
+      this[`projectNumberInput${i}`] = document.getElementById(`project${i}-number`)
     }
     for (let i of USER_SHORTCUTS) {
       this[`userInput${i}`] = document.getElementById(`user${i}`)
@@ -85,6 +127,15 @@ class OptionsPage {
       this[`repoLogo${i}`].addEventListener('load', () => this.onRepoLogoLoad(i))
       this[`repoLogo${i}`].addEventListener('error', () => this.onRepoLogoError(i))
     }
+    for (let i of PROJECT_SHORTCUTS) {
+      this[`projectRepoInput${i}`].addEventListener('keyup', e => this.onProjectRepoKeyup(e, i))
+      this[`projectOrgInput${i}`].addEventListener('keyup', e => this.onProjectOrgKeyup(e, i))
+      this[`projectRepoLogo${i}`].addEventListener('load', () => this.onProjectRepoLogoLoad(i))
+      this[`projectRepoLogo${i}`].addEventListener('error', () => this.onProjectRepoLogoError(i))
+      this[`projectOrgLogo${i}`].addEventListener('load', () => this.onProjectOrgLogoLoad(i))
+      this[`projectOrgLogo${i}`].addEventListener('error', () => this.onProjectOrgLogoError(i))
+      this[`projectNumberInput${i}`].addEventListener('change', () => this.checkFormValidity())
+    }
     for (let i of USER_SHORTCUTS) {
       this[`userInput${i}`].addEventListener('keyup', e => this.onUserKeyup(e, i))
       this[`userLogo${i}`].addEventListener('load', () => this.onUserLogoLoad(i))
@@ -102,36 +153,71 @@ class OptionsPage {
   loadRepoLogo(rawRepo, i) {
     let user = rawRepo.split('/')[0]
     if (user && user.length > 0) {
-      user = encodeURIComponent(user)
-      this[`repoLogo${i}`].src = `https://github.com/${user}.png?size=72`
-      this[`repoLogo${i}`].alt = user
+      this.loadLogoForUser(user, this[`repoLogo${i}`])
     }
   }
 
+  loadProjectRepoLogo(rawRepo, i) {
+    let user = rawRepo.split('/')[0]
+    if (user && user.length > 0) {
+      this.loadLogoForUser(user, this[`projectRepoLogo${i}`])
+    }
+  }
+
+  loadProjectOrgLogo(org, i) {
+    this.loadLogoForUser(org, this[`projectOrgLogo${i}`])
+  }
+
   loadUserLogo(rawUser, i) {
+    this.loadLogoForUser(rawUser, this[`userLogo${i}`])
+  }
+
+  loadLogoForUser(rawUser, img) {
     const user = encodeURIComponent(rawUser)
-    this[`userLogo${i}`].src = `https://github.com/${user}.png?size=72`
-    this[`userLogo${i}`].alt = user
+    img.src = `https://github.com/${user}.png?size=72`
+    img.alt = user
   }
 
   showBadRepoLogo(i) {
-    this[`repoLogo${i}`].src = 'bad-user.png'
-    this[`repoLogo${i}`].alt = ''
+    this.showBadLogoForUser(this[`repoLogo${i}`])
   }
 
   showBadUserLogo(i) {
-    this[`userLogo${i}`].src = 'bad-user.png'
-    this[`userLogo${i}`].alt = ''
+    this.showBadLogoForUser(this[`userLogo${i}`])
+  }
+
+  showBadProjectOrgLogo(i) {
+    this.showBadLogoForUser(this[`projectOrgLogo${i}`])
+  }
+
+  showBadProjectRepoLogo(i) {
+    this.showBadLogoForUser(this[`projectRepoLogo${i}`])
+  }
+
+  showBadLogoForUser(img) {
+    img.src = 'bad-user.png'
+    img.alt = ''
   }
 
   showDefaultUserLogo(i) {
-    this[`userLogo${i}`].src = 'unknown-user.png'
-    this[`userLogo${i}`].alt = ''
+    this.showDefaultLogoForUser(this[`userLogo${i}`])
+  }
+
+  showDefaultProjectOrgLogo(i) {
+    this.showDefaultLogoForUser(this[`projectOrgLogo${i}`])
   }
 
   showDefaultRepoLogo(i) {
-    this[`repoLogo${i}`].src = 'unknown-user.png'
-    this[`repoLogo${i}`].alt = ''
+    this.showDefaultLogoForUser(this[`repoLogo${i}`])
+  }
+
+  showDefaultProjectRepoLogo(i) {
+    this.showDefaultLogoForUser(this[`projectRepoLogo${i}`])
+  }
+
+  showDefaultLogoForUser(img) {
+    img.src = 'unknown-user.png'
+    img.alt = ''
   }
 
   onDefaultBranchKeyup(event, i) {
@@ -153,6 +239,16 @@ class OptionsPage {
     }, 750)
   }
 
+  onProjectOrgKeyup(event, i) {
+    if (this[`projectOrgInput${i}Timer`]) {
+      clearTimeout(this[`projectOrgInput${i}Timer`])
+    }
+    this[`projectOrgInput${i}Timer`] = setTimeout(() => {
+      this.setProjectOrgLogoSource(i)
+      this.checkFormValidity()
+    }, 750)
+  }
+
   onRepoKeyup(event, i) {
     if (this[`repoInput${i}Timer`]) {
       clearTimeout(this[`repoInput${i}Timer`])
@@ -163,11 +259,31 @@ class OptionsPage {
     }, 750)
   }
 
+  onProjectRepoKeyup(event, i) {
+    if (this[`projectRepoInput${i}Timer`]) {
+      clearTimeout(this[`projectRepoInput${i}Timer`])
+    }
+    this[`projectRepoInput${i}Timer`] = setTimeout(() => {
+      this.setProjectRepoLogoSource(i)
+      this.checkFormValidity()
+    }, 750)
+  }
+
   onUserLogoLoad(i) {
     if (this.isBadLogo(this[`userLogo${i}`].src)) {
       return
     }
     delete this.errors[`userLogo${i}`]
+    if (!this.anyErrors()) {
+      this.optionsForm.classList.remove('error')
+    }
+  }
+
+  onProjectOrgLogoLoad(i) {
+    if (this.isBadLogo(this[`projectOrgLogo${i}`].src)) {
+      return
+    }
+    delete this.errors[`projectOrgLogo${i}`]
     if (!this.anyErrors()) {
       this.optionsForm.classList.remove('error')
     }
@@ -183,6 +299,25 @@ class OptionsPage {
     }
   }
 
+  onProjectRepoLogoLoad(i) {
+    if (this.isBadLogo(this[`projectRepoLogo${i}`].src)) {
+      return
+    }
+    delete this.errors[`projectRepoLogo${i}`]
+    if (!this.anyErrors()) {
+      this.optionsForm.classList.remove('error')
+    }
+  }
+
+  onProjectRepoLogoError(i) {
+    this.showBadProjectRepoLogo(i)
+    this.errors[`projectRepoLogo${i}`] = true
+    const repo = (this[`projectRepoInput${i}`].value || '').trim()
+    const user = encodeURIComponent(repo.split('/')[0] || '')
+    this.flashErrorMessage(`Invalid project repository ${i}: can't find "${user}"`)
+    this.checkFormValidity()
+  }
+
   onUserLogoError(i) {
     this.showBadUserLogo(i)
     this.errors[`userLogo${i}`] = true
@@ -191,12 +326,20 @@ class OptionsPage {
     this.checkFormValidity()
   }
 
+  onProjectOrgLogoError(i) {
+    this.showBadProjectOrgLogo(i)
+    this.errors[`projectOrgLogo${i}`] = true
+    const org = encodeURIComponent((this[`projectOrgLogo${i}`].value || '').trim())
+    this.flashErrorMessage(`Invalid organization: can't find "${org}"`)
+    this.checkFormValidity()
+  }
+
   onRepoLogoError(i) {
     this.showBadRepoLogo(i)
     this.errors[`repositoryLogo${i}`] = true
     const repo = (this[`repoInput${i}`].value || '').trim()
     const user = encodeURIComponent(repo.split('/')[0] || '')
-    this.flashErrorMessage(`Invalid repository #${i}: can't find "${user}"`)
+    this.flashErrorMessage(`Invalid repository ${i}: can't find "${user}"`)
     this.checkFormValidity()
   }
 
@@ -219,6 +362,24 @@ class OptionsPage {
       this.showDefaultRepoLogo(i)
     } else {
       this.loadRepoLogo(repo, i)
+    }
+  }
+
+  setProjectRepoLogoSource(i) {
+    const repo = (this[`projectRepoInput${i}`].value || '').trim()
+    if (repo.length < 1) {
+      this.showDefaultProjectRepoLogo(i)
+    } else {
+      this.loadProjectRepoLogo(repo, i)
+    }
+  }
+
+  setProjectOrgLogoSource(i) {
+    const org = (this[`projectOrgInput${i}`].value || '').trim()
+    if (org.length < 1) {
+      this.showDefaultProjectOrgLogo(i)
+    } else {
+      this.loadProjectOrgLogo(org, i)
     }
   }
 
@@ -252,6 +413,7 @@ class OptionsPage {
       if ([repository1, repository2, repository3, repository4].indexOf(repository) < 0) {
         repository = repository1
       }
+
       let defaultBranch1 = ''
       if (repository1.length > 0) {
         defaultBranch1 = (this.defaultBranchInput1.value || '').trim()
@@ -276,6 +438,59 @@ class OptionsPage {
       } else if (repository === repository4) {
         defaultBranch = defaultBranch4
       }
+
+      const projectRepo5 = (this.projectRepoInput5.value || '').trim()
+      const projectRepo6 = (this.projectRepoInput6.value || '').trim()
+      const projectRepo7 = (this.projectRepoInput7.value || '').trim()
+      const projectOrg5 = (this.projectOrgInput5.value || '').trim()
+      const projectOrg6 = (this.projectOrgInput6.value || '').trim()
+      const projectOrg7 = (this.projectOrgInput7.value || '').trim()
+      const projectNumber5 = this.projectNumberInput5.value
+      const projectNumber6 = this.projectNumberInput6.value
+      const projectNumber7 = this.projectNumberInput7.value
+      let projectRepo = currentOptions.projectRepo
+      if (!projectRepo || projectRepo.length < 1) {
+        if (projectRepo5.length > 0) {
+          projectRepo = projectRepo5
+        } else if (projectRepo6.length > 0) {
+          projectRepo = projectRepo6
+        } else if (projectRepo7.length > 0) {
+          projectRepo = projectRepo7
+        }
+      }
+      // Ensure active project repository is one of the three options
+      if ([projectRepo5, projectRepo6, projectRepo7].indexOf(projectRepo) < 0) {
+        projectRepo = projectRepo5
+      }
+      let projectOrg = currentOptions.projectOrg
+      if (!projectOrg || projectOrg.length < 1) {
+        if (projectOrg5.length > 0) {
+          projectOrg = projectOrg5
+        } else if (projectOrg6.length > 0) {
+          projectOrg = projectOrg6
+        } else if (projectOrg7.length > 0) {
+          projectOrg = projectOrg7
+        }
+      }
+      // Ensure active project organization is one of the three options
+      if ([projectOrg5, projectOrg6, projectOrg7].indexOf(projectOrg) < 0) {
+        projectOrg = projectOrg5
+      }
+      let projectNumber = currentOptions.projectNumber
+      if (!projectNumber || projectNumber.length < 1) {
+        if (projectNumber5.length > 0) {
+          projectNumber = projectNumber5
+        } else if (projectNumber6.length > 0) {
+          projectNumber = projectNumber6
+        } else if (projectNumber7.length > 0) {
+          projectNumber = projectNumber7
+        }
+      }
+      // Ensure active project number is one of the three options
+      if ([projectNumber5, projectNumber6, projectNumber7].indexOf(projectNumber) < 0) {
+        projectNumber = projectNumber5
+      }
+
       const user8 = (this.userInput8.value || '').trim()
       const user9 = (this.userInput9.value || '').trim()
       const user0 = (this.userInput0.value || '').trim()
@@ -311,24 +526,36 @@ class OptionsPage {
       } else if (user === user0) {
         userIsOrg = userIsOrg0
       }
+
       let active = currentOptions.active
       if (!active) {
         if (repository && repository.length > 0) {
           active = 'repository'
         } else if (user && user.length > 0) {
           active = userIsOrg ? 'organization' : 'user'
+        } else if (projectRepo && projectRepo.length > 0 &&
+                   projectNumber && projectNumber.length > 0) {
+          active = 'project'
+        } else if (projectOrg && projectOrg.length > 0 &&
+                   projectNumber && projectNumber.length > 0) {
+          active = 'project'
         }
       }
+
       const closedIssues = this.closedIssues.checked
       const newIssue = this.newIssue.checked
       const mergedPullRequests = this.mergedPullRequests.checked
       const closedPullRequests = this.closedPullRequests.checked
       const newPullRequest = this.newPullRequest.checked
-      const newOptions = { repository, repository1, repository2, repository3, repository4,
-                           defaultBranch1, defaultBranch2, defaultBranch3, defaultBranch4,
-                           defaultBranch, closedIssues, newIssue, mergedPullRequests, active,
-                           newPullRequest, user8, user9, user0, userIsOrg8, userIsOrg9, userIsOrg0,
-                           user, userIsOrg, closedPullRequests }
+
+      const newOptions = {
+        repository, repository1, repository2, repository3, repository4, defaultBranch1,
+        defaultBranch2, defaultBranch3, defaultBranch4, defaultBranch, closedIssues, newIssue,
+        mergedPullRequests, active, newPullRequest, user8, user9, user0, userIsOrg8, userIsOrg9,
+        userIsOrg0, user, userIsOrg, closedPullRequests, projectRepo5, projectRepo6,
+        projectRepo7, projectOrg5, projectOrg6, projectOrg7, projectNumber5, projectNumber6,
+        projectNumber7, projectRepo, projectOrg, projectNumber
+      }
       HubnavStorage.save(newOptions).then(() => this.flashSaveNotice())
     })
   }
@@ -342,6 +569,19 @@ class OptionsPage {
           this.loadRepoLogo(repo, i)
         }
         this[`defaultBranchInput${i}`].value = options[`defaultBranch${i}`] || 'master'
+      }
+      for (let i of PROJECT_SHORTCUTS) {
+        const projectRepo = options[`projectRepo${i}`]
+        if (projectRepo && projectRepo.length > 0) {
+          this[`projectRepoInput${i}`].value = projectRepo
+          this.loadProjectRepoLogo(projectRepo, i)
+        }
+        const projectOrg = options[`projectOrg${i}`]
+        if (projectOrg && projectOrg.length > 0) {
+          this[`projectOrgInput${i}`].value = projectOrg
+          this.loadProjectOrgLogo(projectOrg, i)
+        }
+        this[`projectNumberInput${i}`].value = options[`projectNumber${i}`] || ''
       }
       for (let i of USER_SHORTCUTS) {
         const user = options[`user${i}`]
