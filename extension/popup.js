@@ -316,7 +316,7 @@ class PopupPage {
       if (options.user && options.user.length > 0) {
         this.highlightShortcut(this.rShortcuts)
         const user = encodeURIComponent(options.user)
-        let path = 'https://github.com/search?type=Repositories&q='
+        let path = 'https://github.com/search?s=updated&type=Repositories&q='
         if (options.userIsOrg) {
           path += `org%3A${user}`
         } else {
