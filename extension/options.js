@@ -525,26 +525,40 @@ class OptionsPage {
     })
   }
 
-  loadTemplate(template, container, populate) {
+  loadTemplate(template, container, populate, subsequentNode) {
     const clone = template.content.cloneNode(true)
-    if (typeof populate === 'function') {
-      populate(clone)
+    populate(clone)
+    if (subsequentNode) {
+      container.insertBefore(clone, subsequentNode)
+    } else {
+      container.appendChild(clone)
     }
-    container.appendChild(clone)
   }
 
   addRepositoryShortcut(event) {
     event.currentTarget.blur()
-    const numReposLoaded = document.querySelectorAll('.repository-input').length
-    const i = REPO_SHORTCUTS[numReposLoaded]
-    this.addRepository(i, '', 'master')
-    if (numReposLoaded + 1 >= REPO_SHORTCUTS.length) {
+    let shortcut = null
+    let subsequentNode = null
+    const repoInputs = document.querySelectorAll('.repository-input')
+    for (let i = 0; i < repoInputs.length; i++) {
+      const currentShortcut = repoInputs[i].getAttribute('data-key')
+      if (currentShortcut !== REPO_SHORTCUTS[i]) {
+        shortcut = REPO_SHORTCUTS[i]
+        subsequentNode = repoInputs[i].closest('.repository-container')
+        break
+      }
+    }
+    if (!shortcut) {
+      shortcut = REPO_SHORTCUTS[repoInputs.length]
+    }
+    this.addRepository(shortcut, '', 'master', subsequentNode)
+    if (repoInputs.length + 1 >= REPO_SHORTCUTS.length) {
       this.addRepoButton.style.display = 'none'
     }
   }
 
-  addRepository(i, repo, defaultBranch) {
-    this.loadTemplate(this.repoTemplate, this.reposContainer, repoEl => {
+  addRepository(i, repo, defaultBranch, subsequentNode) {
+    const populate = repoEl => {
       repoEl.querySelector('.i').textContent = i
 
       const repoInputID = `repository${i}`
@@ -572,7 +586,8 @@ class OptionsPage {
 
       const removeButton = repoEl.querySelector('.remove-repository-button')
       removeButton.addEventListener('click', e => this.removeRepository(e, i))
-    })
+    }
+    this.loadTemplate(this.repoTemplate, this.reposContainer, populate, subsequentNode)
   }
 
   removeRepository(event, i) {
