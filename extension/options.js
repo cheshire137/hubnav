@@ -609,7 +609,6 @@ class OptionsPage {
       } else {
         repoInput.value = repo
       }
-      repoInput.classList.add('focus-target')
       repoInput.setAttribute('data-key', i)
       repoInput.addEventListener('keyup', e => this.onProjectRepoKeyup(e, i))
 
@@ -626,6 +625,7 @@ class OptionsPage {
       }
       orgInput.setAttribute('data-key', i)
       orgInput.addEventListener('keyup', e => this.onProjectOrgKeyup(e, i))
+      orgInput.classList.add('focus-target')
 
       const removeButton = projectEl.querySelector('.remove-project-button')
       removeButton.addEventListener('click', e => this.removeProject(e, i))
