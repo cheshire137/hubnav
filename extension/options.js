@@ -526,6 +526,12 @@ class OptionsPage {
     return [shortcut, subsequentNode]
   }
 
+  focusLastAddedInput() {
+    const input = document.querySelector('.focus-target')
+    input.focus()
+    input.classList.remove('focus-target')
+  }
+
   addUserShortcut(event) {
     event.currentTarget.blur()
     const userInputs = document.querySelectorAll('.login-input')
@@ -535,6 +541,7 @@ class OptionsPage {
     if (userInputs.length + 1 >= USER_SHORTCUTS.length) {
       this.addUserButton.style.display = 'none'
     }
+    this.focusLastAddedInput()
   }
 
   addProjectShortcut(event) {
@@ -546,6 +553,7 @@ class OptionsPage {
     if (projectNameInputs.length + 1 >= PROJECT_SHORTCUTS.length) {
       this.addProjectButton.style.display = 'none'
     }
+    this.focusLastAddedInput()
   }
 
   addRepositoryShortcut(event) {
@@ -557,6 +565,7 @@ class OptionsPage {
     if (repoInputs.length + 1 >= REPO_SHORTCUTS.length) {
       this.addRepoButton.style.display = 'none'
     }
+    this.focusLastAddedInput()
   }
 
   addProject(i, name, number, org, repo, subsequentNode) {
@@ -600,6 +609,7 @@ class OptionsPage {
       } else {
         repoInput.value = repo
       }
+      repoInput.classList.add('focus-target')
       repoInput.setAttribute('data-key', i)
       repoInput.addEventListener('keyup', e => this.onProjectRepoKeyup(e, i))
 
@@ -642,6 +652,7 @@ class OptionsPage {
       loginInput.value = user
       loginInput.setAttribute('data-key', i)
       loginInput.addEventListener('keyup', e => this.onUserKeyup(e, i))
+      loginInput.classList.add('focus-target')
 
       const isOrgCheckbox = userEl.querySelector('.org-checkbox')
       isOrgCheckbox.checked = isOrg
@@ -665,6 +676,7 @@ class OptionsPage {
       repoInput.value = repo
       repoInput.setAttribute('data-key', i)
       repoInput.addEventListener('keyup', e => this.onRepoKeyup(e, i))
+      repoInput.classList.add('focus-target')
 
       const branchInputID = `default-branch${i}`
       repoEl.querySelector('.default-branch-label').htmlFor = branchInputID
@@ -746,6 +758,11 @@ class OptionsPage {
       const numUsersLoaded = document.querySelectorAll('.login-input').length
       if (numUsersLoaded >= USER_SHORTCUTS.length) {
         this.addUserButton.style.display = 'none'
+      }
+
+      const focusTargets = document.querySelectorAll('.focus-target')
+      for (let input of focusTargets) {
+        input.classList.remove('focus-target')
       }
 
       if (typeof options.closedIssues === 'boolean') {
