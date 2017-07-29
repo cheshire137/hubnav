@@ -110,7 +110,7 @@ class OptionsPage {
     this.newPullRequest = document.getElementById('new-pull-request')
   }
 
-  flashNotification(message, isError) {
+  flashNotification(message, isError, delay) {
     if (this.notificationTimer) {
       clearTimeout(this.notificationTimer)
     }
@@ -119,15 +119,15 @@ class OptionsPage {
     this.notification.style.display = 'block'
     this.notificationTimer = setTimeout(() => {
       this.notification.style.display = 'none'
-    }, 2000)
+    }, delay)
   }
 
   flashSaveNotice() {
-    this.flashNotification('Saved!', false)
+    this.flashNotification('Saved!', false, 2000)
   }
 
   flashErrorMessage(message) {
-    this.flashNotification(message, true)
+    this.flashNotification(message, true, 5000)
   }
 
   hookUpHandlers() {
@@ -254,6 +254,7 @@ class OptionsPage {
     if (this[`projectOrgInput${i}Timer`]) {
       clearTimeout(this[`projectOrgInput${i}Timer`])
     }
+    this[`projectRepoInput${i}`].disabled = event.target.value.trim().length > 0
     this[`projectOrgInput${i}Timer`] = setTimeout(() => {
       this.setProjectOrgLogoSource(i)
       this.checkFormValidity()
@@ -274,6 +275,7 @@ class OptionsPage {
     if (this[`projectRepoInput${i}Timer`]) {
       clearTimeout(this[`projectRepoInput${i}Timer`])
     }
+    this[`projectOrgInput${i}`].disabled = event.target.value.trim().length > 0
     this[`projectRepoInput${i}Timer`] = setTimeout(() => {
       this.setProjectRepoLogoSource(i)
       this.checkFormValidity()
@@ -559,11 +561,13 @@ class OptionsPage {
         if (projectRepo && projectRepo.length > 0) {
           this[`projectRepoInput${i}`].value = projectRepo
           this.loadProjectRepoLogo(projectRepo, i)
+          this[`projectOrgInput${i}`].disabled = true
         }
         const projectOrg = options[`projectOrg${i}`]
         if (projectOrg && projectOrg.length > 0) {
           this[`projectOrgInput${i}`].value = projectOrg
           this.loadProjectOrgLogo(projectOrg, i)
+          this[`projectRepoInput${i}`].disabled = true
         }
         this[`projectNameInput${i}`].value = options[`projectName${i}`] || ''
         this[`projectNumberInput${i}`].value = options[`projectNumber${i}`] || ''
