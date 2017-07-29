@@ -17,8 +17,10 @@ class OptionsPage {
   }
 
   checkFormValidity() {
-    for (let i of REPO_SHORTCUTS) {
-      const repo = (this[`repoInput${i}`].value || '').trim()
+    const repoInputs = document.querySelectorAll('.repository-input')
+    for (let repoInput of repoInputs) {
+      const i = repoInput.getAttribute('data-key')
+      const repo = (repoInput.value || '').trim()
       if (this.isValidRepo(repo)) {
         delete this.errors[`repository${i}`]
       } else {
@@ -80,11 +82,8 @@ class OptionsPage {
   }
 
   findElements() {
-    for (let i of REPO_SHORTCUTS) {
-      this[`repoInput${i}`] = document.getElementById(`repository${i}`)
-      this[`defaultBranchInput${i}`] = document.getElementById(`default-branch${i}`)
-      this[`repoLogo${i}`] = document.getElementById(`repo-logo${i}`)
-    }
+    this.reposContainer = document.getElementById('repositories-container')
+    this.repoTemplate = document.getElementById('repository-template')
     for (let i of PROJECT_SHORTCUTS) {
       this[`projectRepoInput${i}`] = document.getElementById(`project${i}-repo`)
       this[`projectOrgInput${i}`] = document.getElementById(`project${i}-org`)
@@ -131,12 +130,6 @@ class OptionsPage {
   }
 
   hookUpHandlers() {
-    for (let i of REPO_SHORTCUTS) {
-      this[`repoInput${i}`].addEventListener('keyup', e => this.onRepoKeyup(e, i))
-      this[`defaultBranchInput${i}`].addEventListener('keyup', e => this.onDefaultBranchKeyup(e, i))
-      this[`repoLogo${i}`].addEventListener('load', () => this.onRepoLogoLoad(i))
-      this[`repoLogo${i}`].addEventListener('error', () => this.onRepoLogoError(i))
-    }
     for (let i of PROJECT_SHORTCUTS) {
       this[`projectRepoInput${i}`].addEventListener('keyup', e => this.onProjectRepoKeyup(e, i))
       this[`projectOrgInput${i}`].addEventListener('keyup', e => this.onProjectOrgKeyup(e, i))
@@ -161,10 +154,10 @@ class OptionsPage {
     this.newPullRequest.addEventListener('change', () => this.checkFormValidity())
   }
 
-  loadRepoLogo(rawRepo, i) {
+  loadRepoLogo(rawRepo, i, imgTag) {
     let user = rawRepo.split('/')[0]
     if (user && user.length > 0) {
-      this.loadLogoForUser(user, this[`repoLogo${i}`])
+      this.loadLogoForUser(user, imgTag)
     }
   }
 
@@ -187,10 +180,6 @@ class OptionsPage {
     const user = encodeURIComponent(rawUser)
     img.src = `https://github.com/${user}.png?size=72`
     img.alt = user
-  }
-
-  showBadRepoLogo(i) {
-    this.showBadLogoForUser(this[`repoLogo${i}`])
   }
 
   showBadUserLogo(i) {
@@ -216,10 +205,6 @@ class OptionsPage {
 
   showDefaultProjectOrgLogo(i) {
     this.showDefaultLogoForUser(this[`projectOrgLogo${i}`])
-  }
-
-  showDefaultRepoLogo(i) {
-    this.showDefaultLogoForUser(this[`repoLogo${i}`])
   }
 
   showDefaultProjectRepoLogo(i) {
@@ -266,7 +251,7 @@ class OptionsPage {
       clearTimeout(this[`repoInput${i}Timer`])
     }
     this[`repoInput${i}Timer`] = setTimeout(() => {
-      this.setRepoLogoSource(i)
+      this.setRepoLogoSource(i, event.target)
       this.checkFormValidity()
     }, 750)
   }
@@ -302,8 +287,8 @@ class OptionsPage {
     }
   }
 
-  onRepoLogoLoad(i) {
-    if (this.isBadLogo(this[`repoLogo${i}`].src)) {
+  onRepoLogoLoad(event, i) {
+    if (this.isBadLogo(event.target.src)) {
       return
     }
     delete this.errors[`repositoryLogo${i}`]
@@ -347,10 +332,12 @@ class OptionsPage {
     this.checkFormValidity()
   }
 
-  onRepoLogoError(i) {
-    this.showBadRepoLogo(i)
+  onRepoLogoError(event, i) {
+    const imgTag = event.target
+    this.showBadLogoForUser(imgTag)
     this.errors[`repositoryLogo${i}`] = true
-    const repo = (this[`repoInput${i}`].value || '').trim()
+    const repoInput = imgTag.closest('.control').querySelector('.repository-input')
+    const repo = (repoInput.value || '').trim()
     const user = encodeURIComponent(repo.split('/')[0] || '')
     this.flashErrorMessage(`Invalid repository ${i}: can't find "${user}"`)
     this.checkFormValidity()
@@ -369,12 +356,13 @@ class OptionsPage {
     }
   }
 
-  setRepoLogoSource(i) {
-    const repo = (this[`repoInput${i}`].value || '').trim()
+  setRepoLogoSource(i, repoInput) {
+    const repo = (repoInput.value || '').trim()
+    const imgTag = repoInput.closest('.control').querySelector('.repository-logo')
     if (repo.length < 1) {
-      this.showDefaultRepoLogo(i)
+      this.showDefaultLogoForUser(imgTag)
     } else {
-      this.loadRepoLogo(repo, i)
+      this.loadRepoLogo(repo, i, imgTag)
     }
   }
 
@@ -405,144 +393,165 @@ class OptionsPage {
     if (this.optionsForm.classList.contains('error')) {
       return
     }
+
     HubnavStorage.load().then(currentOptions => {
-      const repository1 = (this.repoInput1.value || '').trim()
-      const repository2 = (this.repoInput2.value || '').trim()
-      const repository3 = (this.repoInput3.value || '').trim()
-      const repository4 = (this.repoInput4.value || '').trim()
-      let repository = currentOptions.repository
-      if (!repository || repository.length < 1) {
-        if (repository1.length > 0) {
-          repository = repository1
-        } else if (repository2.length > 0) {
-          repository = repository2
-        } else if (repository3.length > 0) {
-          repository = repository3
-        } else if (repository4.length > 0) {
-          repository = repository4
+      const newOptions = {}
+
+      const repoInputs = document.querySelectorAll('.repository-input')
+      for (let repoInput of repoInputs) {
+        const repo = repoInput.value.trim()
+        if (repo && repo.length > 0) {
+          const i = repoInput.getAttribute('data-key')
+          newOptions[`repository${i}`] = repo
+        }
+      }
+
+      newOptions.repository = currentOptions.repository
+      const repoOptions = []
+      for (let i of REPO_SHORTCUTS) {
+        const repo = newOptions[`repository${i}`]
+        if (repo && repo.length > 0) {
+          if (!newOptions.repository || newOptions.repository.length < 1) {
+            newOptions.repository = repo
+          }
+          repoOptions.push(repo)
         }
       }
       // Ensure active repository is one of the four options
-      if ([repository1, repository2, repository3, repository4].indexOf(repository) < 0) {
-        repository = repository1
+      if (repoOptions.indexOf(newOptions.repository) < 0) {
+        newOptions.repository = repoOptions[0]
       }
 
-      let defaultBranch1 = ''
-      if (repository1.length > 0) {
-        defaultBranch1 = (this.defaultBranchInput1.value || '').trim()
-      }
-      let defaultBranch2 = ''
-      if (repository2.length > 0) {
-        defaultBranch2 = (this.defaultBranchInput2.value || '').trim()
-      }
-      let defaultBranch3 = ''
-      if (repository3.length > 0) {
-        defaultBranch3 = (this.defaultBranchInput3.value || '').trim()
-      }
-      let defaultBranch4 = ''
-      if (repository4.length > 0) {
-        defaultBranch4 = (this.defaultBranchInput4.value || '').trim()
-      }
-      let defaultBranch = defaultBranch1
-      if (repository === repository2) {
-        defaultBranch = defaultBranch2
-      } else if (repository === repository3) {
-        defaultBranch = defaultBranch3
-      } else if (repository === repository4) {
-        defaultBranch = defaultBranch4
+      const branchInputs = document.querySelectorAll('.default-branch-input')
+      for (let branchInput of branchInputs) {
+        const i = branchInput.getAttribute('data-key')
+        const repo = newOptions[`repository${i}`]
+        if (repo && repo.length > 0) {
+          const branch = branchInput.value.trim()
+          newOptions[`defaultBranch${i}`] = branch
+          if (newOptions.repository === repo) {
+            newOptions.defaultBranch = branch
+          }
+        }
       }
 
-      const projectRepo5 = (this.projectRepoInput5.value || '').trim()
-      const projectRepo6 = (this.projectRepoInput6.value || '').trim()
-      const projectRepo7 = (this.projectRepoInput7.value || '').trim()
-      const projectOrg5 = (this.projectOrgInput5.value || '').trim()
-      const projectOrg6 = (this.projectOrgInput6.value || '').trim()
-      const projectOrg7 = (this.projectOrgInput7.value || '').trim()
-      const projectNumber5 = this.projectNumberInput5.value
-      const projectNumber6 = this.projectNumberInput6.value
-      const projectNumber7 = this.projectNumberInput7.value
-      const projectName5 = (this.projectNameInput5.value || '').trim()
-      const projectName6 = (this.projectNameInput6.value || '').trim()
-      const projectName7 = (this.projectNameInput7.value || '').trim()
-      let projectNumber = currentOptions.projectNumber
-      let projectRepo = currentOptions.projectRepo
-      let projectOrg = currentOptions.projectOrg
-      const projectName = currentOptions.projectName
-      if ([projectName5, projectName6, projectName7].indexOf(projectName) < 0) {
-        projectNumber = null
-        projectRepo = null
-        projectOrg = null
+      newOptions.projectRepo5 = (this.projectRepoInput5.value || '').trim()
+      newOptions.projectRepo6 = (this.projectRepoInput6.value || '').trim()
+      newOptions.projectRepo7 = (this.projectRepoInput7.value || '').trim()
+      newOptions.projectOrg5 = (this.projectOrgInput5.value || '').trim()
+      newOptions.projectOrg6 = (this.projectOrgInput6.value || '').trim()
+      newOptions.projectOrg7 = (this.projectOrgInput7.value || '').trim()
+      newOptions.projectNumber5 = this.projectNumberInput5.value
+      newOptions.projectNumber6 = this.projectNumberInput6.value
+      newOptions.projectNumber7 = this.projectNumberInput7.value
+      newOptions.projectName5 = (this.projectNameInput5.value || '').trim()
+      newOptions.projectName6 = (this.projectNameInput6.value || '').trim()
+      newOptions.projectName7 = (this.projectNameInput7.value || '').trim()
+      newOptions.projectNumber = currentOptions.projectNumber
+      newOptions.projectRepo = currentOptions.projectRepo
+      newOptions.projectOrg = currentOptions.projectOrg
+      newOptions.projectName = currentOptions.projectName
+      const projectNameOptions = [newOptions.projectName5, newOptions.projectName6,
+                                  newOptions.projectName7]
+      if (projectNameOptions.indexOf(newOptions.projectName) < 0) {
+        newOptions.projectNumber = null
+        newOptions.projectRepo = null
+        newOptions.projectOrg = null
       }
 
-      const user8 = (this.userInput8.value || '').trim()
-      const user9 = (this.userInput9.value || '').trim()
-      const user0 = (this.userInput0.value || '').trim()
-      let userIsOrg8 = this.userIsOrg8.checked
-      if (user8.length < 1) {
-        userIsOrg8 = false
+      newOptions.user8 = (this.userInput8.value || '').trim()
+      newOptions.user9 = (this.userInput9.value || '').trim()
+      newOptions.user0 = (this.userInput0.value || '').trim()
+      newOptions.userIsOrg8 = this.userIsOrg8.checked
+      if (newOptions.user8.length < 1) {
+        newOptions.userIsOrg8 = false
       }
-      let userIsOrg9 = this.userIsOrg9.checked
-      if (user9.length < 1) {
-        userIsOrg9 = false
+      newOptions.userIsOrg9 = this.userIsOrg9.checked
+      if (newOptions.user9.length < 1) {
+        newOptions.userIsOrg9 = false
       }
-      let userIsOrg0 = this.userIsOrg0.checked
-      if (user0.length < 1) {
-        userIsOrg0 = false
+      newOptions.userIsOrg0 = this.userIsOrg0.checked
+      if (newOptions.user0.length < 1) {
+        newOptions.userIsOrg0 = false
       }
-      let user = currentOptions.user
-      if (!user || user.length < 1) {
-        if (user8.length > 0) {
-          user = user8
-        } else if (user9.length > 0) {
-          user = user9
-        } else if (user0.length > 0) {
-          user = user0
+      newOptions.user = currentOptions.user
+      if (!newOptions.user || newOptions.user.length < 1) {
+        if (newOptions.user8.length > 0) {
+          newOptions.user = newOptions.user8
+        } else if (newOptions.user9.length > 0) {
+          newOptions.user = newOptions.user9
+        } else if (newOptions.user0.length > 0) {
+          newOptions.user = newOptions.user0
         }
       }
       // Ensure active user is one of the three options
-      if ([user8, user9, user0].indexOf(user) < 0) {
-        user = user8
+      const userOptions = [newOptions.user8, newOptions.user9, newOptions.user0]
+      if (userOptions.indexOf(newOptions.user) < 0) {
+        newOptions.user = newOptions.user8
       }
-      let userIsOrg = userIsOrg8
-      if (user === user9) {
-        userIsOrg = userIsOrg9
-      } else if (user === user0) {
-        userIsOrg = userIsOrg0
+      newOptions.userIsOrg = newOptions.userIsOrg8
+      if (newOptions.user === newOptions.user9) {
+        newOptions.userIsOrg = newOptions.userIsOrg9
+      } else if (newOptions.user === newOptions.user0) {
+        newOptions.userIsOrg = newOptions.userIsOrg0
       }
 
-      let active = currentOptions.active
-      if (!active) {
-        if (repository && repository.length > 0) {
-          active = 'repository'
+      newOptions.active = currentOptions.active
+      if (!newOptions.active) {
+        if (newOptions.repository && newOptions.repository.length > 0) {
+          newOptions.active = 'repository'
         } else if (user && user.length > 0) {
-          active = userIsOrg ? 'organization' : 'user'
-        } else if (projectRepo && projectRepo.length > 0 &&
-                   projectNumber && projectNumber.length > 0 &&
-                   projectName && projectName.length > 0) {
-          active = 'project'
-        } else if (projectOrg && projectOrg.length > 0 &&
-                   projectNumber && projectNumber.length > 0 &&
-                   projectName && projectName.length > 0) {
-          active = 'project'
+          newOptions.active = userIsOrg ? 'organization' : 'user'
+        } else if (newOptions.projectRepo && newOptions.projectRepo.length > 0 &&
+                   newOptions.projectNumber && newOptions.projectNumber.length > 0 &&
+                   newOptions.projectName && newOptions.projectName.length > 0) {
+          newOptions.active = 'project'
+        } else if (newOptions.projectOrg && newOptions.projectOrg.length > 0 &&
+                   newOptions.projectNumber && newOptions.projectNumber.length > 0 &&
+                   newOptions.projectName && newOptions.projectName.length > 0) {
+          newOptions.active = 'project'
         }
       }
 
-      const closedIssues = this.closedIssues.checked
-      const newIssue = this.newIssue.checked
-      const mergedPullRequests = this.mergedPullRequests.checked
-      const closedPullRequests = this.closedPullRequests.checked
-      const newPullRequest = this.newPullRequest.checked
+      newOptions.closedIssues = this.closedIssues.checked
+      newOptions.newIssue = this.newIssue.checked
+      newOptions.mergedPullRequests = this.mergedPullRequests.checked
+      newOptions.closedPullRequests = this.closedPullRequests.checked
+      newOptions.newPullRequest = this.newPullRequest.checked
 
-      const newOptions = {
-        repository, repository1, repository2, repository3, repository4, defaultBranch1,
-        defaultBranch2, defaultBranch3, defaultBranch4, defaultBranch, closedIssues, newIssue,
-        mergedPullRequests, active, newPullRequest, user8, user9, user0, userIsOrg8, userIsOrg9,
-        userIsOrg0, user, userIsOrg, closedPullRequests, projectRepo5, projectRepo6,
-        projectRepo7, projectOrg5, projectOrg6, projectOrg7, projectNumber5, projectNumber6,
-        projectNumber7, projectRepo, projectOrg, projectNumber, projectName, projectName5,
-        projectName6, projectName7
-      }
       HubnavStorage.save(newOptions).then(() => this.flashSaveNotice())
+    })
+  }
+
+  loadTemplate(template, container, populate) {
+    const clone = template.content.cloneNode(true)
+    if (typeof populate === 'function') {
+      populate(clone)
+    }
+    container.appendChild(clone)
+  }
+
+  addRepository(i, repo, defaultBranch) {
+    this.loadTemplate(this.repoTemplate, this.reposContainer, repoEl => {
+      repoEl.querySelector('.i').textContent = i
+      const repoInputID = `repository${i}`
+      repoEl.querySelector('.repository-label').htmlFor = repoInputID
+      const repoInput = repoEl.querySelector('.repository-input')
+      repoInput.id = repoInputID
+      repoInput.value = repo
+      repoInput.setAttribute('data-key', i)
+      repoInput.addEventListener('keyup', e => this.onRepoKeyup(e, i))
+      const branchInputID = `default-branch${i}`
+      repoEl.querySelector('.default-branch-label').htmlFor = branchInputID
+      const branchInput = repoEl.querySelector('.default-branch-input')
+      branchInput.id = branchInputID
+      branchInput.value = defaultBranch || 'master'
+      branchInput.setAttribute('data-key', i)
+      branchInput.addEventListener('keyup', e => this.onDefaultBranchKeyup(e, i))
+      const repoLogo = repoEl.querySelector('.repository-logo')
+      repoLogo.addEventListener('load', e => this.onRepoLogoLoad(e, i))
+      repoLogo.addEventListener('error', e => this.onRepoLogoError(e, i))
+      this.loadRepoLogo(repo, i, repoLogo)
     })
   }
 
@@ -551,10 +560,8 @@ class OptionsPage {
       for (let i of REPO_SHORTCUTS) {
         const repo = options[`repository${i}`]
         if (repo && repo.length > 0) {
-          this[`repoInput${i}`].value = repo
-          this.loadRepoLogo(repo, i)
+          this.addRepository(i, repo, options[`defaultBranch${i}`])
         }
-        this[`defaultBranchInput${i}`].value = options[`defaultBranch${i}`] || 'master'
       }
       for (let i of PROJECT_SHORTCUTS) {
         const projectRepo = options[`projectRepo${i}`]
