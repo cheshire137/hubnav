@@ -159,7 +159,9 @@ class PopupPage {
           params += `+author%3A${user}`
         }
         this.openTab(`https://github.com/search${params}`)
-      } else if (options.repository && options.repository.length > 0) {
+
+      } else if (options.active === 'repository' && options.repository &&
+                 options.repository.length > 0) {
         this.highlightShortcut(this.iShortcuts)
         let path = '/issues'
         if (this.shiftPressed) { // closed
@@ -168,6 +170,21 @@ class PopupPage {
           path += '/new'
         }
         this.openTab(this.repoUrl(options.repository, path))
+
+      } else if (options.active === 'project' && options.projectNumber &&
+                 options.projectNumber.length > 0 && options.projectRepo &&
+                 options.projectRepo.length > 0) {
+        this.highlightShortcut(this.iShortcuts)
+        const args = this.argsForProjectUrl('issues')
+        this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber, args))
+
+      } else if (options.active === 'project' && options.projectNumber &&
+                 options.projectNumber.length > 0 && options.projectOrg &&
+                 options.projectOrg.length > 0) {
+        this.highlightShortcut(this.iShortcuts)
+        const args = this.argsForProjectUrl('issues')
+        this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber, args))
+
       } else {
         this.openRepoSelect()
       }
@@ -233,14 +250,14 @@ class PopupPage {
                  options.projectNumber.length > 0 && options.projectRepo &&
                  options.projectRepo.length > 0) {
         this.highlightShortcut(this.pShortcuts)
-        const args = this.argsForProjectUrl()
+        const args = this.argsForProjectUrl('pull_requests')
         this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber, args))
 
       } else if (options.active === 'project' && options.projectNumber &&
                  options.projectNumber.length > 0 && options.projectOrg &&
                  options.projectOrg.length > 0) {
         this.highlightShortcut(this.pShortcuts)
-        const args = this.argsForProjectUrl()
+        const args = this.argsForProjectUrl('pull_requests')
         this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber, args))
 
       } else {
@@ -249,14 +266,24 @@ class PopupPage {
     })
   }
 
-  argsForProjectUrl() {
-    let query = 'is%3Apr'
-    if (this.shiftPressed) { // merged
-      query += '+is%3Amerged'
-    } else if (this.ctrlPressed) { // closed, not merged
-      query += '+is%3Aclosed+is%3Aunmerged'
-    } else {
-      query += '+is%3Aopen'
+  argsForProjectUrl(type) {
+    let query = ''
+    if (type === 'pull_requests') { // pull requests
+      query = 'is%3Apr'
+      if (this.shiftPressed) { // merged
+        query += '+is%3Amerged'
+      } else if (this.ctrlPressed) { // closed, not merged
+        query += '+is%3Aclosed+is%3Aunmerged'
+      } else {
+        query += '+is%3Aopen'
+      }
+    } else { // issues
+      query = 'is%3Aissue'
+      if (this.shiftPressed) {
+        query += '+is%3Aclosed'
+      } else {
+        query += '+is%3Aopen'
+      }
     }
     return `&card_filter_query=${query}`
   }
