@@ -104,12 +104,12 @@ class PopupPage {
 
   openTeams() {
     HubnavStorage.load().then(options => {
-      if (options.organization && options.organization.length > 0) {
+      if (options.user && options.user.length > 0 && options.userIsOrg) {
         this.highlightShortcut(this.tShortcuts)
-        const org = encodeURIComponent(options.organization)
+        const org = encodeURIComponent(options.user)
         this.openTab(`https://github.com/orgs/${org}/teams`)
       } else {
-        this.openOrgSelect()
+        this.openOptions()
       }
     })
   }
@@ -301,9 +301,9 @@ class PopupPage {
 
   openOrgMembers() {
     HubnavStorage.load().then(options => {
-      if (options.organization && options.organization.length > 0) {
+      if (options.user && options.user.length > 0 && options.userIsOrg) {
         this.highlightShortcut(this.mShortcuts)
-        const org = encodeURIComponent(options.organization)
+        const org = encodeURIComponent(options.user)
         this.openTab(`https://github.com/orgs/${org}/people`)
       } else {
         this.openOptions()
