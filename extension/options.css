@@ -64,6 +64,9 @@
 
 .flex-row .subtitle {
   width: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .flex-row + .flex-row {
@@ -111,9 +114,19 @@
 }
 
 .button .octicon {
-  margin-right: 10px;
+  margin-right: 0.5em;
 }
 
 .add-button {
   margin-top: 1em;
+}
+
+.button.is-link {
+  padding-left: 0;
+  padding-right: 0;
+  text-decoration: none;
+}
+
+.button.is-link.remove-repository-button {
+  color: #555;
 }

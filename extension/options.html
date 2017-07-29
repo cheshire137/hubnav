@@ -42,9 +42,13 @@
         </div>
 
         <template id="repository-template">
-          <div class="flex-row">
+          <div class="flex-row repository-container">
             <h3 class="subtitle is-5">
-              Shortcut <span class="i"></span>
+              <span>Shortcut <span class="i"></span></span>
+              <button type="button" class="button is-small is-link remove-repository-button">
+                <svg class="octicon octicon-x" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z"></path></svg>
+                Remove
+              </button>
             </h3>
             <div class="fields">
               <div class="field is-horizontal">

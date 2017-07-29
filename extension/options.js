@@ -546,25 +546,41 @@ class OptionsPage {
   addRepository(i, repo, defaultBranch) {
     this.loadTemplate(this.repoTemplate, this.reposContainer, repoEl => {
       repoEl.querySelector('.i').textContent = i
+
       const repoInputID = `repository${i}`
       repoEl.querySelector('.repository-label').htmlFor = repoInputID
+
       const repoInput = repoEl.querySelector('.repository-input')
       repoInput.id = repoInputID
       repoInput.value = repo
       repoInput.setAttribute('data-key', i)
       repoInput.addEventListener('keyup', e => this.onRepoKeyup(e, i))
+
       const branchInputID = `default-branch${i}`
       repoEl.querySelector('.default-branch-label').htmlFor = branchInputID
+
       const branchInput = repoEl.querySelector('.default-branch-input')
       branchInput.id = branchInputID
       branchInput.value = defaultBranch || 'master'
       branchInput.setAttribute('data-key', i)
       branchInput.addEventListener('keyup', e => this.onDefaultBranchKeyup(e, i))
+
       const repoLogo = repoEl.querySelector('.repository-logo')
       repoLogo.addEventListener('load', e => this.onRepoLogoLoad(e, i))
       repoLogo.addEventListener('error', e => this.onRepoLogoError(e, i))
       this.loadRepoLogo(repo, i, repoLogo)
+
+      const removeButton = repoEl.querySelector('.remove-repository-button')
+      removeButton.addEventListener('click', e => this.removeRepository(e, i))
     })
+  }
+
+  removeRepository(event, i) {
+    const button = event.target
+    button.blur()
+    const container = button.closest('.repository-container')
+    container.remove()
+    this.saveOptions()
   }
 
   restoreOptions() {

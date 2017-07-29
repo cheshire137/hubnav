@@ -159,12 +159,6 @@ body {
   margin-bottom: 0;
 }
 
-.octicon {
-  display: inline-block;
-  vertical-align: text-top;
-  fill: currentColor;
-}
-
 .shortcut .octicon {
   color: #777;
   padding-top: 1px;
