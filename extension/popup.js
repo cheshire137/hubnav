@@ -187,15 +187,12 @@ class PopupPage {
                  options.projectNumber.length > 0 && options.projectRepo &&
                  options.projectRepo.length > 0) {
         this.highlightShortcut(this.vShortcuts)
-        const number = encodeURIComponent(options.projectNumber)
-        this.openTab(this.repoUrl(options.projectRepo, `/projects/${number}?fullscreen=true`))
+        this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber))
       } else if (options.active === 'project' && options.projectNumber &&
                  options.projectNumber.length > 0 && options.projectOrg &&
                  options.projectOrg.length > 0) {
         this.highlightShortcut(this.vShortcuts)
-        const org = encodeURIComponent(options.projectOrg)
-        const number = encodeURIComponent(options.projectNumber)
-        this.openTab(`https://github.com/orgs/${org}/projects/${number}?fullscreen=true`)
+        this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber))
       } else {
         this.openOptions()
       }
@@ -220,7 +217,9 @@ class PopupPage {
           params += `+author%3A${user}`
         }
         this.openTab(`https://github.com/search${params}`)
-      } else if (options.repository && options.repository.length > 0) {
+
+      } else if (options.active === 'repository' && options.repository &&
+                 options.repository.length > 0) {
         this.highlightShortcut(this.pShortcuts)
         let path = '/pulls'
         if (this.shiftPressed) {
@@ -229,10 +228,48 @@ class PopupPage {
           path = '/compare'
         }
         this.openTab(this.repoUrl(options.repository, path))
+
+      } else if (options.active === 'project' && options.projectNumber &&
+                 options.projectNumber.length > 0 && options.projectRepo &&
+                 options.projectRepo.length > 0) {
+        this.highlightShortcut(this.pShortcuts)
+        const args = this.argsForProjectUrl()
+        this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber, args))
+
+      } else if (options.active === 'project' && options.projectNumber &&
+                 options.projectNumber.length > 0 && options.projectOrg &&
+                 options.projectOrg.length > 0) {
+        this.highlightShortcut(this.pShortcuts)
+        const args = this.argsForProjectUrl()
+        this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber, args))
+
       } else {
         this.openRepoSelect()
       }
     })
+  }
+
+  argsForProjectUrl() {
+    let query = 'is%3Apr'
+    if (this.shiftPressed) { // merged
+      query += '+is%3Amerged'
+    } else if (this.ctrlPressed) { // closed, not merged
+      query += '+is%3Aclosed+is%3Aunmerged'
+    } else {
+      query += '+is%3Aopen'
+    }
+    return `&card_filter_query=${query}`
+  }
+
+  repoProjectUrl(repo, rawNumber, args) {
+    const number = encodeURIComponent(rawNumber)
+    return this.repoUrl(repo, `/projects/${number}?fullscreen=true${args || ''}`)
+  }
+
+  orgProjectUrl(rawOrg, rawNumber, args) {
+    const org = encodeURIComponent(rawOrg)
+    const number = encodeURIComponent(rawNumber)
+    return `https://github.com/orgs/${org}/projects/${number}?fullscreen=true${args || ''}`
   }
 
   openOrgMembers() {
