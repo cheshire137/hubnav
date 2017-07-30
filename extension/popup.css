@@ -10,6 +10,13 @@ body {
   padding: 0 0.75rem;
 }
 
+.content dl.shortcuts-list.general-commands-list:not(:last-child) {
+  border-top: 1px dashed #ddd;
+  padding-top: 0.3rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .shortcuts-list dt,
 .modifier-key {
   background-color: #eee;
@@ -24,10 +31,11 @@ body {
   text-align: right;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-top: 0.1em;
+  margin-top: 0.25em;
   border-radius: 3px;
   padding: 0.2em 0.5em;
   font-weight: 700;
+  line-height: 1;
 }
 
 .shortcut {
@@ -43,20 +51,20 @@ body {
 .shortcuts-list dd {
   margin-left: 1.9em;
   border-radius: 3px;
-  padding: 0.2em 0.4em;
+  padding: 0.3em 0.4em 0.1em 0.4em;
 }
 
 .shortcuts-list dd:not(:last-child) {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.3rem;
 }
 
 .shortcuts-list dd .modifier {
   font-size: 0.8rem;
-  margin-top: 0.25rem;
+  margin-top: 0.3rem;
 }
 
 .modifier-key {
-  padding: 0.1em 0.3em;
+  padding: 0.15em 0.3em;
   border-radius: 1px;
 }
 
@@ -77,12 +85,17 @@ body {
   margin-top: 0;
 }
 
+.content dl:last-child,
+.content dl:not(:last-child) {
+  margin-bottom: 0;
+}
+
 .title:not(:last-child) {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.3rem;
 }
 
 .subtitle:not(:last-child) {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.3rem;
 }
 
 .title.is-6 {
@@ -111,11 +124,6 @@ body {
   font-weight: inherit;
 }
 
-.content dl:not(:last-child),
-.content dl:last-child {
-  margin-bottom: 0.75rem;
-}
-
 .user-logo {
   width: 18px;
   height: 18px;
@@ -134,9 +142,17 @@ body {
   font-size: 0.875rem;
 }
 
+.context-switch {
+  clear: left;
+  padding-bottom: 0.5rem;
+  background-color: #fbfbfb;
+  border-top: 1px solid #ddd;
+}
+
 .context-switch .subtitle.is-6 {
   padding-top: 0.3em;
   padding-bottom: 0.3em;
+  font-style: italic;
 }
 
 .context-switch .shortcuts-list {
@@ -161,7 +177,7 @@ body {
 
 .shortcut .octicon {
   color: #777;
-  padding-top: 1px;
+  margin-top: 1px;
 }
 
 .grow {
