@@ -24,6 +24,7 @@ Use keyboard shortcuts to quickly access issues, pull requests, and the file fin
 
     - **o** - customize settings for the extension
     - **s** - open global GitHub search
+    - **v** - view the home page for the active repository, user, organization, or project
 
     **Repository commands:**
 
@@ -42,12 +43,9 @@ Use keyboard shortcuts to quickly access issues, pull requests, and the file fin
     - **m** - view members of your selected organization
     - **r** - view repositories in your selected organization
 
-    **Quick repository switching:**
+    **Switch context:**
 
-    - **1** - switch to your first repository
-    - **2** - switch to your second repository
-    - **3** - switch to your third repository
-    - **4** - switch to your fourth repository
+    - Keys **0-9** will change your context to a different repository, project, user, or organization. This changes what the other shortcuts do.
 
 ## How to Develop
 
