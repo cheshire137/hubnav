@@ -700,14 +700,26 @@ class OptionsPage {
 
   removeProject(event, i) {
     this.removeShortcut(event, i, '.project-container')
+    const numProjectsLoaded = document.querySelectorAll('.project-name-input').length
+    if (numProjectsLoaded < PROJECT_SHORTCUTS.length) {
+      this.addProjectButton.style.display = 'block'
+    }
   }
 
   removeUser(event, i) {
     this.removeShortcut(event, i, '.user-container')
+    const numUsersLoaded = document.querySelectorAll('.login-input').length
+    if (numUsersLoaded < USER_SHORTCUTS.length) {
+      this.addUserButton.style.display = 'block'
+    }
   }
 
   removeRepository(event, i) {
     this.removeShortcut(event, i, '.repository-container')
+    const numReposLoaded = document.querySelectorAll('.repository-input').length
+    if (numReposLoaded < REPO_SHORTCUTS.length) {
+      this.addRepoButton.style.display = 'block'
+    }
   }
 
   removeShortcut(event, i, containerClass) {
