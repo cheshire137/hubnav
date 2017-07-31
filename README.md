@@ -54,3 +54,10 @@ Clone this repository locally via
 `chrome://extensions/` and ensure "Developer mode" is
 enabled. Then click "Load unpacked extension..." and
 choose the extension/ directory from wherever you cloned this repository.
+
+## How to Test
+
+```bash
+bundle install
+bundle exec rspec
+```
