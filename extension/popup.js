@@ -85,7 +85,8 @@ class PopupPage {
       if (options.repository && options.repository.length > 0) {
         this.highlightShortcut(this.fShortcuts)
         const defaultBranch = options.defaultBranch || 'master'
-        this.openTab(this.repoUrl(options.repository, `/find/${defaultBranch}`))
+        const path = `/find/${defaultBranch}`
+        this.openTab(this.repoUrl(options.repository, path, options.githubUrl))
       } else {
         this.openRepoSelect()
       }
@@ -170,7 +171,7 @@ class PopupPage {
         } else if (this.ctrlPressed) { // new
           path += '/new'
         }
-        this.openTab(this.repoUrl(options.repository, path))
+        this.openTab(this.repoUrl(options.repository, path, options.githubUrl))
 
       } else if (options.active === 'project' && options.projectNumber &&
                  options.projectNumber.length > 0 && options.projectRepo &&
@@ -196,7 +197,7 @@ class PopupPage {
     HubnavStorage.load().then(options => {
       if (options.active === 'repository' && options.repository && options.repository.length > 0) {
         this.highlightShortcut(this.vShortcuts)
-        this.openTab(this.repoUrl(options.repository))
+        this.openTab(this.repoUrl(options.repository, null, options.githubUrl))
       } else if (options.active === 'user' && options.user && options.user.length > 0) {
         this.highlightShortcut(this.vShortcuts)
         const user = encodeURIComponent(options.user)
@@ -246,7 +247,7 @@ class PopupPage {
         } else if (this.ctrlPressed) {
           path = '/compare'
         }
-        this.openTab(this.repoUrl(options.repository, path))
+        this.openTab(this.repoUrl(options.repository, path, options.githubUrl))
 
       } else if (options.active === 'project' && options.projectNumber &&
                  options.projectNumber.length > 0 && options.projectRepo &&
@@ -292,7 +293,8 @@ class PopupPage {
 
   repoProjectUrl(repo, rawNumber, args) {
     const number = encodeURIComponent(rawNumber)
-    return this.repoUrl(repo, `/projects/${number}?fullscreen=true${args || ''}`)
+    const path = `/projects/${number}?fullscreen=true${args || ''}`
+    return this.repoUrl(repo, path)
   }
 
   orgProjectUrl(rawOrg, rawNumber, args) {
@@ -417,11 +419,15 @@ class PopupPage {
       }
       const newRepo = currentOptions[`repository${i}`]
       const newDefaultBranch = currentOptions[`defaultBranch${i}`]
+      const newGithubUrl = currentOptions[`githubUrl${i}`]
       if (newRepo && newRepo.length > 0) {
         newOptions.repository = newRepo
       }
       if (newDefaultBranch && newDefaultBranch.length > 0) {
         newOptions.defaultBranch = newDefaultBranch
+      }
+      if (newGithubUrl && newGithubUrl.length > 0) {
+        newOptions.githubUrl = newGithubUrl
       }
       newOptions.active = 'repository'
       HubnavStorage.save(newOptions).then(() => {
@@ -442,11 +448,12 @@ class PopupPage {
     this.executeShortcut(key)
   }
 
-  repoUrl(repo, path) {
+  repoUrl(repo, path, githubUrl) {
     const parts = repo.split('/')
     const owner = encodeURIComponent(parts[0])
     const name = encodeURIComponent(parts[1])
-    return `https://github.com/${owner}/${name}${path || ''}`
+    const baseUrl = (githubUrl || 'https://github.com').replace(/\/+$/, '')
+    return `${baseUrl}/${owner}/${name}${path || ''}`
   }
 
   executeShortcut(key) {

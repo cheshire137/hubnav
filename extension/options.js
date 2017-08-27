@@ -434,7 +434,7 @@ class OptionsPage {
           const url = urlInput.value.trim()
           newOptions[`githubUrl${i}`] = url
           if (newOptions.repository === repo) {
-            newOptions.defaultGithubUrl = url
+            newOptions.githubUrl = url
           }
         }
       }
