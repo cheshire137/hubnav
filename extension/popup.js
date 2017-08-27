@@ -147,7 +147,7 @@ class PopupPage {
     HubnavStorage.load().then(options => {
       if (options.active === 'user' && options.user && options.user.length > 0) {
         this.highlightShortcut(this.iShortcuts)
-        let params = '?q=is%3Aissue'
+        let params = '?utf8=✓&q=is%3Aissue'
         if (this.shiftPressed) { // closed
           params += '+is%3Aclosed'
         } else { // open
@@ -166,7 +166,7 @@ class PopupPage {
         this.highlightShortcut(this.iShortcuts)
         let path = '/issues'
         if (this.shiftPressed) { // closed
-          path += '?q=is%3Aissue+is%3Aclosed'
+          path += '?utf8=✓&q=is%3Aissue+is%3Aclosed'
         } else if (this.ctrlPressed) { // new
           path += '/new'
         }
@@ -222,7 +222,7 @@ class PopupPage {
       if (options.active === 'user' && options.user && options.user.length > 0) {
         this.highlightShortcut(this.pShortcuts)
         const user = encodeURIComponent(options.user)
-        let params = '?q=is%3Apr'
+        let params = '?utf8=✓&q=is%3Apr'
         if (options.userIsOrg) {
           params += `+org%3A${user}`
         } else {
@@ -242,7 +242,7 @@ class PopupPage {
         this.highlightShortcut(this.pShortcuts)
         let path = '/pulls'
         if (this.shiftPressed) {
-          path += '?is%3Apr%20is%3Amerged'
+          path += '?utf8=✓&is%3Apr%20is%3Amerged'
         } else if (this.ctrlPressed) {
           path = '/compare'
         }
