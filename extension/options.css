@@ -130,3 +130,7 @@
 .button.is-link.remove-repository-button {
   color: #555;
 }
+
+.field.is-horizontal .field-body {
+  flex-direction: column;
+}
