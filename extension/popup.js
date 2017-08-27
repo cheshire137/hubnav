@@ -4,6 +4,7 @@ class PopupPage {
     this.shiftPressed = false
     this.ctrlPressed = false
     this.commandSelected = false
+    this.altPressed = false
   }
 
   findElements() {
@@ -76,6 +77,7 @@ class PopupPage {
       this.ctrlPressed = false
       this.shiftPressed = false
       this.commandSelected = false
+      this.altPressed = false
       action()
     }, 400)
   }
@@ -123,7 +125,7 @@ class PopupPage {
   }
 
   highlightModifier(shortcut) {
-    if (!this.shiftPressed && !this.ctrlPressed) {
+    if (!this.shiftPressed && !this.ctrlPressed && !this.altPressed) {
       return
     }
 
@@ -137,6 +139,8 @@ class PopupPage {
       modifier = parent.querySelector('.shift-modifier')
     } else if (this.ctrlPressed) {
       modifier = parent.querySelector('.ctrl-modifier')
+    } else if (this.altPressed) {
+      modifier = parent.querySelector('.alt-modifier')
     }
 
     if (modifier) {
@@ -246,6 +250,8 @@ class PopupPage {
           path += '?utf8=✓&is%3Apr%20is%3Amerged'
         } else if (this.ctrlPressed) {
           path = '/compare'
+        } else if (this.altPressed) {
+          path += '?utf8=✓&q=is%3Apr%20is%3Aclosed+is%3Aunmerged'
         }
         this.openTab(this.repoUrl(options.repository, path, options.githubUrl))
 
@@ -470,7 +476,7 @@ class PopupPage {
       this.openOptions()
     } else if (key === 'i') {
       this.openIssues()
-    } else if (key === 'p') {
+    } else if (key === 'p' || key === 'π') {
       this.openPullRequests()
     } else if (key === 'v') {
       this.openHomeForContext()
@@ -488,6 +494,8 @@ class PopupPage {
       this.shiftPressed = true
     } else if (key === 'control') {
       this.ctrlPressed = true
+    } else if (key === 'alt') {
+      this.altPressed = true
     }
   }
 
