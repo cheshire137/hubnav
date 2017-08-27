@@ -16,6 +16,14 @@ class OptionsPage {
     return slashIndex > 0 && slashIndex < repo.length - 1
   }
 
+  isValidUrl(url) {
+    const regexQuery = "^(https?://)?(www\\.)?([-a-z0-9]{1,63}\\.)*?[a-z0-9][-a-z0-9]{0,61}[a-z0-9]\\.[a-z]{2,6}(/[-\\w@\\+\\.~#\\?&/=%]*)?$"
+    if (new RegExp(regexQuery, "i").test(url)) {
+      return true
+    }
+    return false
+  }
+
   checkFormValidity() {
     const repoInputs = document.querySelectorAll('.repository-input')
     for (let repoInput of repoInputs) {
@@ -26,6 +34,18 @@ class OptionsPage {
       } else {
         this.errors[`repository${i}`] = true
         this.flashErrorMessage(`Invalid repository: shortcut ${i}`)
+      }
+    }
+
+    const githubUrlInputs = document.querySelectorAll('.github-url-input')
+    for (let urlInput of githubUrlInputs) {
+      const i = urlInput.getAttribute('data-key')
+      const url = urlInput.value.trim()
+      if (this.isValidUrl(url)) {
+        delete this.errors[`githubUrl${i}`]
+      } else {
+        this.errors[`githubUrl${i}`] = true
+        this.flashErrorMessage(`Invalid GitHub URL: shortcut ${i}`)
       }
     }
 
@@ -184,6 +204,15 @@ class OptionsPage {
       clearTimeout(this[`defaultBranchTimer${i}`])
     }
     this[`defaultBranchTimer${i}`] = setTimeout(() => {
+      this.checkFormValidity()
+    }, 750)
+  }
+
+  onGithubUrlKeyup(event, i) {
+    if (this[`githubUrlTimer${i}`]) {
+      clearTimeout(this[`githubUrlTimer${i}`])
+    }
+    this[`githubUrlTimer${i}`] = setTimeout(() => {
       this.checkFormValidity()
     }, 750)
   }
@@ -397,6 +426,19 @@ class OptionsPage {
         }
       }
 
+      const githubUrlInputs = document.querySelectorAll('.github-url-input')
+      for (let urlInput of githubUrlInputs) {
+        const i = urlInput.getAttribute('data-key')
+        const repo = newOptions[`repository${i}`]
+        if (repo && repo.length > 0) {
+          const url = urlInput.value.trim()
+          newOptions[`githubUrl${i}`] = url
+          if (newOptions.repository === repo) {
+            newOptions.defaultGithubUrl = url
+          }
+        }
+      }
+
       const projectNameInputs = document.querySelectorAll('.project-name-input')
       for (let nameInput of projectNameInputs) {
         const name = nameInput.value.trim()
@@ -561,7 +603,7 @@ class OptionsPage {
     const repoInputs = document.querySelectorAll('.repository-input')
     const shortcutAndNode = this.getNextShortcut(repoInputs, REPO_SHORTCUTS,
                                                  '.repository-container')
-    this.addRepository(shortcutAndNode[0], '', 'master', shortcutAndNode[1])
+    this.addRepository(shortcutAndNode[0], '', 'master', null, shortcutAndNode[1])
     if (repoInputs.length + 1 >= REPO_SHORTCUTS.length) {
       this.addRepoButton.style.display = 'none'
     }
@@ -664,7 +706,7 @@ class OptionsPage {
     this.loadTemplate(this.userTemplate, this.usersContainer, populate, subsequentNode)
   }
 
-  addRepository(i, repo, defaultBranch, subsequentNode) {
+  addRepository(i, repo, defaultBranch, githubUrl, subsequentNode) {
     const populate = repoEl => {
       repoEl.querySelector('.i').textContent = i
 
@@ -686,6 +728,15 @@ class OptionsPage {
       branchInput.value = defaultBranch || 'master'
       branchInput.setAttribute('data-key', i)
       branchInput.addEventListener('keyup', e => this.onDefaultBranchKeyup(e, i))
+
+      const githubUrlInputID = `github-url-${i}`
+      repoEl.querySelector('.github-url-label').htmlFor = githubUrlInputID
+
+      const githubUrlInput = repoEl.querySelector('.github-url-input')
+      githubUrlInput.id = githubUrlInputID
+      githubUrlInput.value = githubUrl || 'https://github.com'
+      githubUrlInput.setAttribute('data-key', i)
+      githubUrlInput.addEventListener('keyup', e => this.onGithubUrlKeyup(e, i))
 
       const repoLogo = repoEl.querySelector('.repository-logo')
       repoLogo.addEventListener('load', e => this.onRepoLogoLoad(e, i))
@@ -735,7 +786,7 @@ class OptionsPage {
       for (let i of REPO_SHORTCUTS) {
         const repo = options[`repository${i}`]
         if (repo && repo.length > 0) {
-          this.addRepository(i, repo, options[`defaultBranch${i}`])
+          this.addRepository(i, repo, options[`defaultBranch${i}`], options[`githubUrl${i}`])
         }
       }
       const numReposLoaded = document.querySelectorAll('.repository-input').length
