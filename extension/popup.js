@@ -247,7 +247,7 @@ class PopupPage {
         this.highlightShortcut(this.pShortcuts)
         let path = '/pulls'
         if (this.shiftPressed) {
-          path += '?utf8=✓&is%3Apr%20is%3Amerged'
+          path += '?utf8=✓&q=is%3Apr%20is%3Amerged'
         } else if (this.ctrlPressed) {
           path = '/compare'
         } else if (this.altPressed) {
