@@ -1,7 +1,10 @@
 require 'capybara/rspec'
+require 'capybara/poltergeist'
 require 'rack/file'
 
 Capybara.app = Rack::File.new(File.expand_path('..', File.dirname(__FILE__)))
+Capybara.javascript_driver = :poltergeist
+Capybara.current_driver = Capybara.javascript_driver
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|

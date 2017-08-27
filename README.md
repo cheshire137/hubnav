@@ -59,5 +59,6 @@ choose the extension/ directory from wherever you cloned this repository.
 
 ```bash
 bundle install
+brew install phantomjs
 bundle exec rspec
 ```
