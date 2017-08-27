@@ -1,5 +1,11 @@
 # Change Log
 
+0.0.4
+
+- Fixed bug where the shortcut for viewing merged pull requests for a user would not filter correctly.
+- Added ability to set a custom GitHub URL for repository shortcuts. This can be used for GitHub Enterprise installations on custom domains.
+- Added shortcut to view closed pull requests in a repository.
+
 0.0.3
 
 - Added ability to save and switch between multiple users and organizations instead of a single organization.
