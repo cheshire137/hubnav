@@ -501,6 +501,11 @@ class OptionsPage {
       for (let i of PROJECT_SHORTCUTS) {
         const name = newOptions[`projectName${i}`]
         if (name && name.length > 0) {
+          if (newOptions.projectName === name) {
+            newOptions.projectNumber = newOptions[`projectNumber${i}`]
+            newOptions.projectRepo = newOptions[`projectRepo${i}`]
+            newOptions.projectOrg = newOptions[`projectOrg${i}`]
+          }
           if (!newOptions.projectName || newOptions.projectName.length < 1) {
             newOptions.projectName = name
             newOptions.projectNumber = newOptions[`projectNumber${i}`]
@@ -541,6 +546,10 @@ class OptionsPage {
       for (let i of USER_SHORTCUTS) {
         const user = newOptions[`user${i}`]
         if (user && user.length > 0) {
+          if (newOptions.user === user) {
+            newOptions.userIsOrg = newOptions[`userIsOrg${i}`]
+            newOptions.scope = newOptions[`userScope${i}`]
+          }
           if (!newOptions.user || newOptions.user.length < 1) {
             newOptions.user = user
             newOptions.userIsOrg = newOptions[`userIsOrg${i}`]
