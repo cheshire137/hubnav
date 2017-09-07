@@ -175,10 +175,6 @@ class OptionsPage {
     }
   }
 
-  loadProjectOrgLogo(org, imgTag) {
-    this.loadLogoForUser(org, imgTag)
-  }
-
   loadLogoForUser(rawUser, img) {
     const user = encodeURIComponent(rawUser)
     img.src = `https://github.com/${user}.png?size=72`
@@ -217,6 +213,17 @@ class OptionsPage {
     }, 750)
   }
 
+  onUserIsOrgChange(event) {
+    const checkbox = event.target
+    const container = checkbox.closest('.user-container')
+    const scopeContainer = container.querySelector('.user-scope-container')
+    if (checkbox.checked) {
+      scopeContainer.style.display = 'none'
+    } else {
+      scopeContainer.style.display = 'flex'
+    }
+  }
+
   onUserKeyup(event, i) {
     if (this[`userInput${i}Timer`]) {
       clearTimeout(this[`userInput${i}Timer`])
@@ -247,7 +254,26 @@ class OptionsPage {
       if (org.length < 1) {
         this.showDefaultLogoForUser(imgTag)
       } else {
-        this.loadProjectOrgLogo(org, imgTag)
+        this.loadLogoForUser(org, imgTag)
+      }
+      this.checkFormValidity()
+    }, 750)
+  }
+
+  onUserScopeKeyup(event, i) {
+    if (this[`userScopeInput${i}Timer`]) {
+      clearTimeout(this[`userScopeInput${i}Timer`])
+    }
+    const scopeInput = event.target
+    const imgTag = scopeInput.closest('.control').querySelector('.scope-logo')
+    this[`userScopeInput${i}Timer`] = setTimeout(() => {
+      const scope = (scopeInput.value || '').trim()
+      if (scope.length < 1) {
+        this.showDefaultLogoForUser(imgTag)
+      } else if (scope.indexOf('/') > -1) { // repository
+        this.loadRepoLogo(scope, imgTag)
+      } else { // organization
+        this.loadLogoForUser(scope, imgTag)
       }
       this.checkFormValidity()
     }, 750)
@@ -299,6 +325,16 @@ class OptionsPage {
     }
   }
 
+  onUserScopeLogoLoad(event, i) {
+    if (this.isBadLogo(event.target.src)) {
+      return
+    }
+    delete this.errors[`userScopeLogo${i}`]
+    if (!this.anyErrors()) {
+      this.optionsForm.classList.remove('error')
+    }
+  }
+
   onProjectOrgLogoLoad(event, i) {
     if (this.isBadLogo(event.target.src)) {
       return
@@ -337,6 +373,16 @@ class OptionsPage {
     const repo = repoInput.value.trim()
     const user = encodeURIComponent(repo.split('/')[0] || '')
     this.flashErrorMessage(`Invalid project repository ${i}: can't find "${user}"`)
+    this.checkFormValidity()
+  }
+
+  onUserScopeLogoError(event, i) {
+    const imgTag = event.target
+    this.showBadLogoForUser(imgTag)
+    this.errors[`userScopeLogo${i}`] = true
+    const scopeInput = imgTag.closest('.control').querySelector('.scope-input')
+    const scope = encodeURIComponent(scopeInput.value.trim())
+    this.flashErrorMessage(`Invalid scope: can't find organization or repository "${scope}"`)
     this.checkFormValidity()
   }
 
@@ -486,8 +532,10 @@ class OptionsPage {
           const i = userInput.getAttribute('data-key')
           const container = userInput.closest('.user-container')
           const isOrg = container.querySelector('.org-checkbox').checked
+          const scope = container.querySelector('.scope-input').value.trim()
           newOptions[`user${i}`] = user
           newOptions[`userIsOrg${i}`] = isOrg
+          newOptions[`userScope${i}`] = scope
         }
       }
 
@@ -499,6 +547,7 @@ class OptionsPage {
           if (!newOptions.user || newOptions.user.length < 1) {
             newOptions.user = user
             newOptions.userIsOrg = newOptions[`userIsOrg${i}`]
+            newOptions.scope = newOptions[`userScope${i}`]
           }
           userOptions.push(user)
         }
@@ -509,6 +558,7 @@ class OptionsPage {
         for (let i of USER_SHORTCUTS) {
           if (newOptions[`user${i}`] === newOptions.user) {
             newOptions.userIsOrg = newOptions[`userIsOrg${i}`]
+            newOptions.scope = newOptions[`userScope${i}`]
             break
           }
         }
@@ -579,7 +629,12 @@ class OptionsPage {
     const userInputs = document.querySelectorAll('.login-input')
     const shortcutAndNode = this.getNextShortcut(userInputs, USER_SHORTCUTS,
                                                  '.user-container')
-    this.addUser(shortcutAndNode[0], '', false, shortcutAndNode[1])
+    const i = shortcutAndNode[0]
+    const login = ''
+    const isOrg = false
+    const scope = ''
+    const subsequentNode = shortcutAndNode[1]
+    this.addUser(i, login, isOrg, scope, subsequentNode)
     if (userInputs.length + 1 >= USER_SHORTCUTS.length) {
       this.addUserButton.style.display = 'none'
     }
@@ -647,7 +702,7 @@ class OptionsPage {
       repoInput.id = repoInputID
       if (org && org.length > 0) {
         repoInput.disabled = true
-        this.loadProjectOrgLogo(org, orgLogo)
+        this.loadLogoForUser(org, orgLogo)
       } else {
         repoInput.value = repo
       }
@@ -675,30 +730,46 @@ class OptionsPage {
     this.loadTemplate(this.projectTemplate, this.projectsContainer, populate, subsequentNode)
   }
 
-  addUser(i, user, isOrg, subsequentNode) {
+  addUser(i, login, isOrg, scope, subsequentNode) {
     const populate = userEl => {
       userEl.querySelector('.i').textContent = i
 
       const userLogo = userEl.querySelector('.user-logo')
       userLogo.addEventListener('load', e => this.onUserLogoLoad(e, i))
       userLogo.addEventListener('error', e => this.onUserLogoError(e, i))
-      if (user && user.length > 0) {
-        this.loadLogoForUser(user, userLogo)
+      if (login && login.length > 0) {
+        this.loadLogoForUser(login, userLogo)
       }
 
       const loginInputID = `userInput${i}`
       userEl.querySelector('.login-label').htmlFor = loginInputID
 
+      const scopeInputID = `scopeInput${i}`
+      userEl.querySelector('.scope-label').htmlFor = scopeInputID
+
+      const scopeInput = userEl.querySelector('.scope-input')
+      scopeInput.id = scopeInputID
+      scopeInput.value = scope
+      scopeInput.setAttribute('data-key', i)
+      scopeInput.addEventListener('keyup', e => this.onUserScopeKeyup(e, i))
+
+      const scopeLogo = userEl.querySelector('.scope-logo')
+      scopeLogo.addEventListener('load', e => this.onUserScopeLogoLoad(e, i))
+      scopeLogo.addEventListener('error', e => this.onUserScopeLogoError(e, i))
+      if (scope && scope.length > 0) {
+        this.loadLogoForUser(scope, scopeLogo)
+      }
+
       const loginInput = userEl.querySelector('.login-input')
       loginInput.id = loginInputID
-      loginInput.value = user
+      loginInput.value = login
       loginInput.setAttribute('data-key', i)
       loginInput.addEventListener('keyup', e => this.onUserKeyup(e, i))
       loginInput.classList.add('focus-target')
 
       const isOrgCheckbox = userEl.querySelector('.org-checkbox')
       isOrgCheckbox.checked = isOrg
-      isOrgCheckbox.addEventListener('change', () => this.checkFormValidity())
+      isOrgCheckbox.addEventListener('change', e => this.onUserIsOrgChange(e))
 
       const removeButton = userEl.querySelector('.remove-user-button')
       removeButton.addEventListener('click', e => this.removeUser(e, i))
@@ -815,7 +886,8 @@ class OptionsPage {
           if (typeof options[`userIsOrg${i}`] === 'boolean') {
             isOrg = options[`userIsOrg${i}`]
           }
-          this.addUser(i, user, isOrg)
+          const scope = options[`userScope${i}`]
+          this.addUser(i, user, isOrg, scope)
         }
       }
       const numUsersLoaded = document.querySelectorAll('.login-input').length
