@@ -1,5 +1,10 @@
 # Change Log
 
+0.0.5
+
+- Added ability to limit viewing a user's issues or pull requests to those within a specified repository or organization.
+- Improved UI for adding user or organization shortcuts.
+
 0.0.4
 
 - Fixed bug where the shortcut for viewing merged pull requests for a user would not filter correctly.
