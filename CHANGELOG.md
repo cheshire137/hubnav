@@ -1,10 +1,5 @@
 # Change Log
 
-0.0.6
-
-- Fixed UI bug where "undefined" would appear in the scope field for a user shortcut.
-- Improve UI for the scope field in a user shortcut.
-
 0.0.5
 
 - Added ability to limit viewing a user's issues or pull requests to those within a specified repository or organization.
