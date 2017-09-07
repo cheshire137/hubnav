@@ -764,7 +764,7 @@ class OptionsPage {
 
         const scopeInput = userEl.querySelector('.scope-input')
         scopeInput.id = scopeInputID
-        scopeInput.value = scope
+        scopeInput.value = scope || ''
         scopeInput.setAttribute('data-key', i)
         scopeInput.addEventListener('keyup', e => this.onUserScopeKeyup(e, i))
 
