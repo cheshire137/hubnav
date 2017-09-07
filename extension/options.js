@@ -772,7 +772,11 @@ class OptionsPage {
         scopeLogo.addEventListener('load', e => this.onUserScopeLogoLoad(e, i))
         scopeLogo.addEventListener('error', e => this.onUserScopeLogoError(e, i))
         if (scope && scope.length > 0) {
-          this.loadLogoForUser(scope, scopeLogo)
+          if (scope.indexOf('/') > -1) { // repository
+            this.loadRepoLogo(scope, scopeLogo)
+          } else { // organization
+            this.loadLogoForUser(scope, scopeLogo)
+          }
         }
       }
 
