@@ -115,7 +115,9 @@ class OptionsPage {
 
     this.usersContainer = document.getElementById('users-container')
     this.userTemplate = document.getElementById('user-template')
+    this.orgTemplate = document.getElementById('org-template')
     this.addUserButton = document.getElementById('add-user-button')
+    this.addOrgButton = document.getElementById('add-org-button')
 
     this.shortcutTipContainer = document.getElementById('shortcut-tip-container')
     this.shortcut = document.getElementById('shortcut')
@@ -153,6 +155,7 @@ class OptionsPage {
     this.addRepoButton.addEventListener('click', e => this.addRepositoryShortcut(e))
     this.addProjectButton.addEventListener('click', e => this.addProjectShortcut(e))
     this.addUserButton.addEventListener('click', e => this.addUserShortcut(e))
+    this.addOrgButton.addEventListener('click', e => this.addOrgShortcut(e))
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
     this.closedIssues.addEventListener('change', () => this.checkFormValidity())
     this.newIssue.addEventListener('change', () => this.checkFormValidity())
@@ -211,17 +214,6 @@ class OptionsPage {
     this[`githubUrlTimer${i}`] = setTimeout(() => {
       this.checkFormValidity()
     }, 750)
-  }
-
-  onUserIsOrgChange(event) {
-    const checkbox = event.target
-    const container = checkbox.closest('.user-container')
-    const scopeContainer = container.querySelector('.user-scope-container')
-    if (checkbox.checked) {
-      scopeContainer.style.display = 'none'
-    } else {
-      scopeContainer.style.display = 'flex'
-    }
   }
 
   onUserKeyup(event, i) {
@@ -531,11 +523,16 @@ class OptionsPage {
         if (user && user.length > 0) {
           const i = userInput.getAttribute('data-key')
           const container = userInput.closest('.user-container')
-          const isOrg = container.querySelector('.org-checkbox').checked
-          const scope = container.querySelector('.scope-input').value.trim()
+          const isOrg = container.classList.contains('org-container')
           newOptions[`user${i}`] = user
           newOptions[`userIsOrg${i}`] = isOrg
-          newOptions[`userScope${i}`] = scope
+
+          if (isOrg) {
+            delete newOptions[`userScope${i}`]
+          } else {
+            const scope = container.querySelector('.scope-input').value.trim()
+            newOptions[`userScope${i}`] = scope
+          }
         }
       }
 
@@ -624,19 +621,27 @@ class OptionsPage {
     input.classList.remove('focus-target')
   }
 
+  addOrgShortcut(event) {
+    this.addUserOrOrgShortcut(event, true)
+  }
+
   addUserShortcut(event) {
+    this.addUserOrOrgShortcut(event, false)
+  }
+
+  addUserOrOrgShortcut(event, isOrg) {
     event.currentTarget.blur()
     const userInputs = document.querySelectorAll('.login-input')
     const shortcutAndNode = this.getNextShortcut(userInputs, USER_SHORTCUTS,
                                                  '.user-container')
     const i = shortcutAndNode[0]
     const login = ''
-    const isOrg = false
     const scope = ''
     const subsequentNode = shortcutAndNode[1]
     this.addUser(i, login, isOrg, scope, subsequentNode)
     if (userInputs.length + 1 >= USER_SHORTCUTS.length) {
       this.addUserButton.style.display = 'none'
+      this.addOrgButton.style.display = 'none'
     }
     this.focusLastAddedInput()
   }
@@ -744,20 +749,22 @@ class OptionsPage {
       const loginInputID = `userInput${i}`
       userEl.querySelector('.login-label').htmlFor = loginInputID
 
-      const scopeInputID = `scopeInput${i}`
-      userEl.querySelector('.scope-label').htmlFor = scopeInputID
+      if (!isOrg) {
+        const scopeInputID = `scopeInput${i}`
+        userEl.querySelector('.scope-label').htmlFor = scopeInputID
 
-      const scopeInput = userEl.querySelector('.scope-input')
-      scopeInput.id = scopeInputID
-      scopeInput.value = scope
-      scopeInput.setAttribute('data-key', i)
-      scopeInput.addEventListener('keyup', e => this.onUserScopeKeyup(e, i))
+        const scopeInput = userEl.querySelector('.scope-input')
+        scopeInput.id = scopeInputID
+        scopeInput.value = scope
+        scopeInput.setAttribute('data-key', i)
+        scopeInput.addEventListener('keyup', e => this.onUserScopeKeyup(e, i))
 
-      const scopeLogo = userEl.querySelector('.scope-logo')
-      scopeLogo.addEventListener('load', e => this.onUserScopeLogoLoad(e, i))
-      scopeLogo.addEventListener('error', e => this.onUserScopeLogoError(e, i))
-      if (scope && scope.length > 0) {
-        this.loadLogoForUser(scope, scopeLogo)
+        const scopeLogo = userEl.querySelector('.scope-logo')
+        scopeLogo.addEventListener('load', e => this.onUserScopeLogoLoad(e, i))
+        scopeLogo.addEventListener('error', e => this.onUserScopeLogoError(e, i))
+        if (scope && scope.length > 0) {
+          this.loadLogoForUser(scope, scopeLogo)
+        }
       }
 
       const loginInput = userEl.querySelector('.login-input')
@@ -767,14 +774,12 @@ class OptionsPage {
       loginInput.addEventListener('keyup', e => this.onUserKeyup(e, i))
       loginInput.classList.add('focus-target')
 
-      const isOrgCheckbox = userEl.querySelector('.org-checkbox')
-      isOrgCheckbox.checked = isOrg
-      isOrgCheckbox.addEventListener('change', e => this.onUserIsOrgChange(e))
-
       const removeButton = userEl.querySelector('.remove-user-button')
       removeButton.addEventListener('click', e => this.removeUser(e, i))
     }
-    this.loadTemplate(this.userTemplate, this.usersContainer, populate, subsequentNode)
+
+    const template = isOrg ? this.orgTemplate : this.userTemplate
+    this.loadTemplate(template, this.usersContainer, populate, subsequentNode)
   }
 
   addRepository(i, repo, defaultBranch, githubUrl, subsequentNode) {

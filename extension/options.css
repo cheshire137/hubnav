@@ -119,6 +119,11 @@
 
 .add-button {
   margin-top: 1em;
+  display: block;
+}
+
+.add-button + .add-button {
+  margin-top: 0.25em;
 }
 
 .button.is-link {
