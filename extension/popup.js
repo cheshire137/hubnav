@@ -159,10 +159,18 @@ class PopupPage {
           params += '+is%3Aopen'
         }
         const user = encodeURIComponent(options.user)
-        if (options.userIsOrg) {
+        if (options.userIsOrg) { // organization
           params += `+org%3A${user}`
-        } else {
+        } else { // user
           params += `+author%3A${user}`
+          if (options.scope && options.scope.length > 0) {
+            if (options.scope.indexOf('/') > -1) { // repository
+              const ownerAndName = options.scope.split('/')
+              params += `+repo%3A${ownerAndName[0]}%2F${ownerAndName[1]}`
+            } else { // organization
+              params += `+org%3A${options.scope}`
+            }
+          }
         }
         this.openTab(`https://github.com/issues${params}`)
 
@@ -228,10 +236,18 @@ class PopupPage {
         this.highlightShortcut(this.pShortcuts)
         const user = encodeURIComponent(options.user)
         let params = '?utf8=✓&q=is%3Apr'
-        if (options.userIsOrg) {
+        if (options.userIsOrg) { // organization
           params += `+org%3A${user}`
-        } else {
+        } else { // user
           params += `+author%3A${user}`
+          if (options.scope && options.scope.length > 0) {
+            if (options.scope.indexOf('/') > -1) { // repository
+              const ownerAndName = options.scope.split('/')
+              params += `+repo%3A${ownerAndName[0]}%2F${ownerAndName[1]}`
+            } else { // organization
+              params += `+org%3A${options.scope}`
+            }
+          }
         }
         if (this.shiftPressed) { // merged
           params += '+is%3Amerged'
@@ -363,6 +379,7 @@ class PopupPage {
       if (newUser && newUser.length > 0) {
         newOptions.user = newUser
         newOptions.userIsOrg = currentOptions[`userIsOrg${i}`]
+        newOptions.scope = currentOptions[`userScope${i}`]
       }
       newOptions.active = 'user'
 
