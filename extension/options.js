@@ -25,6 +25,7 @@ class OptionsPage {
   }
 
   openChromeExtensions(event) {
+    event.preventDefault()
     event.target.blur()
     chrome.tabs.create({ url: 'chrome://extensions' })
   }
