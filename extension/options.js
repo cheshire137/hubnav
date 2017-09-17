@@ -111,20 +111,19 @@ class OptionsPage {
   }
 
   findElements() {
-    this.reposContainer = document.getElementById('repositories-container')
     this.repoTemplate = document.getElementById('repository-template')
     this.addRepoButton = document.getElementById('add-repository-button')
 
-    this.projectsContainer = document.getElementById('projects-container')
     this.projectTemplate = document.getElementById('project-template')
     this.addProjectButton = document.getElementById('add-project-button')
 
-    this.usersContainer = document.getElementById('users-container')
     this.userTemplate = document.getElementById('user-template')
-    this.orgTemplate = document.getElementById('org-template')
     this.addUserButton = document.getElementById('add-user-button')
+
+    this.orgTemplate = document.getElementById('org-template')
     this.addOrgButton = document.getElementById('add-org-button')
 
+    this.shortcutsContainer = document.getElementById('shortcuts-container')
     this.shortcutTipContainer = document.getElementById('shortcut-tip-container')
     this.noShortcutTipContainer = document.getElementById('no-shortcut-tip-container')
     this.shortcut = document.getElementById('shortcut')
@@ -774,7 +773,7 @@ class OptionsPage {
       const removeButton = projectEl.querySelector('.remove-project-button')
       removeButton.addEventListener('click', e => this.removeProject(e, i))
     }
-    this.loadTemplate(this.projectTemplate, this.projectsContainer, populate, subsequentNode)
+    this.loadTemplate(this.projectTemplate, this.shortcutsContainer, populate, subsequentNode)
   }
 
   addUser(i, login, isOrg, scope, subsequentNode) {
@@ -825,7 +824,7 @@ class OptionsPage {
     }
 
     const template = isOrg ? this.orgTemplate : this.userTemplate
-    this.loadTemplate(template, this.usersContainer, populate, subsequentNode)
+    this.loadTemplate(template, this.shortcutsContainer, populate, subsequentNode)
   }
 
   addRepository(i, repo, defaultBranch, githubUrl, subsequentNode) {
@@ -868,7 +867,7 @@ class OptionsPage {
       const removeButton = repoEl.querySelector('.remove-repository-button')
       removeButton.addEventListener('click', e => this.removeRepository(e, i))
     }
-    this.loadTemplate(this.repoTemplate, this.reposContainer, populate, subsequentNode)
+    this.loadTemplate(this.repoTemplate, this.shortcutsContainer, populate, subsequentNode)
   }
 
   removeProject(event, i) {
