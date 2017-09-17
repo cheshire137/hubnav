@@ -70,6 +70,7 @@
 .flex-row .subtitle {
   width: 160px;
   display: flex;
+  margin-bottom: 0;
   flex-direction: column;
   align-items: flex-start;
 }
@@ -89,7 +90,6 @@
 }
 
 .flex-row + .flex-row {
-  margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid #eee;
 }
@@ -158,4 +158,14 @@
 
 .field.is-horizontal .field-body {
   flex-direction: column;
+}
+
+.shortcut-container {
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.shortcut-container:nth-child(even) {
+  background-color: #f8f8f8;
 }
