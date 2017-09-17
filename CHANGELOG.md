@@ -2,6 +2,7 @@
 
 0.0.6
 
+- Added ability to have a varying number of shortcuts per type, e.g., you can have 10 repository shortcuts instead of just 4.
 - Added documentation on options page about how to change the keyboard shortcut to open the extension.
 - Fixed bug where help text would show in the popup even if a project shortcut had been added.
 - Fixed bug where renaming the active project would deselect it and require you to reselect it in the popup.
