@@ -67,6 +67,14 @@
   flex-direction: column;
 }
 
+.dropdown {
+  float: right;
+}
+
+.content h2.shortcuts-subtitle.subtitle:not(:first-child) {
+  margin-top: 0;
+}
+
 .flex-row .subtitle {
   width: 160px;
   display: flex;
@@ -168,4 +176,12 @@
 
 .shortcut-container:nth-child(even) {
   background-color: #f8f8f8;
+}
+
+a.dropdown-item {
+  padding-right: 1rem;
+}
+
+.dropdown-trigger .button .octicon {
+  margin-top: 1px;
 }

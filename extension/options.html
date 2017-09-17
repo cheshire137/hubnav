@@ -311,7 +311,36 @@
 
         <div class="column is-9">
           <section class="section content">
-            <h2 class="subtitle is-4"><a name="shortcuts-section"></a>Shortcuts</h2>
+            <div class="dropdown is-right" id="add-shortcut-menu">
+              <div class="dropdown-trigger">
+                <button class="button" id="add-shortcut-menu-trigger" aria-haspopup="true" aria-controls="shortcut-dropdown">
+                  <span>Add a shortcut</span>
+                  <span class="icon is-small">
+                    <svg width="16" height="16" class="octicon octicon-chevron-down" viewBox="0 0 10 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M5 11L0 6l1.5-1.5L5 8.25 8.5 4.5 10 6z"></path></svg>
+                  </span>
+                </button>
+              </div>
+              <div class="dropdown-menu" id="shortcut-dropdown" role="menu">
+                <div class="dropdown-content">
+                  <a href="#" class="dropdown-item shortcut-dropdown-item" data-type="repository">
+                    Repository
+                  </a>
+                  <a href="#" class="dropdown-item shortcut-dropdown-item" data-type="repo-project">
+                    Project (in a repository)
+                  </a>
+                  <a href="#" class="dropdown-item shortcut-dropdown-item" data-type="org-project">
+                    Project (in an organization)
+                  </a>
+                  <a href="#" class="dropdown-item shortcut-dropdown-item" data-type="user">
+                    User
+                  </a>
+                  <a href="#" class="dropdown-item shortcut-dropdown-item" data-type="organization">
+                    Organization
+                  </a>
+                </div>
+              </div>
+            </div>
+            <h2 class="subtitle is-4 shortcuts-subtitle"><a name="shortcuts-section"></a>Shortcuts</h2>
             <p>Save up to ten different shortcuts for GitHub repositories, organizations, users, and projects. You can switch quickly between them.</p>
             <div id="shortcuts-container"></div>
             <button type="button" id="add-repository-button" class="add-button button is-link">

@@ -133,6 +133,10 @@ class OptionsPage {
     this.mergedPullRequests = document.getElementById('merged-pull-requests')
     this.closedPullRequests = document.getElementById('closed-pull-requests')
     this.newPullRequest = document.getElementById('new-pull-request')
+
+    this.addShortcutMenu = document.getElementById('add-shortcut-menu')
+    this.addShortcutMenuTrigger = document.getElementById('add-shortcut-menu-trigger')
+    this.addShortcutMenuItems = document.querySelectorAll('.shortcut-dropdown-item')
   }
 
   flashNotification(message, isError, delay) {
@@ -155,7 +159,35 @@ class OptionsPage {
     this.flashNotification(message, true, 5000)
   }
 
+  toggleShortcutMenu(event) {
+    event.target.blur()
+    const openDropdown = !this.addShortcutMenu.classList.contains('is-active')
+    this.addShortcutMenu.classList.toggle('is-active', openDropdown)
+  }
+
+  onShortcutMenuItemClick(event) {
+    event.preventDefault()
+    this.addShortcutMenu.classList.remove('is-active')
+    const menuItem = event.currentTarget
+    const shortcutType = menuItem.getAttribute('data-type')
+    if (shortcutType === 'repository') {
+      this.addRepositoryShortcut(event)
+    } else if (shortcutType === 'organization') {
+      this.addOrgShortcut(event)
+    } else if (shortcutType === 'user') {
+      this.addUserShortcut(event)
+    } else if (shortcutType === 'repo-project') {
+      this.addProjectShortcut(event, true)
+    } else if (shortcutType === 'org-project') {
+      this.addProjectShortcut(event, false)
+    }
+  }
+
   hookUpHandlers() {
+    for (const menuItem of this.addShortcutMenuItems) {
+      menuItem.addEventListener('click', e => this.onShortcutMenuItemClick(e))
+    }
+    this.addShortcutMenuTrigger.addEventListener('click', e => this.toggleShortcutMenu(e))
     this.addRepoButton.addEventListener('click', e => this.addRepositoryShortcut(e))
     this.addRepoProjectButton.addEventListener('click', e => this.addProjectShortcut(e, true))
     this.addOrgProjectButton.addEventListener('click', e => this.addProjectShortcut(e, false))
@@ -688,7 +720,7 @@ class OptionsPage {
   }
 
   addRepositoryShortcut(event) {
-    event.currentTarget.blur()
+    event.target.blur()
     const shortcutAndNode = this.getNextShortcut()
     this.addRepository(shortcutAndNode[0], '', 'master', null, shortcutAndNode[1])
     this.toggleAddShortcutButtons()
