@@ -127,7 +127,7 @@ class OptionsPage {
     this.shortcutTipContainer = document.getElementById('shortcut-tip-container')
     this.noShortcutTipContainer = document.getElementById('no-shortcut-tip-container')
     this.shortcut = document.getElementById('shortcut')
-    this.chromeExtensionsLink = document.getElementById('chrome-extensions-link')
+    this.chromeExtensionsLinks = document.querySelectorAll('.chrome-extensions-link')
     this.optionsForm = document.getElementById('options-form')
     this.notification = document.getElementById('notification')
     this.versionEl = document.getElementById('extension-version')
@@ -169,7 +169,9 @@ class OptionsPage {
     this.mergedPullRequests.addEventListener('change', () => this.checkFormValidity())
     this.closedPullRequests.addEventListener('change', () => this.checkFormValidity())
     this.newPullRequest.addEventListener('change', () => this.checkFormValidity())
-    this.chromeExtensionsLink.addEventListener('click', e => this.openChromeExtensions(e))
+    for (const link of this.chromeExtensionsLinks) {
+      link.addEventListener('click', e => this.openChromeExtensions(e))
+    }
   }
 
   loadRepoLogo(rawRepo, imgTag) {

@@ -2,6 +2,8 @@
 
 0.0.6
 
+- Added documentation on options page about how to change the keyboard shortcut to open the extension.
+
 0.0.5
 
 - Added ability to limit viewing a user's issues or pull requests to those within a specified repository or organization.
