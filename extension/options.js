@@ -60,45 +60,40 @@ class OptionsPage {
       const i = nameInput.getAttribute('data-key')
       const name = nameInput.value.trim()
       const container = nameInput.closest('.project-container')
-      const repo = container.querySelector('.project-repo-input').value.trim()
-      const org = container.querySelector('.project-org-input').value.trim()
+      const repoInput = container.querySelector('.project-repo-input')
+      const repo = repoInput ? repoInput.value.trim() : null
+      const orgInput = container.querySelector('.project-org-input')
+      const org = orgInput ? orgInput.value.trim() : null
       const number = container.querySelector('.project-number-input').value
 
-      if (this.isValidRepo(repo)) {
-        delete this.errors[`projectRepository${i}`]
-      } else {
-        this.errors[`projectRepository${i}`] = true
-        this.flashErrorMessage(`Invalid project repository: shortcut ${i}`)
+      if (repoInput) {
+        if (repo.length < 1 || !this.isValidRepo(repo)) {
+          this.errors[`projectRepository${i}`] = true
+          this.flashErrorMessage(`Invalid project repository: shortcut ${i}`)
+        } else {
+          delete this.errors[`projectRepository${i}`]
+        }
+      } else if (orgInput) {
+        if (org.length < 1) {
+          this.errors[`projectOrg${i}`] = true
+          this.flashErrorMessage(`Invalid project organization: shortcut ${i}`)
+        } else {
+          delete this.errors[`projectOrg${i}`]
+        }
       }
 
-      if ((org.length > 0 || repo.length > 0 || name.length > 0) && number.length < 1) {
+      if ((org && org.length > 0 || repo && repo.length > 0 || name.length > 0) && number.length < 1) {
         this.errors[`projectNumber${i}`] = true
         this.flashErrorMessage(`Must set project number: shortcut ${i}`)
       } else {
         delete this.errors[`projectNumber${i}`]
       }
 
-      if ((org.length > 0 || repo.length > 0 || number.length > 0) && name.length < 1) {
+      if ((org && org.length > 0 || repo && repo.length > 0 || number.length > 0) && name.length < 1) {
         this.errors[`projectName${i}`] = true
         this.flashErrorMessage(`Must set project name: shortcut ${i}`)
       } else {
         delete this.errors[`projectName${i}`]
-      }
-
-      if (repo.length > 0 && org.length > 0) {
-        this.errors[`projectRepoOrgBoth${i}`] = true
-        this.flashErrorMessage('Must set only one of repository or organization for ' +
-                               `project: shortcut ${i}`)
-      } else {
-        delete this.errors[`projectRepoOrgBoth${i}`]
-      }
-
-      if ((number.length > 0 || name.length > 0) && org.length < 1 && repo.length < 1) {
-        this.errors[`projectRepoOrg${i}`] = true
-        this.flashErrorMessage('Must set either repository or organization for project: ' +
-                               `shortcut ${i}`)
-      } else {
-        delete this.errors[`projectRepoOrg${i}`]
       }
     }
 
@@ -114,8 +109,10 @@ class OptionsPage {
     this.repoTemplate = document.getElementById('repository-template')
     this.addRepoButton = document.getElementById('add-repository-button')
 
-    this.projectTemplate = document.getElementById('project-template')
-    this.addProjectButton = document.getElementById('add-project-button')
+    this.repoProjectTemplate = document.getElementById('repo-project-template')
+    this.orgProjectTemplate = document.getElementById('org-project-template')
+    this.addRepoProjectButton = document.getElementById('add-repo-project-button')
+    this.addOrgProjectButton = document.getElementById('add-org-project-button')
 
     this.userTemplate = document.getElementById('user-template')
     this.addUserButton = document.getElementById('add-user-button')
@@ -160,7 +157,8 @@ class OptionsPage {
 
   hookUpHandlers() {
     this.addRepoButton.addEventListener('click', e => this.addRepositoryShortcut(e))
-    this.addProjectButton.addEventListener('click', e => this.addProjectShortcut(e))
+    this.addRepoProjectButton.addEventListener('click', e => this.addProjectShortcut(e, true))
+    this.addOrgProjectButton.addEventListener('click', e => this.addProjectShortcut(e, false))
     this.addUserButton.addEventListener('click', e => this.addUserShortcut(e))
     this.addOrgButton.addEventListener('click', e => this.addOrgShortcut(e))
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
@@ -249,10 +247,8 @@ class OptionsPage {
     }
     const orgInput = event.target
     const imgTag = orgInput.closest('.control').querySelector('.project-org-logo')
-    const repoInput = orgInput.closest('.project-container').querySelector('.project-repo-input')
     this[`projectOrgInput${i}Timer`] = setTimeout(() => {
       const org = orgInput.value.trim()
-      repoInput.disabled = org.length > 0
       if (org.length < 1) {
         this.showDefaultLogoForUser(imgTag)
       } else {
@@ -304,10 +300,8 @@ class OptionsPage {
     }
     const repoInput = event.target
     const imgTag = repoInput.closest('.control').querySelector('.project-repo-logo')
-    const orgInput = repoInput.closest('.project-container').querySelector('.project-org-input')
     this[`projectRepoInput${i}Timer`] = setTimeout(() => {
       const repo = repoInput.value.trim()
-      orgInput.disabled = repo.length > 0
       if (repo.length < 1) {
         this.showDefaultLogoForUser(imgTag)
       } else {
@@ -493,8 +487,10 @@ class OptionsPage {
         if (name && name.length > 0) {
           const i = nameInput.getAttribute('data-key')
           const container = nameInput.closest('.project-container')
-          const repo = container.querySelector('.project-repo-input').value.trim()
-          const org = container.querySelector('.project-org-input').value.trim()
+          const repoInput = container.querySelector('.project-repo-input')
+          const repo = repoInput ? repoInput.value.trim() : null
+          const orgInput = container.querySelector('.project-org-input')
+          const org = orgInput ? orgInput.value.trim() : null
           const number = container.querySelector('.project-number-input').value
           newOptions[`projectName${i}`] = name
           newOptions[`projectNumber${i}`] = number
@@ -683,10 +679,10 @@ class OptionsPage {
     this.focusLastAddedInput()
   }
 
-  addProjectShortcut(event) {
+  addProjectShortcut(event, isRepoProject) {
     event.currentTarget.blur()
     const shortcutAndNode = this.getNextShortcut()
-    this.addProject(shortcutAndNode[0], '', '', '', '', shortcutAndNode[1])
+    this.addProject(shortcutAndNode[0], '', '', !isRepoProject, '', '', shortcutAndNode[1])
     this.toggleAddShortcutButtons()
     this.focusLastAddedInput()
   }
@@ -699,7 +695,7 @@ class OptionsPage {
     this.focusLastAddedInput()
   }
 
-  addProject(i, name, number, org, repo, subsequentNode) {
+  addProject(i, name, number, isOrgProject, org, repo, subsequentNode) {
     const populate = projectEl => {
       projectEl.querySelector('.i').textContent = i
 
@@ -722,46 +718,66 @@ class OptionsPage {
       numberInput.addEventListener('change', () => this.checkFormValidity())
 
       const orgLogo = projectEl.querySelector('.project-org-logo')
-      orgLogo.addEventListener('load', e => this.onProjectOrgLogoLoad(e, i))
-      orgLogo.addEventListener('error', e => this.onProjectOrgLogoError(e, i))
+      if (orgLogo) {
+        orgLogo.addEventListener('load', e => this.onProjectOrgLogoLoad(e, i))
+        orgLogo.addEventListener('error', e => this.onProjectOrgLogoError(e, i))
+      }
 
       const repoLogo = projectEl.querySelector('.project-repo-logo')
-      repoLogo.addEventListener('load', e => this.onProjectRepoLogoLoad(e, i))
-      repoLogo.addEventListener('error', e => this.onProjectRepoLogoError(e, i))
+      if (repoLogo) {
+        repoLogo.addEventListener('load', e => this.onProjectRepoLogoLoad(e, i))
+        repoLogo.addEventListener('error', e => this.onProjectRepoLogoError(e, i))
+      }
 
       const repoInputID = `project${i}-repo`
-      projectEl.querySelector('.project-repo-label').htmlFor = repoInputID
+      const repoLabel = projectEl.querySelector('.project-repo-label')
+      if (repoLabel) {
+        repoLabel.htmlFor = repoInputID
+      }
 
       const repoInput = projectEl.querySelector('.project-repo-input')
-      repoInput.id = repoInputID
-      if (org && org.length > 0) {
-        repoInput.disabled = true
-        this.loadLogoForUser(org, orgLogo)
-      } else {
-        repoInput.value = repo
+      if (repoInput) {
+        repoInput.id = repoInputID
+        if (isOrgProject) {
+          repoInput.disabled = true
+        } else {
+          repoInput.value = repo
+        }
+        repoInput.setAttribute('data-key', i)
+        repoInput.addEventListener('keyup', e => this.onProjectRepoKeyup(e, i))
+        repoInput.classList.add('focus-target')
       }
-      repoInput.setAttribute('data-key', i)
-      repoInput.addEventListener('keyup', e => this.onProjectRepoKeyup(e, i))
 
       const orgInputID = `project${i}-org`
-      projectEl.querySelector('.project-org-label').htmlFor = orgInputID
+      const orgLabel = projectEl.querySelector('.project-org-label')
+      if (orgLabel) {
+        orgLabel.htmlFor = orgInputID
+      }
+
+      if (repo && repo.length > 0 && repoLogo) {
+        this.loadProjectRepoLogo(repo, repoLogo)
+      } else if (org && org.length > 0 && orgLogo) {
+        this.loadLogoForUser(org, orgLogo)
+      }
 
       const orgInput = projectEl.querySelector('.project-org-input')
-      orgInput.id = orgInputID
-      if (repo && repo.length > 0) {
-        orgInput.disabled = true
-        this.loadProjectRepoLogo(repo, repoLogo)
-      } else {
-        orgInput.value = org
+      if (orgInput) {
+        orgInput.id = orgInputID
+        if (repo && repo.length > 0) {
+          orgInput.disabled = true
+        } else {
+          orgInput.value = org
+        }
+        orgInput.setAttribute('data-key', i)
+        orgInput.addEventListener('keyup', e => this.onProjectOrgKeyup(e, i))
+        orgInput.classList.add('focus-target')
       }
-      orgInput.setAttribute('data-key', i)
-      orgInput.addEventListener('keyup', e => this.onProjectOrgKeyup(e, i))
-      orgInput.classList.add('focus-target')
 
       const removeButton = projectEl.querySelector('.remove-project-button')
       removeButton.addEventListener('click', e => this.removeProject(e, i))
     }
-    this.loadTemplate(this.projectTemplate, this.shortcutsContainer, populate, subsequentNode)
+    const template = isOrgProject ? this.orgProjectTemplate : this.repoProjectTemplate
+    this.loadTemplate(template, this.shortcutsContainer, populate, subsequentNode)
   }
 
   addUser(i, login, isOrg, scope, subsequentNode) {
@@ -861,12 +877,14 @@ class OptionsPage {
   toggleAddShortcutButtons() {
     const numShortcutsLoaded = document.querySelectorAll('.shortcut-input').length
     if (numShortcutsLoaded < SHORTCUTS.length) {
-      this.addProjectButton.style.display = 'block'
+      this.addRepoProjectButton.style.display = 'block'
+      this.addOrgProjectButton.style.display = 'block'
       this.addUserButton.style.display = 'block'
       this.addRepoButton.style.display = 'block'
       this.addOrgButton.style.display = 'block'
     } else {
-      this.addProjectButton.style.display = 'none'
+      this.addRepoProjectButton.style.display = 'none'
+      this.addOrgProjectButton.style.display = 'none'
       this.addUserButton.style.display = 'none'
       this.addRepoButton.style.display = 'none'
       this.addOrgButton.style.display = 'none'
@@ -909,7 +927,8 @@ class OptionsPage {
           const projectNumber = options[`projectNumber${i}`]
           const projectOrg = options[`projectOrg${i}`]
           const projectRepo = options[`projectRepo${i}`]
-          this.addProject(i, projectName, projectNumber, projectOrg, projectRepo)
+          const isOrgProject = projectOrg && projectOrg.length > 0
+          this.addProject(i, projectName, projectNumber, isOrgProject, projectOrg, projectRepo)
         }
 
         const user = options[`user${i}`]

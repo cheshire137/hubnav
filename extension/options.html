@@ -111,7 +111,7 @@
           </div>
         </template>
 
-        <template id="project-template">
+        <template id="repo-project-template">
           <div class="flex-row project-container shortcut-container">
             <h3 class="subtitle is-5">
               <span>Shortcut <span class="i"></span></span>
@@ -124,28 +124,63 @@
               <div class="columns">
                 <div class="column">
                   <div class="field">
-                    <label class="label project-org-label">Organization:</label>
-                    <div class="control with-image">
-                      <img width="36" height="36" class="project-org-logo user-logo" src="unknown-user.png">
-                      <input class="input project-org-input" autocomplete="off" type="text" placeholder="e.g., twbs">
-                    </div>
-                    <p class="help">
-                      For an organization project, specify the organization's login.
-                    </p>
-                  </div>
-                </div>
-                <div class="column is-1 centered">
-                  <strong>OR</strong>
-                </div>
-                <div class="column">
-                  <div class="field">
-                    <label class="label project-repo-label">Repository:</label>
+                    <label class="label project-repo-label">Project repository:</label>
                     <div class="control with-image">
                       <img width="36" height="36" class="project-repo-logo user-logo" src="unknown-user.png">
                       <input class="input project-repo-input" autocomplete="off" type="text" placeholder="e.g., cheshire137/hubnav">
                     </div>
                     <p class="help">
                       For a repository project, specify the user login and repository name.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <label class="label project-number-label">Number:</label>
+                    <div class="control">
+                      <input class="input project-number-input" autocomplete="off" type="number" min="1" step="1" placeholder="e.g., 3">
+                    </div>
+                    <p class="help">The number of the project in its URL.</p>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <label class="label project-name-label">Name:</label>
+                    <div class="control">
+                      <input class="input project-name-input shortcut-input" autocomplete="off" type="text" placeholder="e.g., My Project">
+                    </div>
+                    <p class="help">
+                      A name to help you identify this project.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <template id="org-project-template">
+          <div class="flex-row project-container shortcut-container">
+            <h3 class="subtitle is-5">
+              <span>Shortcut <span class="i"></span></span>
+              <button type="button" class="button is-small is-link remove-project-button">
+                <svg class="octicon octicon-x" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z"></path></svg>
+                Remove
+              </button>
+            </h3>
+            <div class="fields">
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <label class="label project-org-label">Project organization:</label>
+                    <div class="control with-image">
+                      <img width="36" height="36" class="project-org-logo user-logo" src="unknown-user.png">
+                      <input class="input project-org-input" autocomplete="off" type="text" placeholder="e.g., twbs">
+                    </div>
+                    <p class="help">
+                      For an organization project, specify the organization's login.
                     </p>
                   </div>
                 </div>
@@ -268,9 +303,13 @@
               <svg class="octicon octicon-plus" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5z"></path></svg>
               Add a repository shortcut
             </button>
-            <button type="button" id="add-project-button" class="add-button button is-link">
+            <button type="button" id="add-repo-project-button" class="add-button button is-link">
               <svg class="octicon octicon-plus" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5z"></path></svg>
-              Add a project shortcut
+              Add a repository project shortcut
+            </button>
+            <button type="button" id="add-org-project-button" class="add-button button is-link">
+              <svg class="octicon octicon-plus" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5z"></path></svg>
+              Add an organization project shortcut
             </button>
             <button type="button" id="add-user-button" class="add-button button is-link">
               <svg class="octicon octicon-plus" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5z"></path></svg>
