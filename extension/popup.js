@@ -571,7 +571,7 @@ class PopupPage {
     }
 
     HubnavStorage.load().then(options => {
-      if (!options.repository && !options.user) {
+      if (!options.repository && !options.user && !options.projectNumber) {
         this.welcome.style.display = 'block'
       }
 

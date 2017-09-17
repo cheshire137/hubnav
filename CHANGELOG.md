@@ -3,6 +3,7 @@
 0.0.6
 
 - Added documentation on options page about how to change the keyboard shortcut to open the extension.
+- Fixed bug where help text would show in the popup even if a project shortcut had been added.
 
 0.0.5
 
