@@ -1,5 +1,7 @@
 # Change Log
 
+0.0.6
+
 0.0.5
 
 - Added ability to limit viewing a user's issues or pull requests to those within a specified repository or organization.
