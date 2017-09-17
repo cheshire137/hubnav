@@ -447,7 +447,7 @@ class OptionsPage {
 
       newOptions.repository = currentOptions.repository
       const repoOptions = []
-      for (let i of REPO_SHORTCUTS) {
+      for (let i of SHORTCUTS) {
         const repo = newOptions[`repository${i}`]
         if (repo && repo.length > 0) {
           if (!newOptions.repository || newOptions.repository.length < 1) {
@@ -508,7 +508,7 @@ class OptionsPage {
       newOptions.projectRepo = currentOptions.projectRepo
       newOptions.projectOrg = currentOptions.projectOrg
       const projectNameOptions = []
-      for (let i of PROJECT_SHORTCUTS) {
+      for (let i of SHORTCUTS) {
         const name = newOptions[`projectName${i}`]
         if (name && name.length > 0) {
           if (newOptions.projectName === name) {
@@ -553,7 +553,7 @@ class OptionsPage {
 
       newOptions.user = currentOptions.user
       const userOptions = []
-      for (let i of USER_SHORTCUTS) {
+      for (let i of SHORTCUTS) {
         const user = newOptions[`user${i}`]
         if (user && user.length > 0) {
           if (newOptions.user === user) {
@@ -568,10 +568,10 @@ class OptionsPage {
           userOptions.push(user)
         }
       }
-      // Ensure active user is one of the four options
+      // Ensure active user is one of the options
       if (userOptions.indexOf(newOptions.user) < 0) {
         newOptions.user = userOptions[0]
-        for (let i of USER_SHORTCUTS) {
+        for (let i of SHORTCUTS) {
           if (newOptions[`user${i}`] === newOptions.user) {
             newOptions.userIsOrg = newOptions[`userIsOrg${i}`]
             newOptions.scope = newOptions[`userScope${i}`]
@@ -585,7 +585,7 @@ class OptionsPage {
         // Ensure if we had a project as the current context and the user changed
         // its name or other details, we still keep a project as the active context.
         if (newOptions.active === 'project' && !this.hasActiveProjectDetails(newOptions)) {
-          for (let i of PROJECT_SHORTCUTS) {
+          for (let i of SHORTCUTS) {
             const name = newOptions[`projectName${i}`]
             if (name && name.length > 0) {
               newOptions.projectName = name
@@ -639,19 +639,20 @@ class OptionsPage {
     }
   }
 
-  getNextShortcut(inputs, shortcuts, containerClass) {
+  getNextShortcut() {
     let shortcut = null
     let subsequentNode = null
+    const inputs = document.querySelectorAll('.shortcut-input')
     for (let i = 0; i < inputs.length; i++) {
       const currentShortcut = inputs[i].getAttribute('data-key')
-      if (currentShortcut !== shortcuts[i]) {
-        shortcut = shortcuts[i]
-        subsequentNode = inputs[i].closest(containerClass)
+      if (currentShortcut !== SHORTCUTS[i]) {
+        shortcut = SHORTCUTS[i]
+        subsequentNode = inputs[i].closest('.shortcut-container')
         break
       }
     }
     if (!shortcut) {
-      shortcut = shortcuts[inputs.length]
+      shortcut = SHORTCUTS[inputs.length]
     }
     return [shortcut, subsequentNode]
   }
@@ -672,42 +673,29 @@ class OptionsPage {
 
   addUserOrOrgShortcut(event, isOrg) {
     event.currentTarget.blur()
-    const userInputs = document.querySelectorAll('.login-input')
-    const shortcutAndNode = this.getNextShortcut(userInputs, USER_SHORTCUTS,
-                                                 '.user-container')
+    const shortcutAndNode = this.getNextShortcut()
     const i = shortcutAndNode[0]
     const login = ''
     const scope = ''
     const subsequentNode = shortcutAndNode[1]
     this.addUser(i, login, isOrg, scope, subsequentNode)
-    if (userInputs.length + 1 >= USER_SHORTCUTS.length) {
-      this.addUserButton.style.display = 'none'
-      this.addOrgButton.style.display = 'none'
-    }
+    this.toggleAddShortcutButtons()
     this.focusLastAddedInput()
   }
 
   addProjectShortcut(event) {
     event.currentTarget.blur()
-    const projectNameInputs = document.querySelectorAll('.project-name-input')
-    const shortcutAndNode = this.getNextShortcut(projectNameInputs, PROJECT_SHORTCUTS,
-                                                 '.project-container')
+    const shortcutAndNode = this.getNextShortcut()
     this.addProject(shortcutAndNode[0], '', '', '', '', shortcutAndNode[1])
-    if (projectNameInputs.length + 1 >= PROJECT_SHORTCUTS.length) {
-      this.addProjectButton.style.display = 'none'
-    }
+    this.toggleAddShortcutButtons()
     this.focusLastAddedInput()
   }
 
   addRepositoryShortcut(event) {
     event.currentTarget.blur()
-    const repoInputs = document.querySelectorAll('.repository-input')
-    const shortcutAndNode = this.getNextShortcut(repoInputs, REPO_SHORTCUTS,
-                                                 '.repository-container')
+    const shortcutAndNode = this.getNextShortcut()
     this.addRepository(shortcutAndNode[0], '', 'master', null, shortcutAndNode[1])
-    if (repoInputs.length + 1 >= REPO_SHORTCUTS.length) {
-      this.addRepoButton.style.display = 'none'
-    }
+    this.toggleAddShortcutButtons()
     this.focusLastAddedInput()
   }
 
@@ -870,28 +858,34 @@ class OptionsPage {
     this.loadTemplate(this.repoTemplate, this.shortcutsContainer, populate, subsequentNode)
   }
 
+  toggleAddShortcutButtons() {
+    const numShortcutsLoaded = document.querySelectorAll('.shortcut-input').length
+    if (numShortcutsLoaded < SHORTCUTS.length) {
+      this.addProjectButton.style.display = 'block'
+      this.addUserButton.style.display = 'block'
+      this.addRepoButton.style.display = 'block'
+      this.addOrgButton.style.display = 'block'
+    } else {
+      this.addProjectButton.style.display = 'none'
+      this.addUserButton.style.display = 'none'
+      this.addRepoButton.style.display = 'none'
+      this.addOrgButton.style.display = 'none'
+    }
+  }
+
   removeProject(event, i) {
     this.removeShortcut(event, i, '.project-container')
-    const numProjectsLoaded = document.querySelectorAll('.project-name-input').length
-    if (numProjectsLoaded < PROJECT_SHORTCUTS.length) {
-      this.addProjectButton.style.display = 'block'
-    }
+    this.toggleAddShortcutButtons()
   }
 
   removeUser(event, i) {
     this.removeShortcut(event, i, '.user-container')
-    const numUsersLoaded = document.querySelectorAll('.login-input').length
-    if (numUsersLoaded < USER_SHORTCUTS.length) {
-      this.addUserButton.style.display = 'block'
-    }
+    this.toggleAddShortcutButtons()
   }
 
   removeRepository(event, i) {
     this.removeShortcut(event, i, '.repository-container')
-    const numReposLoaded = document.querySelectorAll('.repository-input').length
-    if (numReposLoaded < REPO_SHORTCUTS.length) {
-      this.addRepoButton.style.display = 'block'
-    }
+    this.toggleAddShortcutButtons()
   }
 
   removeShortcut(event, i, containerClass) {
@@ -904,18 +898,12 @@ class OptionsPage {
 
   restoreOptions() {
     HubnavStorage.load().then(options => {
-      for (let i of REPO_SHORTCUTS) {
+      for (let i of SHORTCUTS) {
         const repo = options[`repository${i}`]
         if (repo && repo.length > 0) {
           this.addRepository(i, repo, options[`defaultBranch${i}`], options[`githubUrl${i}`])
         }
-      }
-      const numReposLoaded = document.querySelectorAll('.repository-input').length
-      if (numReposLoaded >= REPO_SHORTCUTS.length) {
-        this.addRepoButton.style.display = 'none'
-      }
 
-      for (let i of PROJECT_SHORTCUTS) {
         const projectName = options[`projectName${i}`]
         if (projectName && projectName.length > 0) {
           const projectNumber = options[`projectNumber${i}`]
@@ -923,13 +911,7 @@ class OptionsPage {
           const projectRepo = options[`projectRepo${i}`]
           this.addProject(i, projectName, projectNumber, projectOrg, projectRepo)
         }
-      }
-      const numProjectsLoaded = document.querySelectorAll('.project-name-input').length
-      if (numProjectsLoaded >= PROJECT_SHORTCUTS.length) {
-        this.addProjectButton.style.display = 'none'
-      }
 
-      for (let i of USER_SHORTCUTS) {
         const user = options[`user${i}`]
         if (user && user.length > 0) {
           let isOrg = false
@@ -940,10 +922,7 @@ class OptionsPage {
           this.addUser(i, user, isOrg, scope)
         }
       }
-      const numUsersLoaded = document.querySelectorAll('.login-input').length
-      if (numUsersLoaded >= USER_SHORTCUTS.length) {
-        this.addUserButton.style.display = 'none'
-      }
+      this.toggleAddShortcutButtons()
 
       const focusTargets = document.querySelectorAll('.focus-target')
       for (let input of focusTargets) {
