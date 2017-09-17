@@ -10,20 +10,10 @@ class PopupPage {
   findElements() {
     // Context switching and shortcuts:
     this.contextSwitch = document.getElementById('context-switch')
-    for (let i of REPO_SHORTCUTS) {
+    for (let i of SHORTCUTS) {
       this[`shortcuts${i}`] = document.querySelectorAll(`.shortcut-${i}`)
-      this[`repo${i}`] = document.getElementById(`repo${i}`)
-      this[`repoLogo${i}`] = document.getElementById(`repo-logo${i}`)
-    }
-    for (let i of PROJECT_SHORTCUTS) {
-      this[`shortcuts${i}`] = document.querySelectorAll(`.shortcut-${i}`)
-      this[`project${i}`] = document.getElementById(`project${i}`)
-      this[`projectLogo${i}`] = document.getElementById(`project-logo${i}`)
-    }
-    for (let i of USER_SHORTCUTS) {
-      this[`shortcuts${i}`] = document.querySelectorAll(`.shortcut-${i}`)
-      this[`user${i}`] = document.getElementById(`user${i}`)
-      this[`userLogo${i}`] = document.getElementById(`user-logo${i}`)
+      this[`shortcutText${i}`] = document.getElementById(`shortcut-text${i}`)
+      this[`shortcutLogo${i}`] = document.getElementById(`shortcut-logo${i}`)
     }
 
     // Active context:
@@ -434,6 +424,18 @@ class PopupPage {
     })
   }
 
+  quickContextSwitch(i) {
+    HubnavStorage.load().then(options => {
+      if (options[`repository${i}`]) {
+        this.quickRepositorySwitch(i)
+      } else if (options[`projectName${i}`]) {
+        this.quickProjectSwitch(i)
+      } else if (options[`user${i}`]) {
+        this.quickUserSwitch(i)
+      }
+    })
+  }
+
   quickRepositorySwitch(i) {
     HubnavStorage.load().then(currentOptions => {
       const newOptions = {}
@@ -512,12 +514,8 @@ class PopupPage {
         this.openOrgMembers()
       } else if (key === 'r') {
         this.openRepositories()
-      } else if (REPO_SHORTCUTS.indexOf(key) > -1) {
-        this.quickRepositorySwitch(key)
-      } else if (PROJECT_SHORTCUTS.indexOf(key) > -1) {
-        this.quickProjectSwitch(key)
-      } else if (USER_SHORTCUTS.indexOf(key) > -1) {
-        this.quickUserSwitch(key)
+      } else if (SHORTCUTS.indexOf(key) > -1) {
+        this.quickContextSwitch(key)
       } else if (key === 'shift') {
         this.shiftPressed = true
       } else if (key === 'control') {
@@ -655,7 +653,7 @@ class PopupPage {
       }
 
       let contextCount = 0
-      for (let i of REPO_SHORTCUTS) {
+      for (let i of SHORTCUTS) {
         const repo = options[`repository${i}`]
         if (repo && repo.length > 0) {
           contextCount++
@@ -663,14 +661,12 @@ class PopupPage {
           for (let j = 0; j < repoRefs.length; j++) {
             repoRefs[j].style.display = 'block'
           }
-          this[`repo${i}`].textContent = repo
-          this.loadRepoLogo(repo, this[`repoLogo${i}`])
+          this[`shortcutText${i}`].textContent = repo
+          this.loadRepoLogo(repo, this[`shortcutLogo${i}`])
         }
-      }
 
-      for (let i of PROJECT_SHORTCUTS) {
-        const name = options[`projectName${i}`]
-        if (name && name.length > 0) {
+        const projectName = options[`projectName${i}`]
+        if (projectName && projectName.length > 0) {
           contextCount++
           const repo = options[`projectRepo${i}`]
           const org = options[`projectOrg${i}`]
@@ -678,16 +674,14 @@ class PopupPage {
           for (let j = 0; j < projectRefs.length; j++) {
             projectRefs[j].style.display = 'block'
           }
-          this[`project${i}`].textContent = name
+          this[`shortcutText${i}`].textContent = projectName
           if (repo && repo.length > 0) {
-            this.loadRepoLogo(repo, this[`projectLogo${i}`])
+            this.loadRepoLogo(repo, this[`shortcutLogo${i}`])
           } else if (org && org.length > 0) {
-            this.loadUserLogo(org, this[`projectLogo${i}`])
+            this.loadUserLogo(org, this[`shortcutLogo${i}`])
           }
         }
-      }
 
-      for (let i of USER_SHORTCUTS) {
         const user = options[`user${i}`]
         if (user && user.length > 0) {
           contextCount++
@@ -695,8 +689,8 @@ class PopupPage {
           for (let j = 0; j < userRefs.length; j++) {
             userRefs[j].style.display = 'block'
           }
-          this[`user${i}`].textContent = user
-          this.loadUserLogo(user, this[`userLogo${i}`])
+          this[`shortcutText${i}`].textContent = user
+          this.loadUserLogo(user, this[`shortcutLogo${i}`])
         }
       }
 
