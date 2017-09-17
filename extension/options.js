@@ -582,7 +582,22 @@ class OptionsPage {
       }
 
       newOptions.active = currentOptions.active
-      if (!newOptions.active) {
+      if (newOptions.active) {
+        // Ensure if we had a project as the current context and the user changed
+        // its name or other details, we still keep a project as the active context.
+        if (newOptions.active === 'project' && !this.hasActiveProjectDetails(newOptions)) {
+          for (let i of PROJECT_SHORTCUTS) {
+            const name = newOptions[`projectName${i}`]
+            if (name && name.length > 0) {
+              newOptions.projectName = name
+              newOptions.projectNumber = newOptions[`projectNumber${i}`]
+              newOptions.projectOrg = newOptions[`projectOrg${i}`]
+              newOptions.projectRepo = newOptions[`projectRepo${i}`]
+              break
+            }
+          }
+        }
+      } {
         if (newOptions.repository && newOptions.repository.length > 0) {
           newOptions.active = 'repository'
         } else if (newOptions.user && newOptions.user.length > 0) {
@@ -606,6 +621,13 @@ class OptionsPage {
 
       HubnavStorage.save(newOptions).then(() => this.flashSaveNotice())
     })
+  }
+
+  hasActiveProjectDetails(options) {
+    return options.projectName && options.projectName.length > 0 &&
+      typeof options.projectNumber === 'number' &&
+      (options.projectRepo && options.projectRepo.length > 0 ||
+       options.projectOrg && options.projectOrg.length > 0)
   }
 
   loadTemplate(template, container, populate, subsequentNode) {
