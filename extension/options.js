@@ -24,6 +24,11 @@ class OptionsPage {
     return false
   }
 
+  openChromeExtensions(event) {
+    event.target.blur()
+    chrome.tabs.create({ url: 'chrome://extensions' })
+  }
+
   checkFormValidity() {
     const repoInputs = document.querySelectorAll('.repository-input')
     for (let repoInput of repoInputs) {
@@ -120,7 +125,9 @@ class OptionsPage {
     this.addOrgButton = document.getElementById('add-org-button')
 
     this.shortcutTipContainer = document.getElementById('shortcut-tip-container')
+    this.noShortcutTipContainer = document.getElementById('no-shortcut-tip-container')
     this.shortcut = document.getElementById('shortcut')
+    this.chromeExtensionsLink = document.getElementById('chrome-extensions-link')
     this.optionsForm = document.getElementById('options-form')
     this.notification = document.getElementById('notification')
     this.versionEl = document.getElementById('extension-version')
@@ -162,6 +169,7 @@ class OptionsPage {
     this.mergedPullRequests.addEventListener('change', () => this.checkFormValidity())
     this.closedPullRequests.addEventListener('change', () => this.checkFormValidity())
     this.newPullRequest.addEventListener('change', () => this.checkFormValidity())
+    this.chromeExtensionsLink.addEventListener('click', e => this.openChromeExtensions(e))
   }
 
   loadRepoLogo(rawRepo, imgTag) {
@@ -964,6 +972,8 @@ class OptionsPage {
       if (popupCommand && popupCommand.shortcut && popupCommand.shortcut.length > 0) {
         this.shortcut.textContent = popupCommand.shortcut
         this.shortcutTipContainer.style.display = 'block'
+      } else {
+        this.noShortcutTipContainer.style.display = 'block'
       }
     })
   }
