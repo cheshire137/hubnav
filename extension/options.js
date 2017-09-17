@@ -107,18 +107,10 @@ class OptionsPage {
 
   findElements() {
     this.repoTemplate = document.getElementById('repository-template')
-    this.addRepoButton = document.getElementById('add-repository-button')
-
     this.repoProjectTemplate = document.getElementById('repo-project-template')
     this.orgProjectTemplate = document.getElementById('org-project-template')
-    this.addRepoProjectButton = document.getElementById('add-repo-project-button')
-    this.addOrgProjectButton = document.getElementById('add-org-project-button')
-
     this.userTemplate = document.getElementById('user-template')
-    this.addUserButton = document.getElementById('add-user-button')
-
     this.orgTemplate = document.getElementById('org-template')
-    this.addOrgButton = document.getElementById('add-org-button')
 
     this.shortcutsContainer = document.getElementById('shortcuts-container')
     this.shortcutTipContainer = document.getElementById('shortcut-tip-container')
@@ -188,11 +180,6 @@ class OptionsPage {
       menuItem.addEventListener('click', e => this.onShortcutMenuItemClick(e))
     }
     this.addShortcutMenuTrigger.addEventListener('click', e => this.toggleShortcutMenu(e))
-    this.addRepoButton.addEventListener('click', e => this.addRepositoryShortcut(e))
-    this.addRepoProjectButton.addEventListener('click', e => this.addProjectShortcut(e, true))
-    this.addOrgProjectButton.addEventListener('click', e => this.addProjectShortcut(e, false))
-    this.addUserButton.addEventListener('click', e => this.addUserShortcut(e))
-    this.addOrgButton.addEventListener('click', e => this.addOrgShortcut(e))
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
     this.closedIssues.addEventListener('change', () => this.checkFormValidity())
     this.newIssue.addEventListener('change', () => this.checkFormValidity())
@@ -707,7 +694,7 @@ class OptionsPage {
     const scope = ''
     const subsequentNode = shortcutAndNode[1]
     this.addUser(i, login, isOrg, scope, subsequentNode)
-    this.toggleAddShortcutButtons()
+    this.toggleAddShortcutMenu()
     this.focusLastAddedInput()
   }
 
@@ -715,7 +702,7 @@ class OptionsPage {
     event.currentTarget.blur()
     const shortcutAndNode = this.getNextShortcut()
     this.addProject(shortcutAndNode[0], '', '', !isRepoProject, '', '', shortcutAndNode[1])
-    this.toggleAddShortcutButtons()
+    this.toggleAddShortcutMenu()
     this.focusLastAddedInput()
   }
 
@@ -723,7 +710,7 @@ class OptionsPage {
     event.target.blur()
     const shortcutAndNode = this.getNextShortcut()
     this.addRepository(shortcutAndNode[0], '', 'master', null, shortcutAndNode[1])
-    this.toggleAddShortcutButtons()
+    this.toggleAddShortcutMenu()
     this.focusLastAddedInput()
   }
 
@@ -906,36 +893,28 @@ class OptionsPage {
     this.loadTemplate(this.repoTemplate, this.shortcutsContainer, populate, subsequentNode)
   }
 
-  toggleAddShortcutButtons() {
+  toggleAddShortcutMenu() {
     const numShortcutsLoaded = document.querySelectorAll('.shortcut-input').length
     if (numShortcutsLoaded < SHORTCUTS.length) {
-      this.addRepoProjectButton.style.display = 'block'
-      this.addOrgProjectButton.style.display = 'block'
-      this.addUserButton.style.display = 'block'
-      this.addRepoButton.style.display = 'block'
-      this.addOrgButton.style.display = 'block'
+      this.addShortcutMenu.style.display = 'block'
     } else {
-      this.addRepoProjectButton.style.display = 'none'
-      this.addOrgProjectButton.style.display = 'none'
-      this.addUserButton.style.display = 'none'
-      this.addRepoButton.style.display = 'none'
-      this.addOrgButton.style.display = 'none'
+      this.addShortcutMenu.style.display = 'none'
     }
   }
 
   removeProject(event, i) {
     this.removeShortcut(event, i, '.project-container')
-    this.toggleAddShortcutButtons()
+    this.toggleAddShortcutMenu()
   }
 
   removeUser(event, i) {
     this.removeShortcut(event, i, '.user-container')
-    this.toggleAddShortcutButtons()
+    this.toggleAddShortcutMenu()
   }
 
   removeRepository(event, i) {
     this.removeShortcut(event, i, '.repository-container')
-    this.toggleAddShortcutButtons()
+    this.toggleAddShortcutMenu()
   }
 
   removeShortcut(event, i, containerClass) {
@@ -973,7 +952,7 @@ class OptionsPage {
           this.addUser(i, user, isOrg, scope)
         }
       }
-      this.toggleAddShortcutButtons()
+      this.toggleAddShortcutMenu()
 
       const focusTargets = document.querySelectorAll('.focus-target')
       for (let input of focusTargets) {
