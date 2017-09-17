@@ -479,41 +479,53 @@ class PopupPage {
     return `${baseUrl}/${owner}/${name}${path || ''}`
   }
 
+  doesContextSupportShortcut(key, context) {
+    if (key === 'f' && (context === 'user' || context === 'project')) {
+      return false
+    }
+    return true
+  }
+
   executeShortcut(key) {
     if (this.commandSelected) {
       return
     }
-    if (key === 'f') {
-      this.openFileFinder()
-    } else if (key === 't') {
-      this.openTeams()
-    } else if (key === 's') {
-      this.openGlobalSearch()
-    } else if (key === 'o') {
-      this.openOptions()
-    } else if (key === 'i') {
-      this.openIssues()
-    } else if (key === 'p' || key === 'π') {
-      this.openPullRequests()
-    } else if (key === 'v') {
-      this.openHomeForContext()
-    } else if (key === 'm') {
-      this.openOrgMembers()
-    } else if (key === 'r') {
-      this.openRepositories()
-    } else if (REPO_SHORTCUTS.indexOf(key) > -1) {
-      this.quickRepositorySwitch(key)
-    } else if (PROJECT_SHORTCUTS.indexOf(key) > -1) {
-      this.quickProjectSwitch(key)
-    } else if (USER_SHORTCUTS.indexOf(key) > -1) {
-      this.quickUserSwitch(key)
-    } else if (key === 'shift') {
-      this.shiftPressed = true
-    } else if (key === 'control') {
-      this.ctrlPressed = true
-    } else if (key === 'alt') {
-      this.altPressed = true
-    }
+    HubnavStorage.load().then(options => {
+      if (!this.doesContextSupportShortcut(key, options.active)) {
+        return
+      }
+      if (key === 'f') {
+        this.openFileFinder()
+      } else if (key === 't') {
+        this.openTeams()
+      } else if (key === 's') {
+        this.openGlobalSearch()
+      } else if (key === 'o') {
+        this.openOptions()
+      } else if (key === 'i') {
+        this.openIssues()
+      } else if (key === 'p' || key === 'π') {
+        this.openPullRequests()
+      } else if (key === 'v') {
+        this.openHomeForContext()
+      } else if (key === 'm') {
+        this.openOrgMembers()
+      } else if (key === 'r') {
+        this.openRepositories()
+      } else if (REPO_SHORTCUTS.indexOf(key) > -1) {
+        this.quickRepositorySwitch(key)
+      } else if (PROJECT_SHORTCUTS.indexOf(key) > -1) {
+        this.quickProjectSwitch(key)
+      } else if (USER_SHORTCUTS.indexOf(key) > -1) {
+        this.quickUserSwitch(key)
+      } else if (key === 'shift') {
+        this.shiftPressed = true
+      } else if (key === 'control') {
+        this.ctrlPressed = true
+      } else if (key === 'alt') {
+        this.altPressed = true
+      }
+    })
   }
 
   loadActiveOrganization(org) {
