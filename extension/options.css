@@ -74,6 +74,20 @@
   align-items: flex-start;
 }
 
+.subtitle .octicon {
+  vertical-align: middle;
+  margin-right: 2px;
+  margin-top: -1px;
+}
+
+.subtitle .octicon.octicon-x {
+  margin-top: 0;
+}
+
+.subtitle .octicon.octicon-person {
+  margin-top: -2px;
+}
+
 .flex-row + .flex-row {
   margin-top: 1rem;
   padding-top: 1rem;
