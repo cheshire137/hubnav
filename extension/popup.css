@@ -156,10 +156,8 @@ body {
 }
 
 .context-switch .shortcuts-list {
+  padding-left: 0.75rem;
   padding-right: 0.75rem;
-  border-left: 2px solid #ddd;
-  padding-left: 0.375rem;
-  margin-left: 0.375rem;
   border-radius: 3px;
 }
 
