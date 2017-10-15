@@ -114,6 +114,59 @@
           </div>
         </template>
 
+        <template id="milestone-template">
+          <div class="flex-row milestone-container shortcut-container">
+            <h3 class="subtitle is-5">
+              <span>
+                <svg width="16" height="16" class="octicon octicon-milestone" viewBox="0 0 14 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M8 2H6V0h2v2zm4 5H2c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h10l2 2-2 2zM8 4H6v2h2V4zM6 16h2V8H6v8z"></path></svg>
+                <span>Shortcut <span class="i"></span></span>
+              </span>
+              <button type="button" class="button is-small is-link remove-milestone-button">
+                <svg class="octicon octicon-x" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z"></path></svg>
+                Remove
+              </button>
+            </h3>
+            <div class="fields">
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <label class="label milestone-repo-label">Milestone repository:</label>
+                    <div class="control with-image">
+                      <img width="36" height="36" class="milestone-repo-logo user-logo" src="unknown-user.png">
+                      <input class="input milestone-repo-input" autocomplete="off" type="text" placeholder="e.g., cheshire137/hubnav">
+                    </div>
+                    <p class="help">
+                      For a milestone, specify the user login and repository name.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <label class="label milestone-number-label">Milestone number:</label>
+                    <div class="control">
+                      <input class="input milestone-number-input" autocomplete="off" type="number" min="1" step="1" placeholder="e.g., 3">
+                    </div>
+                    <p class="help">The number of the milestone in its URL.</p>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <label class="label milestone-name-label">Milestone name:</label>
+                    <div class="control">
+                      <input class="input milestone-name-input shortcut-input" autocomplete="off" type="text" placeholder="e.g., My Milestone">
+                    </div>
+                    <p class="help">
+                      A name to help you identify this milestone.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+
         <template id="repo-project-template">
           <div class="flex-row project-container shortcut-container">
             <h3 class="subtitle is-5">
@@ -336,6 +389,9 @@
                   </a>
                   <a href="#" class="dropdown-item shortcut-dropdown-item" data-type="organization">
                     Organization
+                  </a>
+                  <a href="#" class="dropdown-item shortcut-dropdown-item" data-type="milestone">
+                    Milestone
                   </a>
                 </div>
               </div>

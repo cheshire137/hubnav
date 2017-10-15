@@ -111,6 +111,7 @@ class OptionsPage {
     this.orgProjectTemplate = document.getElementById('org-project-template')
     this.userTemplate = document.getElementById('user-template')
     this.orgTemplate = document.getElementById('org-template')
+    this.milestoneTemplate = document.getElementById('milestone-template')
 
     this.shortcutsContainer = document.getElementById('shortcuts-container')
     this.shortcutTipContainer = document.getElementById('shortcut-tip-container')
@@ -172,6 +173,8 @@ class OptionsPage {
       this.addProjectShortcut(event, true)
     } else if (shortcutType === 'org-project') {
       this.addProjectShortcut(event, false)
+    } else if (shortcutType === 'milestone') {
+      this.addMilestoneShortcut(event)
     }
   }
 
@@ -290,6 +293,16 @@ class OptionsPage {
     }, 750)
   }
 
+  validateRepoInput(repoInput, imgTag) {
+    const repo = repoInput.value.trim()
+    if (repo.length < 1) {
+      this.showDefaultLogoForUser(imgTag)
+    } else {
+      this.loadRepoLogo(repo, imgTag)
+    }
+    this.checkFormValidity()
+  }
+
   onRepoKeyup(event, i) {
     if (this[`repoInput${i}Timer`]) {
       clearTimeout(this[`repoInput${i}Timer`])
@@ -297,13 +310,18 @@ class OptionsPage {
     const repoInput = event.target
     const imgTag = repoInput.closest('.control').querySelector('.repository-logo')
     this[`repoInput${i}Timer`] = setTimeout(() => {
-      const repo = (repoInput.value || '').trim()
-      if (repo.length < 1) {
-        this.showDefaultLogoForUser(imgTag)
-      } else {
-        this.loadRepoLogo(repo, imgTag)
-      }
-      this.checkFormValidity()
+      this.validateRepoInput(repoInput, imgTag)
+    }, 750)
+  }
+
+  onMilestoneRepoKeyup(event, i) {
+    if (this[`milestoneRepoInput${i}Timer`]) {
+      clearTimeout(this[`milestoneRepoInput${i}Timer`])
+    }
+    const repoInput = event.target
+    const imgTag = repoInput.closest('.control').querySelector('.milestone-repo-logo')
+    this[`milestoneRepoInput${i}Timer`] = setTimeout(() => {
+      this.validateRepoInput(repoInput, imgTag)
     }, 750)
   }
 
@@ -314,13 +332,7 @@ class OptionsPage {
     const repoInput = event.target
     const imgTag = repoInput.closest('.control').querySelector('.project-repo-logo')
     this[`projectRepoInput${i}Timer`] = setTimeout(() => {
-      const repo = repoInput.value.trim()
-      if (repo.length < 1) {
-        this.showDefaultLogoForUser(imgTag)
-      } else {
-        this.loadRepoLogo(repo, imgTag)
-      }
-      this.checkFormValidity()
+      this.validateRepoInput(repoInput, imgTag)
     }, 750)
   }
 
@@ -362,6 +374,27 @@ class OptionsPage {
     if (!this.anyErrors()) {
       this.optionsForm.classList.remove('error')
     }
+  }
+
+  onMilestoneRepoLogoLoad(event, i) {
+    if (this.isBadLogo(event.target.src)) {
+      return
+    }
+    delete this.errors[`milestoneRepoLogo${i}`]
+    if (!this.anyErrors()) {
+      this.optionsForm.classList.remove('error')
+    }
+  }
+
+  onMilestoneRepoLogoError(event, i) {
+    const imgTag = event.target
+    this.showBadLogoForUser(imgTag)
+    this.errors[`milestoneRepoLogo${i}`] = true
+    const repoInput = imgTag.closest('.control').querySelector('.milestone-repo-input')
+    const repo = repoInput.value.trim()
+    const user = encodeURIComponent(repo.split('/')[0] || '')
+    this.flashErrorMessage(`Invalid milestone repository ${i}: can't find "${user}"`)
+    this.checkFormValidity()
   }
 
   onProjectRepoLogoLoad(event, i) {
@@ -685,6 +718,19 @@ class OptionsPage {
     this.addUserOrOrgShortcut(event, true)
   }
 
+  addMilestoneShortcut(event) {
+    event.currentTarget.blur()
+    const shortcutAndNode = this.getNextShortcut()
+    const i = shortcutAndNode[0]
+    const repo = ''
+    const number = ''
+    const name = ''
+    const subsequentNode = shortcutAndNode[1]
+    this.addMilestone(i, repo, number, name, subsequentNode)
+    this.hideShortcutMenuIfNecessary()
+    this.focusLastAddedInput()
+  }
+
   addUserShortcut(event) {
     this.addUserOrOrgShortcut(event, false)
   }
@@ -715,6 +761,51 @@ class OptionsPage {
     this.addRepository(shortcutAndNode[0], '', 'master', null, shortcutAndNode[1])
     this.hideShortcutMenuIfNecessary()
     this.focusLastAddedInput()
+  }
+
+  addMilestone(i, repo, number, name, subsequentNode) {
+    const populate = milestoneEl => {
+      milestoneEl.querySelector('.i').textContent = i
+
+      const nameInputID = `milestone${i}-name`
+      milestoneEl.querySelector('.milestone-name-label').htmlFor = nameInputID
+
+      const nameInput = milestoneEl.querySelector('.milestone-name-input')
+      nameInput.id = nameInputID
+      nameInput.value = name
+      nameInput.setAttribute('data-key', i)
+      nameInput.addEventListener('change', () => this.checkFormValidity())
+
+      const numberInputID = `milestone${i}-number`
+      milestoneEl.querySelector('.milestone-number-label').htmlFor = numberInputID
+
+      const numberInput = milestoneEl.querySelector('.milestone-number-input')
+      numberInput.id = numberInputID
+      numberInput.value = number
+      numberInput.setAttribute('data-key', i)
+      numberInput.addEventListener('change', () => this.checkFormValidity())
+
+      const repoLogo = milestoneEl.querySelector('.milestone-repo-logo')
+      repoLogo.addEventListener('load', e => this.onMilestoneRepoLogoLoad(e, i))
+      repoLogo.addEventListener('error', e => this.onMilestoneRepoLogoError(e, i))
+
+      const repoInputID = `milestone${i}-repo`
+      const repoLabel = milestoneEl.querySelector('.milestone-repo-label')
+      repoLabel.htmlFor = repoInputID
+
+      const repoInput = milestoneEl.querySelector('.milestone-repo-input')
+      repoInput.id = repoInputID
+      repoInput.value = repo
+      repoInput.setAttribute('data-key', i)
+      repoInput.addEventListener('keyup', e => this.onMilestoneRepoKeyup(e, i))
+      repoInput.classList.add('focus-target')
+
+      this.loadRepoLogo(repo, repoLogo)
+
+      const removeButton = milestoneEl.querySelector('.remove-milestone-button')
+      removeButton.addEventListener('click', e => this.removeMilestone(e, i))
+    }
+    this.loadTemplate(this.milestoneTemplate, this.shortcutsContainer, populate, subsequentNode)
   }
 
   addProject(i, name, number, isOrgProject, org, repo, subsequentNode) {
