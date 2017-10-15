@@ -687,7 +687,7 @@ class OptionsPage {
             }
           }
         }
-      } {
+      } else {
         if (newOptions.repository && newOptions.repository.length > 0) {
           newOptions.active = 'repository'
         } else if (newOptions.user && newOptions.user.length > 0) {
