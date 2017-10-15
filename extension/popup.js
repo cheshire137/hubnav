@@ -10,11 +10,9 @@ class PopupPage {
   findElements() {
     // Context switching and shortcuts:
     this.contextSwitch = document.getElementById('context-switch')
-    for (let i of SHORTCUTS) {
-      this[`shortcuts${i}`] = document.querySelectorAll(`.shortcut-${i}`)
-      this[`shortcutText${i}`] = document.getElementById(`shortcut-text${i}`)
-      this[`shortcutLogo${i}`] = document.getElementById(`shortcut-logo${i}`)
-    }
+    this.shortcutsList = document.getElementById('shortcuts-list')
+    this.shortcuts = document.querySelectorAll('.shortcut')
+    this.shortcutTemplate = document.getElementById('shortcut-template')
 
     // Active context:
     this.repo = document.getElementById('repository')
@@ -54,7 +52,6 @@ class PopupPage {
     this.milestoneCommands = document.getElementById('milestone-commands')
 
     this.welcome = document.getElementById('welcome')
-    this.shortcuts = document.querySelectorAll('.shortcut')
   }
 
   runAfterDelay(action) {
@@ -78,7 +75,7 @@ class PopupPage {
   openFileFinder() {
     HubnavStorage.load().then(options => {
       if (options.repository && options.repository.length > 0) {
-        this.highlightShortcut(this.fShortcuts)
+        this.highlightShortcuts(this.fShortcuts)
         const defaultBranch = options.defaultBranch || 'master'
         const path = `/find/${defaultBranch}`
         this.openTab(this.repoUrl(options.repository, path, options.githubUrl))
@@ -89,19 +86,19 @@ class PopupPage {
   }
 
   openRepoSelect() {
-    this.highlightShortcut(this.rShortcuts)
+    this.highlightShortcuts(this.rShortcuts)
     this.openOptions('select-repository')
   }
 
   openGlobalSearch() {
-    this.highlightShortcut(this.sShortcuts)
+    this.highlightShortcuts(this.sShortcuts)
     this.openTab('https://github.com/search')
   }
 
   openTeams() {
     HubnavStorage.load().then(options => {
       if (options.user && options.user.length > 0 && options.userIsOrg) {
-        this.highlightShortcut(this.tShortcuts)
+        this.highlightShortcuts(this.tShortcuts)
         const org = encodeURIComponent(options.user)
         this.openTab(`https://github.com/orgs/${org}/teams`)
       } else {
@@ -110,11 +107,15 @@ class PopupPage {
     })
   }
 
-  highlightShortcut(shortcuts) {
+  highlightShortcuts(shortcuts) {
     for (let i = 0; i < shortcuts.length; i++) {
-      shortcuts[i].classList.add('highlighted')
-      this.highlightModifier(shortcuts[i])
+      this.highlightShortcut(shortcuts[i])
     }
+  }
+
+  highlightShortcut(shortcut) {
+    shortcut.classList.add('highlighted')
+    this.highlightModifier(shortcut)
   }
 
   highlightModifier(shortcut) {
@@ -167,7 +168,7 @@ class PopupPage {
   }
 
   openUserIssues(options) {
-    this.highlightShortcut(this.iShortcuts)
+    this.highlightShortcuts(this.iShortcuts)
     let params = '?utf8=✓&q=is%3Aissue'
     if (this.shiftPressed) { // closed
       params += '+is%3Aclosed'
@@ -192,7 +193,7 @@ class PopupPage {
   }
 
   openRepoIssues(options) {
-    this.highlightShortcut(this.iShortcuts)
+    this.highlightShortcuts(this.iShortcuts)
     let path = '/issues'
     if (this.shiftPressed) { // closed
       path += '?utf8=✓&q=is%3Aissue+is%3Aclosed'
@@ -203,13 +204,13 @@ class PopupPage {
   }
 
   openRepoProjectIssues(options) {
-    this.highlightShortcut(this.iShortcuts)
+    this.highlightShortcuts(this.iShortcuts)
     const args = this.argsForProjectUrl('issues')
     this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber, args))
   }
 
   openOrgProjectIssues(options) {
-    this.highlightShortcut(this.iShortcuts)
+    this.highlightShortcuts(this.iShortcuts)
     const args = this.argsForProjectUrl('issues')
     this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber, args))
   }
@@ -217,27 +218,32 @@ class PopupPage {
   openHomeForContext() {
     HubnavStorage.load().then(options => {
       if (options.active === 'repository' && options.repository && options.repository.length > 0) {
-        this.highlightShortcut(this.vShortcuts)
+        this.highlightShortcuts(this.vShortcuts)
         this.openTab(this.repoUrl(options.repository, null, options.githubUrl))
+
       } else if (options.active === 'user' && options.user && options.user.length > 0) {
-        this.highlightShortcut(this.vShortcuts)
+        this.highlightShortcuts(this.vShortcuts)
         const user = encodeURIComponent(options.user)
         this.openTab(`https://github.com/${user}`)
+
       } else if (options.active === 'project' && options.projectNumber &&
                  options.projectNumber.length > 0 && options.projectRepo &&
                  options.projectRepo.length > 0) {
-        this.highlightShortcut(this.vShortcuts)
+        this.highlightShortcuts(this.vShortcuts)
         this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber))
+
       } else if (options.active === 'milestone' && options.milestoneNumber &&
                  options.milestoneNumber.length > 0 && options.milestoneRepo &&
                  options.milestoneRepo.length > 0) {
-        this.highlightShortcut(this.vShortcuts)
+        this.highlightShortcuts(this.vShortcuts)
         this.openTab(this.milestoneUrl(options.milestoneRepo, options.milestoneNumber))
+
       } else if (options.active === 'project' && options.projectNumber &&
                  options.projectNumber.length > 0 && options.projectOrg &&
                  options.projectOrg.length > 0) {
-        this.highlightShortcut(this.vShortcuts)
+        this.highlightShortcuts(this.vShortcuts)
         this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber))
+
       } else {
         this.openOptions()
       }
@@ -247,7 +253,7 @@ class PopupPage {
   openPullRequests() {
     HubnavStorage.load().then(options => {
       if (options.active === 'user' && options.user && options.user.length > 0) {
-        this.highlightShortcut(this.pShortcuts)
+        this.highlightShortcuts(this.pShortcuts)
         const user = encodeURIComponent(options.user)
         let params = '?utf8=✓&q=is%3Apr'
         if (options.userIsOrg) { // organization
@@ -274,7 +280,7 @@ class PopupPage {
 
       } else if (options.active === 'repository' && options.repository &&
                  options.repository.length > 0) {
-        this.highlightShortcut(this.pShortcuts)
+        this.highlightShortcuts(this.pShortcuts)
         let path = '/pulls'
         if (this.shiftPressed) {
           path += '?utf8=✓&q=is%3Apr%20is%3Amerged'
@@ -288,14 +294,14 @@ class PopupPage {
       } else if (options.active === 'project' && options.projectNumber &&
                  options.projectNumber.length > 0 && options.projectRepo &&
                  options.projectRepo.length > 0) {
-        this.highlightShortcut(this.pShortcuts)
+        this.highlightShortcuts(this.pShortcuts)
         const args = this.argsForProjectUrl('pull_requests')
         this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber, args))
 
       } else if (options.active === 'project' && options.projectNumber &&
                  options.projectNumber.length > 0 && options.projectOrg &&
                  options.projectOrg.length > 0) {
-        this.highlightShortcut(this.pShortcuts)
+        this.highlightShortcuts(this.pShortcuts)
         const args = this.argsForProjectUrl('pull_requests')
         this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber, args))
 
@@ -348,7 +354,7 @@ class PopupPage {
   openOrgMembers() {
     HubnavStorage.load().then(options => {
       if (options.user && options.user.length > 0 && options.userIsOrg) {
-        this.highlightShortcut(this.mShortcuts)
+        this.highlightShortcuts(this.mShortcuts)
         const org = encodeURIComponent(options.user)
         this.openTab(`https://github.com/orgs/${org}/people`)
       } else {
@@ -360,7 +366,7 @@ class PopupPage {
   openRepositories() {
     HubnavStorage.load().then(options => {
       if (options.user && options.user.length > 0) {
-        this.highlightShortcut(this.rShortcuts)
+        this.highlightShortcuts(this.rShortcuts)
         const user = encodeURIComponent(options.user)
         let path = 'https://github.com/search?s=updated&type=Repositories&q='
         if (options.userIsOrg) {
@@ -380,7 +386,7 @@ class PopupPage {
     if (hash && hash.length > 0) {
       path += `#${hash}`
     }
-    this.highlightShortcut(this.oShortcuts)
+    this.highlightShortcuts(this.oShortcuts)
     this.openTab(path)
   }
 
@@ -486,10 +492,13 @@ class PopupPage {
     HubnavStorage.load().then(options => {
       if (options[`repository${i}`]) {
         this.quickRepositorySwitch(i)
+
       } else if (options[`projectName${i}`]) {
         this.quickProjectSwitch(i)
+
       } else if (options[`user${i}`]) {
         this.quickUserSwitch(i)
+
       } else if (options[`milestoneName${i}`]) {
         this.quickMilestoneSwitch(i)
       }
@@ -524,11 +533,13 @@ class PopupPage {
 
   onShortcutClick(event) {
     event.preventDefault()
+
     const keyClass = event.currentTarget.className.split(' ').
       filter(cls => cls.indexOf('shortcut-') === 0)[0]
     if (!keyClass) {
       return
     }
+
     const key = keyClass.split('shortcut-')[1]
     this.executeShortcut(key)
   }
@@ -649,6 +660,28 @@ class PopupPage {
     this.repo.textContent = repo
   }
 
+  addShortcut(i, populate) {
+    const clone = this.shortcutTemplate.content.cloneNode(true)
+
+    const keyEl = clone.querySelector('.shortcut-key')
+    keyEl.classList.add(`shortcut-${i}`)
+    keyEl.textContent = i
+    keyEl.addEventListener('click', e => this.onShortcutClick(e))
+
+    const bodyEl = clone.querySelector('.shortcut-body')
+    bodyEl.classList.add(`shortcut-${i}`)
+    bodyEl.addEventListener('click', e => this.onShortcutClick(e))
+
+    const logoEl = clone.querySelector('.user-logo')
+
+    const headerEl = clone.querySelector('.shortcut-header')
+    headerEl.id = `shortcut-text${i}`
+
+    populate(headerEl, logoEl)
+    this.shortcutsList.appendChild(clone)
+    this[`shortcuts${i}`] = this.shortcutsList.lastElementChild
+  }
+
   setup() {
     document.addEventListener('keydown', event => {
       this.executeShortcut(event.key.toLowerCase())
@@ -664,8 +697,6 @@ class PopupPage {
         this.welcome.style.display = 'block'
       }
 
-      console.log('options', options)
-
       if (options.active && typeof options.active === 'string') {
         if (options.active === 'user' && options.user && options.user.length > 0) {
           if (options.userIsOrg) {
@@ -673,19 +704,23 @@ class PopupPage {
           } else {
             this.loadActiveUser(options.user)
           }
+
         } else if (options.active === 'repository' && options.repository &&
                    options.repository.length > 0) {
           this.loadActiveRepository(options.repository)
+
         } else if (options.active === 'project' && options.projectNumber &&
                    options.projectNumber.length > 0 &&
                    options.projectRepo && options.projectRepo.length > 0 &&
                    options.projectName && options.projectName.length > 0) {
           this.loadActiveRepoProject(options.projectRepo, options.projectName)
+
         } else if (options.active === 'milestone' && options.milestoneNumber &&
                    options.milestoneNumber.length > 0 &&
                    options.milestoneRepo && options.milestoneRepo.length > 0 &&
                    options.milestoneName && options.milestoneName.length > 0) {
           this.loadActiveMilestone(options.milestoneRepo, options.milestoneName)
+
         } else if (options.active === 'project' && options.projectNumber &&
                    options.projectNumber.length > 0 &&
                    options.projectOrg && options.projectOrg.length > 0 &&
@@ -695,20 +730,24 @@ class PopupPage {
       } else { // no active context
         if (options.repository && options.repository.length > 0) {
           this.loadActiveRepository(options.repository)
+
         } else if (options.user && options.user.length > 0) {
           if (options.userIsOrg) {
             this.loadActiveOrganization(options.user)
           } else {
             this.loadActiveUser(options.user)
           }
+
         } else if (options.milestoneNumber && options.milestoneNumber.length > 0 &&
                    options.milestoneRepo && options.milestoneRepo.length > 0 &&
                    options.milestoneName && options.milestoneName.length > 0) {
           this.loadActiveMilestone(options.milestoneRepo, options.milestoneName)
+
         } else if (options.projectNumber && options.projectNumber.length > 0 &&
                    options.projectRepo && options.projectRepo.length > 0 &&
                    options.projectName && options.projectName.length > 0) {
           this.loadActiveRepoProject(options.projectRepo, options.projectName)
+
         } else if (options.projectNumber && options.projectNumber.length > 0 &&
                    options.projectOrg && options.projectOrg.length > 0 &&
                    options.projectName && options.projectName.length > 0) {
@@ -747,24 +786,20 @@ class PopupPage {
         const repo = options[`repository${i}`]
         if (repo && repo.length > 0) {
           contextCount++
-          const repoRefs = document.querySelectorAll(`.shortcut-${i}`)
-          for (let j = 0; j < repoRefs.length; j++) {
-            repoRefs[j].style.display = 'block'
-          }
-          this[`shortcutText${i}`].textContent = repo
-          this.loadRepoLogo(repo, this[`shortcutLogo${i}`])
+          this.addShortcut(i, (headerEl, logoEl) => {
+            headerEl.textContent = repo
+            this.loadRepoLogo(repo, logoEl)
+          })
         }
 
         const milestoneName = options[`milestoneName${i}`]
         if (milestoneName && milestoneName.length > 0) {
           contextCount++
           const repo = options[`milestoneRepo${i}`]
-          const milestoneRefs = document.querySelectorAll(`.shortcut-${i}`)
-          for (let j = 0; j < milestoneRefs.length; j++) {
-            milestoneRefs[j].style.display = 'block'
-          }
-          this[`shortcutText${i}`].textContent = milestoneName
-          this.loadRepoLogo(repo, this[`shortcutLogo${i}`])
+          this.addShortcut(i, (headerEl, logoEl) => {
+            headerEl.textContent = milestoneName
+            this.loadRepoLogo(repo, logoEl)
+          })
         }
 
         const projectName = options[`projectName${i}`]
@@ -772,27 +807,23 @@ class PopupPage {
           contextCount++
           const repo = options[`projectRepo${i}`]
           const org = options[`projectOrg${i}`]
-          const projectRefs = document.querySelectorAll(`.shortcut-${i}`)
-          for (let j = 0; j < projectRefs.length; j++) {
-            projectRefs[j].style.display = 'block'
-          }
-          this[`shortcutText${i}`].textContent = projectName
-          if (repo && repo.length > 0) {
-            this.loadRepoLogo(repo, this[`shortcutLogo${i}`])
-          } else if (org && org.length > 0) {
-            this.loadUserLogo(org, this[`shortcutLogo${i}`])
-          }
+          this.addShortcut(i, (headerEl, logoEl) => {
+            headerEl.textContent = projectName
+            if (repo && repo.length > 0) {
+              this.loadRepoLogo(repo, logoEl)
+            } else if (org && org.length > 0) {
+              this.loadUserLogo(org, logoEl)
+            }
+          })
         }
 
         const user = options[`user${i}`]
         if (user && user.length > 0) {
           contextCount++
-          const userRefs = document.querySelectorAll(`.shortcut-${i}`)
-          for (let j = 0; j < userRefs.length; j++) {
-            userRefs[j].style.display = 'block'
-          }
-          this[`shortcutText${i}`].textContent = user
-          this.loadUserLogo(user, this[`shortcutLogo${i}`])
+          this.addShortcut(i, (headerEl, logoEl) => {
+            headerEl.textContent = user
+            this.loadUserLogo(user, logoEl)
+          })
         }
       }
 
