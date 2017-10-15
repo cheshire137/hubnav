@@ -151,10 +151,10 @@ class OptionsPage {
     this.flashNotification(message, true, 5000)
   }
 
-  toggleShortcutMenu(event) {
+  toggleOpenShortcutMenu(event) {
     event.target.blur()
-    const openDropdown = !this.addShortcutMenu.classList.contains('is-active')
-    this.addShortcutMenu.classList.toggle('is-active', openDropdown)
+    const isActive = this.addShortcutMenu.classList.contains('is-active')
+    this.addShortcutMenu.classList.toggle('is-active', !isActive)
   }
 
   onShortcutMenuItemClick(event) {
@@ -179,7 +179,7 @@ class OptionsPage {
     for (const menuItem of this.addShortcutMenuItems) {
       menuItem.addEventListener('click', e => this.onShortcutMenuItemClick(e))
     }
-    this.addShortcutMenuTrigger.addEventListener('click', e => this.toggleShortcutMenu(e))
+    this.addShortcutMenuTrigger.addEventListener('click', e => this.toggleOpenShortcutMenu(e))
     this.optionsForm.addEventListener('submit', e => this.onSubmit(e))
     this.closedIssues.addEventListener('change', () => this.checkFormValidity())
     this.newIssue.addEventListener('change', () => this.checkFormValidity())
@@ -694,7 +694,7 @@ class OptionsPage {
     const scope = ''
     const subsequentNode = shortcutAndNode[1]
     this.addUser(i, login, isOrg, scope, subsequentNode)
-    this.toggleAddShortcutMenu()
+    this.hideShortcutMenuIfNecessary()
     this.focusLastAddedInput()
   }
 
@@ -702,7 +702,7 @@ class OptionsPage {
     event.currentTarget.blur()
     const shortcutAndNode = this.getNextShortcut()
     this.addProject(shortcutAndNode[0], '', '', !isRepoProject, '', '', shortcutAndNode[1])
-    this.toggleAddShortcutMenu()
+    this.hideShortcutMenuIfNecessary()
     this.focusLastAddedInput()
   }
 
@@ -710,7 +710,7 @@ class OptionsPage {
     event.target.blur()
     const shortcutAndNode = this.getNextShortcut()
     this.addRepository(shortcutAndNode[0], '', 'master', null, shortcutAndNode[1])
-    this.toggleAddShortcutMenu()
+    this.hideShortcutMenuIfNecessary()
     this.focusLastAddedInput()
   }
 
@@ -893,7 +893,7 @@ class OptionsPage {
     this.loadTemplate(this.repoTemplate, this.shortcutsContainer, populate, subsequentNode)
   }
 
-  toggleAddShortcutMenu() {
+  hideShortcutMenuIfNecessary() {
     const numShortcutsLoaded = document.querySelectorAll('.shortcut-input').length
     if (numShortcutsLoaded < SHORTCUTS.length) {
       this.addShortcutMenu.style.display = 'block'
@@ -904,17 +904,17 @@ class OptionsPage {
 
   removeProject(event, i) {
     this.removeShortcut(event, i, '.project-container')
-    this.toggleAddShortcutMenu()
+    this.hideShortcutMenuIfNecessary()
   }
 
   removeUser(event, i) {
     this.removeShortcut(event, i, '.user-container')
-    this.toggleAddShortcutMenu()
+    this.hideShortcutMenuIfNecessary()
   }
 
   removeRepository(event, i) {
     this.removeShortcut(event, i, '.repository-container')
-    this.toggleAddShortcutMenu()
+    this.hideShortcutMenuIfNecessary()
   }
 
   removeShortcut(event, i, containerClass) {
@@ -952,7 +952,7 @@ class OptionsPage {
           this.addUser(i, user, isOrg, scope)
         }
       }
-      this.toggleAddShortcutMenu()
+      this.hideShortcutMenuIfNecessary()
 
       const focusTargets = document.querySelectorAll('.focus-target')
       for (let input of focusTargets) {
