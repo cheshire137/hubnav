@@ -199,13 +199,6 @@ class OptionsPage {
     }
   }
 
-  loadProjectRepoLogo(rawRepo, imgTag) {
-    const user = rawRepo.split('/')[0]
-    if (user && user.length > 0) {
-      this.loadLogoForUser(user, imgTag)
-    }
-  }
-
   loadLogoForUser(rawUser, img) {
     const user = encodeURIComponent(rawUser)
     img.src = `https://github.com/${user}.png?size=72`
@@ -325,7 +318,7 @@ class OptionsPage {
       if (repo.length < 1) {
         this.showDefaultLogoForUser(imgTag)
       } else {
-        this.loadProjectRepoLogo(repo, imgTag)
+        this.loadRepoLogo(repo, imgTag)
       }
       this.checkFormValidity()
     }, 750)
@@ -784,7 +777,7 @@ class OptionsPage {
       }
 
       if (repo && repo.length > 0 && repoLogo) {
-        this.loadProjectRepoLogo(repo, repoLogo)
+        this.loadRepoLogo(repo, repoLogo)
       } else if (org && org.length > 0 && orgLogo) {
         this.loadLogoForUser(org, orgLogo)
       }
