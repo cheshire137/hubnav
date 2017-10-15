@@ -1,5 +1,9 @@
 # Change Log
 
+0.0.7
+
+- Small UI improvements to options page.
+
 0.0.6
 
 - Added ability to have a varying number of shortcuts per type, e.g., you can have 10 repository shortcuts instead of just 4.
