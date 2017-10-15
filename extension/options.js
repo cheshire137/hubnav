@@ -477,6 +477,34 @@ class OptionsPage {
     this.saveOptions()
   }
 
+  getFallbackActiveContext(options) {
+    if (options.repository && options.repository.length > 0) {
+      return 'repository'
+    }
+
+    if (options.user && options.user.length > 0) {
+      return options.userIsOrg ? 'organization' : 'user'
+    }
+
+    if (options.projectRepo && options.projectRepo.length > 0 &&
+        options.projectNumber && options.projectNumber.length > 0 &&
+        options.projectName && options.projectName.length > 0) {
+      return 'project'
+    }
+
+    if (options.milestoneRepo && options.milestoneRepo.length > 0 &&
+        options.milestoneNumber && options.milestoneNumber.length > 0 &&
+        options.milestoneName && options.milestoneName.length > 0) {
+      return 'milestone'
+    }
+
+    if (options.projectOrg && options.projectOrg.length > 0 &&
+        options.projectNumber && options.projectNumber.length > 0 &&
+        options.projectName && options.projectName.length > 0) {
+      return 'project'
+    }
+  }
+
   saveOptions() {
     if (this.optionsForm.classList.contains('error')) {
       return
@@ -686,21 +714,31 @@ class OptionsPage {
               break
             }
           }
+
+          if (!this.hasActiveProjectDetails(newOptions)) {
+            newOptions.active = this.getFallbackActiveContext(newOptions)
+          }
+
+        // Ensure if we had a milestone as the current context and the user changed
+        // its name or other details, we still keep a milestone as the active context.
+        } else if (newOptions.active === 'milestone' &&
+                   !this.hasActiveMilestoneDetails(newOptions)) {
+          for (let i of SHORTCUTS) {
+            const name = newOptions[`milestoneName${i}`]
+            if (name && name.length > 0) {
+              newOptions.milestoneName = name
+              newOptions.milestoneNumber = newOptions[`milestoneNumber${i}`]
+              newOptions.milestoneRepo = newOptions[`milestoneRepo${i}`]
+              break
+            }
+          }
+
+          if (!this.hasActiveMilestoneDetails(newOptions)) {
+            newOptions.active = this.getFallbackActiveContext(newOptions)
+          }
         }
       } else {
-        if (newOptions.repository && newOptions.repository.length > 0) {
-          newOptions.active = 'repository'
-        } else if (newOptions.user && newOptions.user.length > 0) {
-          newOptions.active = newOptions.userIsOrg ? 'organization' : 'user'
-        } else if (newOptions.projectRepo && newOptions.projectRepo.length > 0 &&
-                   newOptions.projectNumber && newOptions.projectNumber.length > 0 &&
-                   newOptions.projectName && newOptions.projectName.length > 0) {
-          newOptions.active = 'project'
-        } else if (newOptions.projectOrg && newOptions.projectOrg.length > 0 &&
-                   newOptions.projectNumber && newOptions.projectNumber.length > 0 &&
-                   newOptions.projectName && newOptions.projectName.length > 0) {
-          newOptions.active = 'project'
-        }
+        newOptions.active = this.getFallbackActiveContext(newOptions)
       }
 
       newOptions.closedIssues = this.closedIssues.checked
@@ -718,6 +756,12 @@ class OptionsPage {
       typeof options.projectNumber === 'number' &&
       (options.projectRepo && options.projectRepo.length > 0 ||
        options.projectOrg && options.projectOrg.length > 0)
+  }
+
+  hasActiveMilestoneDetails(options) {
+    return options.milestoneName && options.milestoneName.length > 0 &&
+      typeof options.milestoneNumber === 'number' &&
+      options.milestoneRepo && options.milestoneRepo.length > 0
   }
 
   loadTemplate(template, container, populate, subsequentNode) {
