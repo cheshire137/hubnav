@@ -786,10 +786,6 @@ class PopupPage {
     })
   }
 
-  loadOrgLogo(rawOrg) {
-    this.loadUserLogo(rawOrg, this.orgLogo)
-  }
-
   loadRepoLogo(rawRepo, imgTag) {
     const user = rawRepo.split('/')[0]
     if (user && user.length > 0) {
