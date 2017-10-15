@@ -660,7 +660,7 @@ class PopupPage {
     this.repo.textContent = repo
   }
 
-  addShortcut(i, populate) {
+  addShortcut(i, shortcutContext, populate) {
     const clone = this.shortcutTemplate.content.cloneNode(true)
 
     const keyEl = clone.querySelector('.shortcut-key')
@@ -676,6 +676,18 @@ class PopupPage {
 
     const headerEl = clone.querySelector('.shortcut-header')
     headerEl.id = `shortcut-text${i}`
+
+    if (shortcutContext === 'user') {
+      clone.querySelector('.user-icon').style.display = 'block'
+    } else if (shortcutContext === 'organization') {
+      clone.querySelector('.org-icon').style.display = 'block'
+    } else if (shortcutContext === 'repository') {
+      clone.querySelector('.repo-icon').style.display = 'block'
+    } else if (shortcutContext === 'milestone') {
+      clone.querySelector('.milestone-icon').style.display = 'block'
+    } else if (shortcutContext === 'project') {
+      clone.querySelector('.project-icon').style.display = 'block'
+    }
 
     populate(headerEl, logoEl)
     this.shortcutsList.appendChild(clone)
@@ -786,7 +798,7 @@ class PopupPage {
         const repo = options[`repository${i}`]
         if (repo && repo.length > 0) {
           contextCount++
-          this.addShortcut(i, (headerEl, logoEl) => {
+          this.addShortcut(i, 'repository', (headerEl, logoEl) => {
             headerEl.textContent = repo
             this.loadRepoLogo(repo, logoEl)
           })
@@ -796,7 +808,7 @@ class PopupPage {
         if (milestoneName && milestoneName.length > 0) {
           contextCount++
           const repo = options[`milestoneRepo${i}`]
-          this.addShortcut(i, (headerEl, logoEl) => {
+          this.addShortcut(i, 'milestone', (headerEl, logoEl) => {
             headerEl.textContent = milestoneName
             this.loadRepoLogo(repo, logoEl)
           })
@@ -807,7 +819,7 @@ class PopupPage {
           contextCount++
           const repo = options[`projectRepo${i}`]
           const org = options[`projectOrg${i}`]
-          this.addShortcut(i, (headerEl, logoEl) => {
+          this.addShortcut(i, 'project', (headerEl, logoEl) => {
             headerEl.textContent = projectName
             if (repo && repo.length > 0) {
               this.loadRepoLogo(repo, logoEl)
@@ -820,7 +832,8 @@ class PopupPage {
         const user = options[`user${i}`]
         if (user && user.length > 0) {
           contextCount++
-          this.addShortcut(i, (headerEl, logoEl) => {
+          const userIsOrg = options[`userIsOrg${i}`]
+          this.addShortcut(i, userIsOrg ? 'organization' : 'user', (headerEl, logoEl) => {
             headerEl.textContent = user
             this.loadUserLogo(user, logoEl)
           })

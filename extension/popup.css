@@ -201,3 +201,7 @@ body {
 .welcome p:last-child {
   margin-bottom: 0.5rem;
 }
+
+.shortcut-body {
+  justify-content: space-between;
+}
