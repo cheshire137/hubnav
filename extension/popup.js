@@ -21,10 +21,12 @@ class PopupPage {
     this.user = document.getElementById('user')
     this.org = document.getElementById('organization')
     this.project = document.getElementById('project')
+    this.milestone = document.getElementById('milestone')
     this.repoLogo = document.getElementById('repo-logo')
     this.userLogo = document.getElementById('user-logo')
     this.orgLogo = document.getElementById('org-logo')
     this.projectLogo = document.getElementById('project-logo')
+    this.milestoneLogo = document.getElementById('milestone-logo')
 
     // Shortcuts:
     this.fShortcuts = document.querySelectorAll('.shortcut-f')
@@ -49,6 +51,7 @@ class PopupPage {
     this.userCommands = document.getElementById('user-commands')
     this.orgCommands = document.getElementById('org-commands')
     this.projectCommands = document.getElementById('project-commands')
+    this.milestoneCommands = document.getElementById('milestone-commands')
 
     this.welcome = document.getElementById('welcome')
     this.shortcuts = document.querySelectorAll('.shortcut')
@@ -209,6 +212,11 @@ class PopupPage {
                  options.projectRepo.length > 0) {
         this.highlightShortcut(this.vShortcuts)
         this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber))
+      } else if (options.active === 'milestone' && options.milestoneNumber &&
+                 options.milestoneNumber.length > 0 && options.milestoneRepo &&
+                 options.milestoneRepo.length > 0) {
+        this.highlightShortcut(this.vShortcuts)
+        this.openTab(this.milestoneUrl(options.milestoneRepo, options.milestoneNumber))
       } else if (options.active === 'project' && options.projectNumber &&
                  options.projectNumber.length > 0 && options.projectOrg &&
                  options.projectOrg.length > 0) {
@@ -303,6 +311,12 @@ class PopupPage {
     return `&card_filter_query=${query}`
   }
 
+  milestoneUrl(repo, rawNumber) {
+    const number = encodeURIComponent(rawNumber)
+    const path = `/milestone/${number}`
+    return this.repoUrl(repo, path)
+  }
+
   repoProjectUrl(repo, rawNumber, args) {
     const number = encodeURIComponent(rawNumber)
     const path = `/projects/${number}?fullscreen=true${args || ''}`
@@ -386,6 +400,34 @@ class PopupPage {
     })
   }
 
+  quickMilestoneSwitch(i) {
+    HubnavStorage.load().then(currentOptions => {
+      const newOptions = {}
+      for (let key in currentOptions) {
+        newOptions[key] = currentOptions[key]
+      }
+      const newMilestoneRepo = currentOptions[`milestoneRepo${i}`]
+      const newMilestoneName = currentOptions[`milestoneName${i}`]
+      const newMilestoneNumber = currentOptions[`milestoneNumber${i}`]
+      if (newMilestoneRepo && newMilestoneRepo.length > 0) {
+        newOptions.milestoneRepo = newMilestoneRepo
+      }
+      if (newMilestoneNumber && newMilestoneNumber.length > 0) {
+        newOptions.milestoneNumber = newMilestoneNumber
+      }
+      if (newMilestoneName && newMilestoneName.length > 0) {
+        newOptions.milestoneName = newMilestoneName
+      }
+      newOptions.active = 'milestone'
+      HubnavStorage.save(newOptions).then(() => {
+        this.highlightShortcut(this[`shortcuts${i}`])
+        this.runAfterDelay(() => {
+          this.loadActiveMilestone(newOptions.milestoneRepo, newOptions.milestoneName)
+        })
+      })
+    })
+  }
+
   quickProjectSwitch(i) {
     HubnavStorage.load().then(currentOptions => {
       const newOptions = {}
@@ -432,6 +474,8 @@ class PopupPage {
         this.quickProjectSwitch(i)
       } else if (options[`user${i}`]) {
         this.quickUserSwitch(i)
+      } else if (options[`milestoneName${i}`]) {
+        this.quickMilestoneSwitch(i)
       }
     })
   }
@@ -509,10 +553,12 @@ class PopupPage {
     if (this.commandSelected) {
       return
     }
+
     HubnavStorage.load().then(options => {
       if (!this.doesContextSupportShortcut(key, options.active, options.userIsOrg)) {
         return
       }
+
       if (key === 'f') {
         this.openFileFinder()
       } else if (key === 't') {
@@ -543,47 +589,46 @@ class PopupPage {
     })
   }
 
+  toggleCommandsShown(activeContext) {
+    this.milestoneCommands.style.display = activeContext === 'milestone' ? 'block' : 'none'
+    this.repoCommands.style.display = activeContext === 'repository' ? 'block' : 'none'
+    this.userCommands.style.display = activeContext === 'user' ? 'block' : 'none'
+    this.projectCommands.style.display = activeContext === 'project' ? 'block' : 'none'
+    this.orgCommands.style.display = activeContext === 'organization' ? 'block' : 'none'
+  }
+
   loadActiveOrganization(org) {
-    this.repoCommands.style.display = 'none'
-    this.userCommands.style.display = 'none'
-    this.projectCommands.style.display = 'none'
-    this.orgCommands.style.display = 'block'
+    this.toggleCommandsShown('organization')
     this.loadUserLogo(org, this.orgLogo)
     this.org.textContent = org
   }
 
+  loadActiveMilestone(repo, name) {
+    this.toggleCommandsShown('milestone')
+    this.loadRepoLogo(repo, this.milestoneLogo)
+    this.milestone.textContent = name
+  }
+
   loadActiveRepoProject(repo, name) {
-    this.repoCommands.style.display = 'none'
-    this.userCommands.style.display = 'none'
-    this.projectCommands.style.display = 'block'
-    this.orgCommands.style.display = 'none'
+    this.toggleCommandsShown('project')
     this.loadRepoLogo(repo, this.projectLogo)
     this.project.textContent = name
   }
 
   loadActiveOrgProject(org, name) {
-    this.repoCommands.style.display = 'none'
-    this.userCommands.style.display = 'none'
-    this.projectCommands.style.display = 'block'
-    this.orgCommands.style.display = 'none'
+    this.toggleCommandsShown('project')
     this.loadUserLogo(org, this.projectLogo)
     this.project.textContent = name
   }
 
   loadActiveUser(user) {
-    this.repoCommands.style.display = 'none'
-    this.userCommands.style.display = 'block'
-    this.projectCommands.style.display = 'none'
-    this.orgCommands.style.display = 'none'
+    this.toggleCommandsShown('user')
     this.loadUserLogo(user, this.userLogo)
     this.user.textContent = user
   }
 
   loadActiveRepository(repo) {
-    this.repoCommands.style.display = 'block'
-    this.userCommands.style.display = 'none'
-    this.projectCommands.style.display = 'none'
-    this.orgCommands.style.display = 'none'
+    this.toggleCommandsShown('repository')
     this.loadRepoLogo(repo, this.repoLogo)
     this.repo.textContent = repo
   }
@@ -598,9 +643,12 @@ class PopupPage {
     }
 
     HubnavStorage.load().then(options => {
-      if (!options.repository && !options.user && !options.projectNumber) {
+      if (!options.repository && !options.user && !options.projectName &&
+          !options.milestoneName) {
         this.welcome.style.display = 'block'
       }
+
+      console.log('options', options)
 
       if (options.active && typeof options.active === 'string') {
         if (options.active === 'user' && options.user && options.user.length > 0) {
@@ -617,6 +665,11 @@ class PopupPage {
                    options.projectRepo && options.projectRepo.length > 0 &&
                    options.projectName && options.projectName.length > 0) {
           this.loadActiveRepoProject(options.projectRepo, options.projectName)
+        } else if (options.active === 'milestone' && options.milestoneNumber &&
+                   options.milestoneNumber.length > 0 &&
+                   options.milestoneRepo && options.milestoneRepo.length > 0 &&
+                   options.milestoneName && options.milestoneName.length > 0) {
+          this.loadActiveMilestone(options.milestoneRepo, options.milestoneName)
         } else if (options.active === 'project' && options.projectNumber &&
                    options.projectNumber.length > 0 &&
                    options.projectOrg && options.projectOrg.length > 0 &&
@@ -632,6 +685,10 @@ class PopupPage {
           } else {
             this.loadActiveUser(options.user)
           }
+        } else if (options.milestoneNumber && options.milestoneNumber.length > 0 &&
+                   options.milestoneRepo && options.milestoneRepo.length > 0 &&
+                   options.milestoneName && options.milestoneName.length > 0) {
+          this.loadActiveMilestone(options.milestoneRepo, options.milestoneName)
         } else if (options.projectNumber && options.projectNumber.length > 0 &&
                    options.projectRepo && options.projectRepo.length > 0 &&
                    options.projectName && options.projectName.length > 0) {
@@ -679,6 +736,18 @@ class PopupPage {
             repoRefs[j].style.display = 'block'
           }
           this[`shortcutText${i}`].textContent = repo
+          this.loadRepoLogo(repo, this[`shortcutLogo${i}`])
+        }
+
+        const milestoneName = options[`milestoneName${i}`]
+        if (milestoneName && milestoneName.length > 0) {
+          contextCount++
+          const repo = options[`milestoneRepo${i}`]
+          const milestoneRefs = document.querySelectorAll(`.shortcut-${i}`)
+          for (let j = 0; j < milestoneRefs.length; j++) {
+            milestoneRefs[j].style.display = 'block'
+          }
+          this[`shortcutText${i}`].textContent = milestoneName
           this.loadRepoLogo(repo, this[`shortcutLogo${i}`])
         }
 
