@@ -536,6 +536,46 @@ class OptionsPage {
         }
       }
 
+      const milestoneNameInputs = document.querySelectorAll('.milestone-name-input')
+      for (let nameInput of milestoneNameInputs) {
+        const name = nameInput.value.trim()
+        if (name && name.length > 0) {
+          const i = nameInput.getAttribute('data-key')
+          const container = nameInput.closest('.milestone-container')
+          const repoInput = container.querySelector('.milestone-repo-input')
+          const repo = repoInput.value.trim()
+          const number = container.querySelector('.milestone-number-input').value
+          newOptions[`milestoneName${i}`] = name
+          newOptions[`milestoneNumber${i}`] = number
+          newOptions[`milestoneRepo${i}`] = repo
+        }
+      }
+
+      newOptions.milestoneName = currentOptions.milestoneName
+      newOptions.milestoneNumber = currentOptions.milestoneNumber
+      newOptions.milestoneRepo = currentOptions.milestoneRepo
+      const milestoneNameOptions = []
+      for (let i of SHORTCUTS) {
+        const name = newOptions[`milestoneName${i}`]
+        if (name && name.length > 0) {
+          if (newOptions.milestoneName === name) {
+            newOptions.milestoneNumber = newOptions[`milestoneNumber${i}`]
+            newOptions.milestoneRepo = newOptions[`milestoneRepo${i}`]
+          }
+          if (!newOptions.milestoneName || newOptions.milestoneName.length < 1) {
+            newOptions.milestoneName = name
+            newOptions.milestoneNumber = newOptions[`milestoneNumber${i}`]
+            newOptions.milestoneRepo = newOptions[`milestoneRepo${i}`]
+          }
+          milestoneNameOptions.push(name)
+        }
+      }
+      if (milestoneNameOptions.indexOf(newOptions.milestoneName) < 0) {
+        newOptions.milestoneName = null
+        newOptions.milestoneNumber = null
+        newOptions.milestoneRepo = null
+      }
+
       const projectNameInputs = document.querySelectorAll('.project-name-input')
       for (let nameInput of projectNameInputs) {
         const name = nameInput.value.trim()
@@ -1034,6 +1074,13 @@ class OptionsPage {
           const projectRepo = options[`projectRepo${i}`]
           const isOrgProject = projectOrg && projectOrg.length > 0
           this.addProject(i, projectName, projectNumber, isOrgProject, projectOrg, projectRepo)
+        }
+
+        const milestoneName = options[`milestoneName${i}`]
+        if (milestoneName && milestoneName.length > 0) {
+          const milestoneNumber = options[`milestoneNumber${i}`]
+          const milestoneRepo = options[`milestoneRepo${i}`]
+          this.addMilestone(i, milestoneRepo, milestoneNumber, milestoneName)
         }
 
         const user = options[`user${i}`]
