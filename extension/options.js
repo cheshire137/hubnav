@@ -189,6 +189,7 @@ class OptionsPage {
     for (const link of this.chromeExtensionsLinks) {
       link.addEventListener('click', e => this.openChromeExtensions(e))
     }
+    document.addEventListener('click', e => this.onDocumentClick(e))
   }
 
   loadRepoLogo(rawRepo, imgTag) {
@@ -434,6 +435,15 @@ class OptionsPage {
 
   isBadLogo(url) {
     return url === `chrome-extension://${chrome.runtime.id}/bad-user.png`
+  }
+
+  onDocumentClick(event) {
+    const clickedEl = event.target
+    const shortcutMenu = clickedEl.closest('#add-shortcut-menu')
+    if (shortcutMenu) {
+      return
+    }
+    this.addShortcutMenu.classList.remove('is-active')
   }
 
   onSubmit(event) {
