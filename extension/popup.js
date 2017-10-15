@@ -144,58 +144,74 @@ class PopupPage {
   openIssues() {
     HubnavStorage.load().then(options => {
       if (options.active === 'user' && options.user && options.user.length > 0) {
-        this.highlightShortcut(this.iShortcuts)
-        let params = '?utf8=✓&q=is%3Aissue'
-        if (this.shiftPressed) { // closed
-          params += '+is%3Aclosed'
-        } else { // open
-          params += '+is%3Aopen'
-        }
-        const user = encodeURIComponent(options.user)
-        if (options.userIsOrg) { // organization
-          params += `+org%3A${user}`
-        } else { // user
-          params += `+author%3A${user}`
-          if (options.scope && options.scope.length > 0) {
-            if (options.scope.indexOf('/') > -1) { // repository
-              const ownerAndName = options.scope.split('/')
-              params += `+repo%3A${ownerAndName[0]}%2F${ownerAndName[1]}`
-            } else { // organization
-              params += `+org%3A${options.scope}`
-            }
-          }
-        }
-        this.openTab(`https://github.com/issues${params}`)
+        this.openUserIssues(options)
 
       } else if (options.active === 'repository' && options.repository &&
                  options.repository.length > 0) {
-        this.highlightShortcut(this.iShortcuts)
-        let path = '/issues'
-        if (this.shiftPressed) { // closed
-          path += '?utf8=✓&q=is%3Aissue+is%3Aclosed'
-        } else if (this.ctrlPressed) { // new
-          path += '/new'
-        }
-        this.openTab(this.repoUrl(options.repository, path, options.githubUrl))
+        this.openRepoIssues(options)
 
       } else if (options.active === 'project' && options.projectNumber &&
                  options.projectNumber.length > 0 && options.projectRepo &&
                  options.projectRepo.length > 0) {
-        this.highlightShortcut(this.iShortcuts)
-        const args = this.argsForProjectUrl('issues')
-        this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber, args))
+        this.openRepoProjectIssues(options)
 
       } else if (options.active === 'project' && options.projectNumber &&
                  options.projectNumber.length > 0 && options.projectOrg &&
                  options.projectOrg.length > 0) {
-        this.highlightShortcut(this.iShortcuts)
-        const args = this.argsForProjectUrl('issues')
-        this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber, args))
+        this.openOrgProjectIssues(options)
 
       } else {
         this.openRepoSelect()
       }
     })
+  }
+
+  openUserIssues(options) {
+    this.highlightShortcut(this.iShortcuts)
+    let params = '?utf8=✓&q=is%3Aissue'
+    if (this.shiftPressed) { // closed
+      params += '+is%3Aclosed'
+    } else { // open
+      params += '+is%3Aopen'
+    }
+    const user = encodeURIComponent(options.user)
+    if (options.userIsOrg) { // organization
+      params += `+org%3A${user}`
+    } else { // user
+      params += `+author%3A${user}`
+      if (options.scope && options.scope.length > 0) {
+        if (options.scope.indexOf('/') > -1) { // repository
+          const ownerAndName = options.scope.split('/')
+          params += `+repo%3A${ownerAndName[0]}%2F${ownerAndName[1]}`
+        } else { // organization
+          params += `+org%3A${options.scope}`
+        }
+      }
+    }
+    this.openTab(`https://github.com/issues${params}`)
+  }
+
+  openRepoIssues(options) {
+    this.highlightShortcut(this.iShortcuts)
+    let path = '/issues'
+    if (this.shiftPressed) { // closed
+      path += '?utf8=✓&q=is%3Aissue+is%3Aclosed'
+    } else if (this.ctrlPressed) { // new
+      path += '/new'
+    }
+    this.openTab(this.repoUrl(options.repository, path, options.githubUrl))
+  }
+
+  openRepoProjectIssues(options) {
+    this.highlightShortcut(this.iShortcuts)
+    const args = this.argsForProjectUrl('issues')
+    this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber, args))
+  }
+
+  openOrgProjectIssues(options) {
+    this.highlightShortcut(this.iShortcuts)
+    const args = this.argsForProjectUrl('issues')
+    this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber, args))
   }
 
   openHomeForContext() {
