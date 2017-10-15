@@ -2,6 +2,7 @@
 
 0.0.7
 
+- Activating shortcuts that do not apply to the active context no longer opens URLs for previously active contexts.
 - Small UI improvements to options page.
 
 0.0.6

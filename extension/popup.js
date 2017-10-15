@@ -481,10 +481,27 @@ class PopupPage {
     return `${baseUrl}/${owner}/${name}${path || ''}`
   }
 
-  doesContextSupportShortcut(key, context) {
-    if (key === 'f' && (context === 'user' || context === 'project')) {
+  doesContextSupportShortcut(key, context, isUserAnOrg) {
+    const isUserContext = context === 'user'
+    const isProjectContext = context === 'project'
+    const isMilestoneContext = context === 'milestone'
+    const isRepoContext = context === 'repository'
+
+    // File finder
+    if (key === 'f' && !isRepoContext) {
       return false
     }
+
+    // Teams, Members, Repositories
+    if ((key === 't' || key === 'm' || key === 'r') && !isUserContext) {
+      return false
+    }
+
+    // Teams, Members
+    if ((key === 't' || key === 'm') && !isUserAnOrg) {
+      return false
+    }
+
     return true
   }
 
@@ -493,7 +510,7 @@ class PopupPage {
       return
     }
     HubnavStorage.load().then(options => {
-      if (!this.doesContextSupportShortcut(key, options.active)) {
+      if (!this.doesContextSupportShortcut(key, options.active, options.userIsOrg)) {
         return
       }
       if (key === 'f') {
