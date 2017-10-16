@@ -168,10 +168,29 @@
   flex-direction: column;
 }
 
+[draggable] {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: element;
+}
+
+.drag-handle {
+  position: absolute;
+  cursor: move;
+  cursor: -webkit-grab;
+  left: 10px;
+  top: 10px;
+}
+
 .shortcut-container {
+  position: relative;
   padding-bottom: 1rem;
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+.shortcut-container.drag {
+  opacity: 0.4;
 }
 
 .shortcut-container:nth-child(even) {

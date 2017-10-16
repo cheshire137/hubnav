@@ -767,13 +767,58 @@ class OptionsPage {
   loadTemplate(template, container, populate, subsequentNode) {
     const clone = template.content.cloneNode(true)
     populate(clone)
+    let newNode
     if (subsequentNode) {
       container.insertBefore(clone, subsequentNode)
-      subsequentNode.previousElementSibling.id = this.getUniqueID()
+      newNode = subsequentNode.previousElementSibling
     } else {
       container.appendChild(clone)
-      container.lastElementChild.id = this.getUniqueID()
+      newNode = container.lastElementChild
     }
+    newNode.id = this.getUniqueID()
+    newNode.addEventListener('dragstart', e => this.onDragStart(e))
+    newNode.addEventListener('dragover', e => this.onDragOver(e))
+    newNode.addEventListener('dragleave', e => this.onDragLeave(e))
+    newNode.addEventListener('drop', e => this.onDrop(e))
+    newNode.addEventListener('dragend', e => this.onDragEnd(e))
+  }
+
+  onDragStart(event) {
+    const container = event.target
+    event.dataTransfer.setData('text/plain', container.id)
+    event.dropEffect = 'move'
+    container.classList.add('drag')
+  }
+
+  onDragOver(event) {
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'move'
+  }
+
+  onDragLeave(event) {
+  }
+
+  onDrop(event) {
+    event.preventDefault()
+    const id = event.dataTransfer.getData('text')
+    const movingEl = document.getElementById(id)
+    const allShortcuts = Array.from(this.shortcutsContainer.children)
+    const movingElIndex = allShortcuts.indexOf(movingEl)
+    const target = event.target.closest('.shortcut-container')
+    const targetIndex = allShortcuts.indexOf(target)
+    if (movingElIndex < targetIndex) {
+      if (targetIndex < allShortcuts.length - 1) {
+        this.shortcutsContainer.insertBefore(movingEl, target.nextElementSibling)
+      } else {
+        this.shortcutsContainer.appendChild(movingEl)
+      }
+    } else {
+      this.shortcutsContainer.insertBefore(movingEl, target)
+    }
+    movingEl.classList.remove('drag')
+  }
+
+  onDragEnd(event) {
   }
 
   getNextShortcut() {
