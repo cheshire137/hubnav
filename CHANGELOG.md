@@ -3,6 +3,7 @@
 0.0.7
 
 - You can now add GitHub milestones and switch quickly between them.
+- Allow drag-and-drop reordering of shortcuts on the options page.
 - Context switcher now includes an icon so you can tell whether it activates a project, repository, organization, user, or milestone context.
 - Activating shortcuts that do not apply to the active context no longer opens URLs for previously active contexts.
 - Small UI improvements to options page.
