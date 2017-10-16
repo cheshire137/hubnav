@@ -784,6 +784,7 @@ class OptionsPage {
     event.dataTransfer.setData('text/plain', container.id)
     event.dropEffect = 'move'
     container.classList.add('drag')
+    this.shortcutsContainer.classList.add('drag')
   }
 
   onDragOver(event) {
@@ -816,9 +817,18 @@ class OptionsPage {
     }
 
     movingEl.classList.remove('drag')
+    this.shortcutsContainer.classList.remove('drag')
 
     this.updateKeysForEachShortcut()
     this.saveOptions()
+  }
+
+  onDragEnd(event) {
+    this.shortcutsContainer.classList.remove('drag')
+    const movingEl = this.shortcutsContainer.querySelector('.shortcut-container.drag')
+    if (movingEl) {
+      movingEl.classList.remove('drag')
+    }
   }
 
   updateKeysForEachShortcut() {
@@ -838,9 +848,6 @@ class OptionsPage {
         field.setAttribute('data-key', key)
       }
     }
-  }
-
-  onDragEnd(event) {
   }
 
   getNextShortcut() {
