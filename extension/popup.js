@@ -40,7 +40,7 @@ class PopupPage {
     this.nShortcuts = document.querySelectorAll('.shortcut-n')
 
     // Modifiers:
-    this.closedIssueModifers = document.querySelectorAll('.closed-issues')
+    this.closedIssueModifiers = document.querySelectorAll('.closed-issues')
     this.newIssue = document.getElementById('new-issue')
     this.mergedPRModifiers = document.querySelectorAll('.merged-pull-requests')
     this.closedPRModifiers = document.querySelectorAll('.closed-pull-requests')
@@ -840,8 +840,8 @@ class PopupPage {
       }
 
       if (typeof options.closedIssues === 'boolean' && !options.closedIssues) {
-        for (let i = 0; i < this.closedIssueModifers.length; i++) {
-          this.closedIssueModifers[i].style.display = 'none'
+        for (let i = 0; i < this.closedIssueModifiers.length; i++) {
+          this.closedIssueModifiers[i].style.display = 'none'
         }
       }
 
