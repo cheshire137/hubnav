@@ -36,6 +36,7 @@ class PopupPage {
     this.pShortcuts = document.querySelectorAll('.shortcut-p')
     this.mShortcuts = document.querySelectorAll('.shortcut-m')
     this.vShortcuts = document.querySelectorAll('.shortcut-v')
+    this.cShortcuts = document.querySelectorAll('.shortcut-c')
 
     // Modifiers:
     this.closedIssueModifers = document.querySelectorAll('.closed-issues')
@@ -140,6 +141,22 @@ class PopupPage {
     if (modifier) {
       modifier.classList.add('highlighted')
     }
+  }
+
+  openClosedIssues() {
+    HubnavStorage.load().then(options => {
+      if (options.active === 'milestone' && options.milestoneName &&
+          options.milestoneNumber && options.milestoneRepo) {
+        this.openMilestoneClosedIssues(options)
+      }
+    })
+  }
+
+  openMilestoneClosedIssues(options) {
+    this.highlightShortcuts(this.cShortcuts)
+    const number = encodeURIComponent(options.milestoneNumber)
+    const path = `/milestone/${number}?closed=1`
+    this.openTab(this.repoUrl(options.milestoneRepo, path))
   }
 
   openIssues() {
@@ -588,28 +605,43 @@ class PopupPage {
 
       if (key === 'f') {
         this.openFileFinder()
+
       } else if (key === 't') {
         this.openTeams()
+
       } else if (key === 's') {
         this.openGlobalSearch()
+
       } else if (key === 'o') {
         this.openOptions()
+
       } else if (key === 'i') {
         this.openIssues()
+
+      } else if (key === 'c') {
+        this.openClosedIssues()
+
       } else if (key === 'p' || key === 'π') {
         this.openPullRequests()
+
       } else if (key === 'v') {
         this.openHomeForContext()
+
       } else if (key === 'm') {
         this.openOrgMembers()
+
       } else if (key === 'r') {
         this.openRepositories()
+
       } else if (SHORTCUTS.indexOf(key) > -1) {
         this.quickContextSwitch(key)
+
       } else if (key === 'shift') {
         this.shiftPressed = true
+
       } else if (key === 'control') {
         this.ctrlPressed = true
+
       } else if (key === 'alt') {
         this.altPressed = true
       }
