@@ -7,6 +7,7 @@
 - Context switcher now includes an icon so you can tell whether it activates a project, repository, organization, user, or milestone context.
 - Activating shortcuts that do not apply to the active context no longer opens URLs for previously active contexts.
 - Small UI improvements to options page.
+- More compact popup so it shouldn't scroll vertically.
 
 0.0.6
 
