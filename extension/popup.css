@@ -11,9 +11,7 @@ body {
 }
 
 .content dl.shortcuts-list.general-commands-list:not(:last-child) {
-  border-top: 1px dashed #ddd;
-  padding-top: 0.3rem;
-  margin-bottom: 0.5rem;
+  margin-top: 0.3rem;
 }
 
 .shortcuts-list dt,
@@ -178,11 +176,21 @@ body {
   margin-top: 1px;
 }
 
+.context-switch-header {
+  justify-content: space-between;
+}
+
+.subtitle .shortcut.option-shortcut {
+  font-style: normal;
+  font-weight: normal;
+}
+
 .grow {
   flex-grow: 1;
 }
 
-.letter {
+.letter,
+.subtitle span.letter {
   font-weight: 700;
 }
 
