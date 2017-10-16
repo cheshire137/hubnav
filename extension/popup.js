@@ -37,6 +37,7 @@ class PopupPage {
     this.mShortcuts = document.querySelectorAll('.shortcut-m')
     this.vShortcuts = document.querySelectorAll('.shortcut-v')
     this.cShortcuts = document.querySelectorAll('.shortcut-c')
+    this.nShortcuts = document.querySelectorAll('.shortcut-n')
 
     // Modifiers:
     this.closedIssueModifers = document.querySelectorAll('.closed-issues')
@@ -152,10 +153,26 @@ class PopupPage {
     })
   }
 
+  openNewIssue() {
+    HubnavStorage.load().then(options => {
+      if (options.active === 'milestone' && options.milestoneName &&
+          options.milestoneNumber && options.milestoneRepo) {
+        this.openMilestoneNewIssue(options)
+      }
+    })
+  }
+
   openMilestoneClosedIssues(options) {
     this.highlightShortcuts(this.cShortcuts)
     const number = encodeURIComponent(options.milestoneNumber)
     const path = `/milestone/${number}?closed=1`
+    this.openTab(this.repoUrl(options.milestoneRepo, path))
+  }
+
+  openMilestoneNewIssue(options) {
+    this.highlightShortcuts(this.nShortcuts)
+    const number = encodeURIComponent(options.milestoneNumber)
+    const path = `/issues/new?milestone=${number}`
     this.openTab(this.repoUrl(options.milestoneRepo, path))
   }
 
@@ -620,6 +637,9 @@ class PopupPage {
 
       } else if (key === 'c') {
         this.openClosedIssues()
+
+      } else if (key === 'n') {
+        this.openNewIssue()
 
       } else if (key === 'p' || key === 'π') {
         this.openPullRequests()
