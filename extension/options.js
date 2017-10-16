@@ -764,19 +764,12 @@ class OptionsPage {
       options.milestoneRepo && options.milestoneRepo.length > 0
   }
 
-  loadTemplate(key, template, container, populate, subsequentNode) {
+  loadTemplate(key, template, container, populate) {
     const clone = template.content.cloneNode(true)
     populate(clone)
+    container.appendChild(clone)
 
-    let newNode
-    if (subsequentNode) {
-      container.insertBefore(clone, subsequentNode)
-      newNode = subsequentNode.previousElementSibling
-    } else {
-      container.appendChild(clone)
-      newNode = container.lastElementChild
-    }
-
+    const newNode = container.lastElementChild
     newNode.id = this.getUniqueID()
     newNode.setAttribute('data-key', key)
     newNode.addEventListener('dragstart', e => this.onDragStart(e))
@@ -851,21 +844,8 @@ class OptionsPage {
   }
 
   getNextShortcut() {
-    let shortcut = null
-    let subsequentNode = null
-    const inputs = document.querySelectorAll('.shortcut-input')
-    for (let i = 0; i < inputs.length; i++) {
-      const currentShortcut = inputs[i].getAttribute('data-key')
-      if (currentShortcut !== SHORTCUTS[i]) {
-        shortcut = SHORTCUTS[i]
-        subsequentNode = inputs[i].closest('.shortcut-container')
-        break
-      }
-    }
-    if (!shortcut) {
-      shortcut = SHORTCUTS[inputs.length]
-    }
-    return [shortcut, subsequentNode]
+    const containers = this.shortcutsContainer.querySelectorAll('.shortcut-container')
+    return SHORTCUTS[containers.length]
   }
 
   focusLastAddedInput() {
@@ -880,13 +860,11 @@ class OptionsPage {
 
   addMilestoneShortcut(event) {
     event.currentTarget.blur()
-    const shortcutAndNode = this.getNextShortcut()
-    const i = shortcutAndNode[0]
+    const key = this.getNextShortcut()
     const repo = ''
     const number = ''
     const name = ''
-    const subsequentNode = shortcutAndNode[1]
-    this.addMilestone(i, repo, number, name, subsequentNode)
+    this.addMilestone(key, repo, number, name)
     this.hideShortcutMenuIfNecessary()
     this.focusLastAddedInput()
   }
@@ -897,33 +875,31 @@ class OptionsPage {
 
   addUserOrOrgShortcut(event, isOrg) {
     event.currentTarget.blur()
-    const shortcutAndNode = this.getNextShortcut()
-    const i = shortcutAndNode[0]
+    const key = this.getNextShortcut()
     const login = ''
     const scope = ''
-    const subsequentNode = shortcutAndNode[1]
-    this.addUser(i, login, isOrg, scope, subsequentNode)
+    this.addUser(key, login, isOrg, scope)
     this.hideShortcutMenuIfNecessary()
     this.focusLastAddedInput()
   }
 
   addProjectShortcut(event, isRepoProject) {
     event.currentTarget.blur()
-    const shortcutAndNode = this.getNextShortcut()
-    this.addProject(shortcutAndNode[0], '', '', !isRepoProject, '', '', shortcutAndNode[1])
+    const key = this.getNextShortcut()
+    this.addProject(key, '', '', !isRepoProject, '', '')
     this.hideShortcutMenuIfNecessary()
     this.focusLastAddedInput()
   }
 
   addRepositoryShortcut(event) {
     event.target.blur()
-    const shortcutAndNode = this.getNextShortcut()
-    this.addRepository(shortcutAndNode[0], '', 'master', null, shortcutAndNode[1])
+    const key = this.getNextShortcut()
+    this.addRepository(key, '', 'master', null)
     this.hideShortcutMenuIfNecessary()
     this.focusLastAddedInput()
   }
 
-  addMilestone(i, repo, number, name, subsequentNode) {
+  addMilestone(i, repo, number, name) {
     const populate = milestoneEl => {
       milestoneEl.querySelector('.i').textContent = i
 
@@ -965,10 +941,10 @@ class OptionsPage {
       const removeButton = milestoneEl.querySelector('.remove-milestone-button')
       removeButton.addEventListener('click', e => this.removeMilestone(e, i))
     }
-    this.loadTemplate(i, this.milestoneTemplate, this.shortcutsContainer, populate, subsequentNode)
+    this.loadTemplate(i, this.milestoneTemplate, this.shortcutsContainer, populate)
   }
 
-  addProject(i, name, number, isOrgProject, org, repo, subsequentNode) {
+  addProject(i, name, number, isOrgProject, org, repo) {
     const populate = projectEl => {
       projectEl.querySelector('.i').textContent = i
 
@@ -1050,10 +1026,10 @@ class OptionsPage {
       removeButton.addEventListener('click', e => this.removeProject(e, i))
     }
     const template = isOrgProject ? this.orgProjectTemplate : this.repoProjectTemplate
-    this.loadTemplate(i, template, this.shortcutsContainer, populate, subsequentNode)
+    this.loadTemplate(i, template, this.shortcutsContainer, populate)
   }
 
-  addUser(i, login, isOrg, scope, subsequentNode) {
+  addUser(i, login, isOrg, scope) {
     const populate = userEl => {
       userEl.querySelector('.i').textContent = i
 
@@ -1101,7 +1077,7 @@ class OptionsPage {
     }
 
     const template = isOrg ? this.orgTemplate : this.userTemplate
-    this.loadTemplate(i, template, this.shortcutsContainer, populate, subsequentNode)
+    this.loadTemplate(i, template, this.shortcutsContainer, populate)
   }
 
   getUniqueID() {
@@ -1112,7 +1088,7 @@ class OptionsPage {
     })
   }
 
-  addRepository(i, repo, defaultBranch, githubUrl, subsequentNode) {
+  addRepository(i, repo, defaultBranch, githubUrl) {
     const populate = repoEl => {
       repoEl.querySelector('.i').textContent = i
 
@@ -1152,7 +1128,7 @@ class OptionsPage {
       const removeButton = repoEl.querySelector('.remove-repository-button')
       removeButton.addEventListener('click', e => this.removeRepository(e, i))
     }
-    this.loadTemplate(i, this.repoTemplate, this.shortcutsContainer, populate, subsequentNode)
+    this.loadTemplate(i, this.repoTemplate, this.shortcutsContainer, populate)
   }
 
   hideShortcutMenuIfNecessary() {
