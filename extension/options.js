@@ -769,8 +769,10 @@ class OptionsPage {
     populate(clone)
     if (subsequentNode) {
       container.insertBefore(clone, subsequentNode)
+      subsequentNode.previousElementSibling.id = this.getUniqueID()
     } else {
       container.appendChild(clone)
+      container.lastElementChild.id = this.getUniqueID()
     }
   }
 
@@ -1026,6 +1028,14 @@ class OptionsPage {
 
     const template = isOrg ? this.orgTemplate : this.userTemplate
     this.loadTemplate(template, this.shortcutsContainer, populate, subsequentNode)
+  }
+
+  getUniqueID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0
+      const v = c == 'x' ? r : (r & 0x3 | 0x8)
+      return v.toString(16)
+    })
   }
 
   addRepository(i, repo, defaultBranch, githubUrl, subsequentNode) {
