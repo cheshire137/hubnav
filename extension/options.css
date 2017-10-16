@@ -203,6 +203,11 @@
   opacity: 0.4;
 }
 
+.shortcut-container.drag-target,
+.shortcut-container:nth-child(even).drag-target {
+  background-color: #F8FFDA;
+}
+
 .shortcut-container:nth-child(even) {
   background-color: #f8f8f8;
 }

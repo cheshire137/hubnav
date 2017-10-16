@@ -790,9 +790,13 @@ class OptionsPage {
   onDragOver(event) {
     event.preventDefault()
     event.dataTransfer.dropEffect = 'move'
+    const target = event.target.closest('.shortcut-container')
+    target.classList.add('drag-target')
   }
 
   onDragLeave(event) {
+    const target = event.target.closest('.shortcut-container')
+    target.classList.remove('drag-target')
   }
 
   onDrop(event) {
@@ -818,6 +822,10 @@ class OptionsPage {
 
     movingEl.classList.remove('drag')
     this.shortcutsContainer.classList.remove('drag')
+    const highlightedTarget = this.shortcutsContainer.querySelector('.drag-target')
+    if (highlightedTarget) {
+      highlightedTarget.classList.remove('drag-target')
+    }
 
     this.updateKeysForEachShortcut()
     this.saveOptions()
