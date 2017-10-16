@@ -764,9 +764,10 @@ class OptionsPage {
       options.milestoneRepo && options.milestoneRepo.length > 0
   }
 
-  loadTemplate(template, container, populate, subsequentNode) {
+  loadTemplate(key, template, container, populate, subsequentNode) {
     const clone = template.content.cloneNode(true)
     populate(clone)
+
     let newNode
     if (subsequentNode) {
       container.insertBefore(clone, subsequentNode)
@@ -775,7 +776,9 @@ class OptionsPage {
       container.appendChild(clone)
       newNode = container.lastElementChild
     }
+
     newNode.id = this.getUniqueID()
+    newNode.setAttribute('data-key', key)
     newNode.addEventListener('dragstart', e => this.onDragStart(e))
     newNode.addEventListener('dragover', e => this.onDragOver(e))
     newNode.addEventListener('dragleave', e => this.onDragLeave(e))
@@ -800,12 +803,15 @@ class OptionsPage {
 
   onDrop(event) {
     event.preventDefault()
+    const allShortcuts = Array.from(this.shortcutsContainer.children)
+
     const id = event.dataTransfer.getData('text')
     const movingEl = document.getElementById(id)
-    const allShortcuts = Array.from(this.shortcutsContainer.children)
     const movingElIndex = allShortcuts.indexOf(movingEl)
+
     const target = event.target.closest('.shortcut-container')
     const targetIndex = allShortcuts.indexOf(target)
+
     if (movingElIndex < targetIndex) {
       if (targetIndex < allShortcuts.length - 1) {
         this.shortcutsContainer.insertBefore(movingEl, target.nextElementSibling)
@@ -815,7 +821,25 @@ class OptionsPage {
     } else {
       this.shortcutsContainer.insertBefore(movingEl, target)
     }
+
     movingEl.classList.remove('drag')
+
+    const oldKey = movingEl.getAttribute('data-key')
+    const newKey = target.getAttribute('data-key')
+    movingEl.querySelector('.i').textContent = newKey
+    target.querySelector('.i').textContent = oldKey
+    movingEl.setAttribute('data-key', newKey)
+    target.setAttribute('data-key', oldKey)
+    const movingElFields = movingEl.querySelectorAll('[data-key]')
+    for (const field of movingElFields) {
+      field.setAttribute('data-key', newKey)
+    }
+    const targetFields = target.querySelectorAll('[data-key]')
+    for (const field of targetFields) {
+      field.setAttribute('data-key', oldKey)
+    }
+
+    this.checkFormValidity()
   }
 
   onDragEnd(event) {
@@ -936,7 +960,7 @@ class OptionsPage {
       const removeButton = milestoneEl.querySelector('.remove-milestone-button')
       removeButton.addEventListener('click', e => this.removeMilestone(e, i))
     }
-    this.loadTemplate(this.milestoneTemplate, this.shortcutsContainer, populate, subsequentNode)
+    this.loadTemplate(i, this.milestoneTemplate, this.shortcutsContainer, populate, subsequentNode)
   }
 
   addProject(i, name, number, isOrgProject, org, repo, subsequentNode) {
@@ -1021,7 +1045,7 @@ class OptionsPage {
       removeButton.addEventListener('click', e => this.removeProject(e, i))
     }
     const template = isOrgProject ? this.orgProjectTemplate : this.repoProjectTemplate
-    this.loadTemplate(template, this.shortcutsContainer, populate, subsequentNode)
+    this.loadTemplate(i, template, this.shortcutsContainer, populate, subsequentNode)
   }
 
   addUser(i, login, isOrg, scope, subsequentNode) {
@@ -1072,7 +1096,7 @@ class OptionsPage {
     }
 
     const template = isOrg ? this.orgTemplate : this.userTemplate
-    this.loadTemplate(template, this.shortcutsContainer, populate, subsequentNode)
+    this.loadTemplate(i, template, this.shortcutsContainer, populate, subsequentNode)
   }
 
   getUniqueID() {
@@ -1123,7 +1147,7 @@ class OptionsPage {
       const removeButton = repoEl.querySelector('.remove-repository-button')
       removeButton.addEventListener('click', e => this.removeRepository(e, i))
     }
-    this.loadTemplate(this.repoTemplate, this.shortcutsContainer, populate, subsequentNode)
+    this.loadTemplate(i, this.repoTemplate, this.shortcutsContainer, populate, subsequentNode)
   }
 
   hideShortcutMenuIfNecessary() {
