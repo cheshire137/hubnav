@@ -824,22 +824,27 @@ class OptionsPage {
 
     movingEl.classList.remove('drag')
 
-    const oldKey = movingEl.getAttribute('data-key')
-    const newKey = target.getAttribute('data-key')
-    movingEl.querySelector('.i').textContent = newKey
-    target.querySelector('.i').textContent = oldKey
-    movingEl.setAttribute('data-key', newKey)
-    target.setAttribute('data-key', oldKey)
-    const movingElFields = movingEl.querySelectorAll('[data-key]')
-    for (const field of movingElFields) {
-      field.setAttribute('data-key', newKey)
-    }
-    const targetFields = target.querySelectorAll('[data-key]')
-    for (const field of targetFields) {
-      field.setAttribute('data-key', oldKey)
-    }
+    this.updateKeysForEachShortcut()
+    this.saveOptions()
+  }
 
-    this.checkFormValidity()
+  updateKeysForEachShortcut() {
+    const containers = this.shortcutsContainer.querySelectorAll('.shortcut-container')
+    for (let i = 0; i < containers.length; i++) {
+      const key = SHORTCUTS[i]
+      const container = containers[i]
+      const oldKey = container.getAttribute('data-key')
+      if (oldKey === key) {
+        continue
+      }
+
+      container.setAttribute('data-key', key)
+      container.querySelector('.i').textContent = key
+      const fields = container.querySelectorAll('[data-key]')
+      for (const field of fields) {
+        field.setAttribute('data-key', key)
+      }
+    }
   }
 
   onDragEnd(event) {
@@ -1179,6 +1184,7 @@ class OptionsPage {
     button.blur()
     const container = button.closest(containerClass)
     container.remove()
+    this.updateKeysForEachShortcut()
     this.saveOptions()
   }
 
