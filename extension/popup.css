@@ -45,6 +45,10 @@ body {
   text-decoration: underline;
 }
 
+.shortcut.active-context {
+  background-color: #F8FFDA;
+}
+
 .shortcuts-list dd {
   margin-left: 1.9em;
   border-radius: 3px;

@@ -109,6 +109,17 @@ class PopupPage {
     })
   }
 
+  highlightContext(key) {
+    const currentHighlights = this.shortcutsList.querySelectorAll('.active-context')
+    for (const shortcutEl of currentHighlights) {
+      shortcutEl.classList.remove('active-context')
+    }
+    const newHighlights = this.shortcutsList.querySelectorAll(`.shortcut-${key}`)
+    for (const shortcutEl of newHighlights) {
+      shortcutEl.classList.add('active-context')
+    }
+  }
+
   highlightShortcuts(shortcuts) {
     for (let i = 0; i < shortcuts.length; i++) {
       this.highlightShortcut(shortcuts[i])
@@ -525,15 +536,19 @@ class PopupPage {
   quickContextSwitch(i) {
     HubnavStorage.load().then(options => {
       if (options[`repository${i}`]) {
+        this.highlightContext(i)
         this.quickRepositorySwitch(i)
 
       } else if (options[`projectName${i}`]) {
+        this.highlightContext(i)
         this.quickProjectSwitch(i)
 
       } else if (options[`user${i}`]) {
+        this.highlightContext(i)
         this.quickUserSwitch(i)
 
       } else if (options[`milestoneName${i}`]) {
+        this.highlightContext(i)
         this.quickMilestoneSwitch(i)
       }
     })
