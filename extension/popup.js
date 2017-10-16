@@ -607,6 +607,11 @@ class PopupPage {
       return false
     }
 
+    // New issue, Closed issues
+    if ((key === 'n' || key === 'c') && !isMilestoneContext) {
+      return false
+    }
+
     return true
   }
 
