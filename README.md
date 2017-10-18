@@ -8,11 +8,11 @@ Use keyboard shortcuts to quickly access issues, pull requests, and the file fin
 
 ### Extension popup:
 
-<img src="https://raw.githubusercontent.com/cheshire137/hubnav/master/screenshot-popup-007.png" alt="screenshot of popup" width="600">
+<img src="https://raw.githubusercontent.com/cheshire137/hubnav/master/screenshot-popup-007.png" alt="screenshot of popup" width="313">
 
 ### Extension options:
 
-<img src="https://raw.githubusercontent.com/cheshire137/hubnav/master/screenshot-options-007.png" alt="screenshot of options" height="600">
+![screenshot of options](https://raw.githubusercontent.com/cheshire137/hubnav/master/screenshot-options-007.png)
 
 ## How to Use
 
