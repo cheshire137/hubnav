@@ -6,7 +6,13 @@ A Chrome extension for navigating github.com via keyboard shortcuts.
 
 Use keyboard shortcuts to quickly access issues, pull requests, and the file finder for up to four of your most frequented GitHub repositories. Shortcuts are also available for accessing the repositories, teams, and members of your GitHub organization as well as for GitHub search.
 
-![screenshot of popup](https://raw.githubusercontent.com/cheshire137/hubnav/master/screenshotPopup.png)
+### Extension popup:
+
+![screenshot of popup](https://raw.githubusercontent.com/cheshire137/hubnav/master/screenshot-popup-007.png | width=600)
+
+### Extension options:
+
+![screenshot of options](https://raw.githubusercontent.com/cheshire137/hubnav/master/screenshot-options-007.png | height=600)
 
 ## How to Use
 
