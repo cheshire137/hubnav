@@ -19,10 +19,12 @@ class PopupPage {
     this.user = document.getElementById('user')
     this.org = document.getElementById('organization')
     this.project = document.getElementById('project')
+    this.team = document.getElementById('team')
     this.milestone = document.getElementById('milestone')
     this.repoLogo = document.getElementById('repo-logo')
     this.userLogo = document.getElementById('user-logo')
     this.orgLogo = document.getElementById('org-logo')
+    this.teamOrgLogo = document.getElementById('team-org-logo')
     this.projectLogo = document.getElementById('project-logo')
     this.milestoneLogo = document.getElementById('milestone-logo')
 
@@ -52,6 +54,7 @@ class PopupPage {
     this.orgCommands = document.getElementById('org-commands')
     this.projectCommands = document.getElementById('project-commands')
     this.milestoneCommands = document.getElementById('milestone-commands')
+    this.teamCommands = document.getElementById('team-commands')
 
     this.welcome = document.getElementById('welcome')
   }
@@ -283,6 +286,12 @@ class PopupPage {
         this.highlightShortcuts(this.vShortcuts)
         this.openTab(this.milestoneUrl(options.milestoneRepo, options.milestoneNumber))
 
+      } else if (options.active === 'team' && options.teamName &&
+                 options.teamName.length > 0 && options.teamOrg &&
+                 options.teamOrg.length > 0) {
+        this.highlightShortcuts(this.vShortcuts)
+        this.openTab(this.teamUrl(options.teamOrg, options.teamName))
+
       } else if (options.active === 'project' && options.projectNumber &&
                  options.projectNumber.length > 0 && options.projectOrg &&
                  options.projectOrg.length > 0) {
@@ -376,6 +385,12 @@ class PopupPage {
       }
     }
     return `&card_filter_query=${query}`
+  }
+
+  teamUrl(rawOrg, rawName) {
+    const org = encodeURIComponent(rawOrg)
+    const name = encodeURIComponent(rawName)
+    return `https://github.com/orgs/${org}/teams/${name}`
   }
 
   milestoneUrl(repo, rawNumber) {
@@ -475,6 +490,30 @@ class PopupPage {
     })
   }
 
+  quickTeamSwitch(i) {
+    HubnavStorage.load().then(currentOptions => {
+      const newOptions = {}
+      for (const key in currentOptions) {
+        newOptions[key] = currentOptions[key]
+      }
+      const newTeamOrg = currentOptions[`teamOrg${i}`]
+      const newTeamName = currentOptions[`teamName${i}`]
+      if (newTeamOrg && newTeamOrg.length > 0) {
+        newOptions.teamOrg = newTeamOrg
+      }
+      if (newTeamName && newTeamName.length > 0) {
+        newOptions.teamName = newTeamName
+      }
+      newOptions.active = 'team'
+      HubnavStorage.save(newOptions).then(() => {
+        this.highlightShortcut(this[`shortcuts${i}`])
+        this.runAfterDelay(() => {
+          this.loadActiveTeam(newOptions.teamOrg, newOptions.teamName)
+        })
+      })
+    })
+  }
+
   quickMilestoneSwitch(i) {
     HubnavStorage.load().then(currentOptions => {
       const newOptions = {}
@@ -561,6 +600,10 @@ class PopupPage {
       } else if (options[`milestoneName${i}`]) {
         this.highlightContext(i)
         this.quickMilestoneSwitch(i)
+
+      } else if (options[`teamName${i}`]) {
+        this.highlightContext(i)
+        this.quickTeamSwitch(i)
       }
     })
   }
@@ -700,6 +743,7 @@ class PopupPage {
 
   toggleCommandsShown(activeContext) {
     this.milestoneCommands.style.display = activeContext === 'milestone' ? 'block' : 'none'
+    this.teamCommands.style.display = activeContext === 'team' ? 'block' : 'none'
     this.repoCommands.style.display = activeContext === 'repository' ? 'block' : 'none'
     this.userCommands.style.display = activeContext === 'user' ? 'block' : 'none'
     this.projectCommands.style.display = activeContext === 'project' ? 'block' : 'none'
@@ -711,6 +755,13 @@ class PopupPage {
     this.loadUserLogo(org, this.orgLogo)
     this.org.textContent = org
     this.highlightActiveContext('organization', org)
+  }
+
+  loadActiveTeam(org, name) {
+    this.toggleCommandsShown('team')
+    this.loadUserLogo(org, this.teamOrgLogo)
+    this.team.textContent = name
+    this.highlightActiveContext('team', org, name)
   }
 
   loadActiveMilestone(repo, name, number) {
@@ -756,6 +807,16 @@ class PopupPage {
         const repo = contextParams[0]
         for (const i of SHORTCUTS) {
           if (options[`repository${i}`] === repo) {
+            activeKey = i
+            break
+          }
+        }
+
+      } else if (context === 'team') {
+        const org = contextParams[0]
+        const name = contextParams[1]
+        for (const i of SHORTCUTS) {
+          if (options[`teamName${i}`] === name && options[`teamOrg${i}` === org]) {
             activeKey = i
             break
           }
@@ -852,6 +913,8 @@ class PopupPage {
       clone.querySelector('.milestone-icon').style.display = 'block'
     } else if (shortcutContext === 'project') {
       clone.querySelector('.project-icon').style.display = 'block'
+    } else if (shortcutContext === 'team') {
+      clone.querySelector('.team-icon').style.display = 'block'
     }
 
     populate(headerEl, logoEl)
@@ -870,7 +933,7 @@ class PopupPage {
 
     HubnavStorage.load().then(options => {
       if (!options.repository && !options.user && !options.projectName &&
-          !options.milestoneName) {
+          !options.milestoneName && !options.teamName) {
         this.welcome.style.display = 'block'
       }
 
@@ -899,6 +962,10 @@ class PopupPage {
                    options.milestoneName && options.milestoneName.length > 0) {
           this.loadActiveMilestone(options.milestoneRepo, options.milestoneName,
                                    options.milestoneNumber)
+
+        } else if (options.active === 'team' && options.teamOrg && options.teamOrg.length > 0 &&
+                   options.teamName && options.teamName.length > 0) {
+          this.loadActiveTeam(options.teamOrg, options.teamName)
 
         } else if (options.active === 'project' && options.projectNumber &&
                    options.projectNumber.length > 0 &&
@@ -982,6 +1049,16 @@ class PopupPage {
           this.addShortcut(i, 'milestone', (headerEl, logoEl) => {
             headerEl.textContent = milestoneName
             this.loadRepoLogo(milestoneRepo, logoEl)
+          })
+        }
+
+        const teamName = options[`teamName${i}`]
+        if (teamName && teamName.length > 0) {
+          contextCount++
+          const teamOrg = options[`teamOrg${i}`]
+          this.addShortcut(i, 'team', (headerEl, logoEl) => {
+            headerEl.textContent = teamName
+            this.loadUserLogo(teamOrg, logoEl)
           })
         }
 
