@@ -969,7 +969,7 @@ class PopupPage {
       }
 
       let contextCount = 0
-      for (let i of SHORTCUTS) {
+      for (const i of SHORTCUTS) {
         const repo = options[`repository${i}`]
         if (repo && repo.length > 0) {
           contextCount++
