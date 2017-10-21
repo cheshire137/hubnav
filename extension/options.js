@@ -534,6 +534,8 @@ class OptionsPage {
       return 'milestone'
     }
 
+    if (this.hasActiveTeamDetails(options)) {
+      return 'team'
     }
   }
 
@@ -789,6 +791,11 @@ class OptionsPage {
 
   hasActiveRepositoryDetails(options) {
     return options.repository && options.repository.length > 0
+  }
+
+  hasActiveTeamDetails(options) {
+    return options.teamName && options.teamName.length > 0 &&
+      options.teamOrg && options.teamOrg.length > 0
   }
 
   hasActiveProjectDetails(options) {
