@@ -992,6 +992,10 @@ class PopupPage {
         this.loadActiveMilestone(options.milestoneRepo, options.milestoneName,
                                  options.milestoneNumber)
 
+      } else if (options.teamOrg && options.teamOrg.length > 0 &&
+                 options.teamName && options.teamName.length > 0) {
+        this.loadActiveTeam(options.teamOrg, options.teamName)
+
       } else if (options.projectNumber && options.projectNumber.length > 0 &&
                  options.projectRepo && options.projectRepo.length > 0 &&
                  options.projectName && options.projectName.length > 0) {
