@@ -982,22 +982,22 @@ class PopupPage {
         const milestoneName = options[`milestoneName${i}`]
         if (milestoneName && milestoneName.length > 0) {
           contextCount++
-          const repo = options[`milestoneRepo${i}`]
+          const milestoneRepo = options[`milestoneRepo${i}`]
           this.addShortcut(i, 'milestone', (headerEl, logoEl) => {
             headerEl.textContent = milestoneName
-            this.loadRepoLogo(repo, logoEl)
+            this.loadRepoLogo(milestoneRepo, logoEl)
           })
         }
 
         const projectName = options[`projectName${i}`]
         if (projectName && projectName.length > 0) {
           contextCount++
-          const repo = options[`projectRepo${i}`]
+          const projectRepo = options[`projectRepo${i}`]
           const org = options[`projectOrg${i}`]
           this.addShortcut(i, 'project', (headerEl, logoEl) => {
             headerEl.textContent = projectName
-            if (repo && repo.length > 0) {
-              this.loadRepoLogo(repo, logoEl)
+            if (projectRepo && projectRepo.length > 0) {
+              this.loadRepoLogo(projectRepo, logoEl)
             } else if (org && org.length > 0) {
               this.loadUserLogo(org, logoEl)
             }
