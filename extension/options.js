@@ -17,11 +17,8 @@ class OptionsPage {
   }
 
   isValidUrl(url) {
-    const regexQuery = "^(https?://)?(www\\.)?([-a-z0-9]{1,63}\\.)*?[a-z0-9][-a-z0-9]{0,61}[a-z0-9]\\.[a-z]{2,6}(/[-\\w@\\+\\.~#\\?&/=%]*)?$"
-    if (new RegExp(regexQuery, "i").test(url)) {
-      return true
-    }
-    return false
+    const regexStr = '^(https?://)?(www\\.)?([-a-z0-9]{1,63}\\.)*?[a-z0-9][-a-z0-9]{0,61}[a-z0-9]\\.[a-z]{2,6}(/[-\\w@\\+\\.~#\\?&/=%]*)?$'
+    return new RegExp(regexStr, 'i').test(url)
   }
 
   openChromeExtensions(event) {
@@ -32,7 +29,7 @@ class OptionsPage {
 
   checkFormValidity() {
     const repoInputs = document.querySelectorAll('.repository-input')
-    for (let repoInput of repoInputs) {
+    for (const repoInput of repoInputs) {
       const i = repoInput.getAttribute('data-key')
       const repo = repoInput.value.trim()
       if (this.isValidRepo(repo)) {
@@ -44,7 +41,7 @@ class OptionsPage {
     }
 
     const githubUrlInputs = document.querySelectorAll('.github-url-input')
-    for (let urlInput of githubUrlInputs) {
+    for (const urlInput of githubUrlInputs) {
       const i = urlInput.getAttribute('data-key')
       const url = urlInput.value.trim()
       if (this.isValidUrl(url)) {
@@ -56,7 +53,7 @@ class OptionsPage {
     }
 
     const projectNameInputs = document.querySelectorAll('.project-name-input')
-    for (let nameInput of projectNameInputs) {
+    for (const nameInput of projectNameInputs) {
       const i = nameInput.getAttribute('data-key')
       const name = nameInput.value.trim()
       const container = nameInput.closest('.project-container')
@@ -82,7 +79,8 @@ class OptionsPage {
         }
       }
 
-      if ((this.isPresent(org) || this.isPresent(repo) || this.isPresent(name)) && number.length < 1) {
+      if ((this.isPresent(org) || this.isPresent(repo) || this.isPresent(name)) &&
+          number.length < 1) {
         this.errors[`projectNumber${i}`] = true
         this.flashErrorMessage(`Must set project number: shortcut ${i}`)
       } else {
@@ -537,6 +535,8 @@ class OptionsPage {
     if (this.hasActiveTeamDetails(options)) {
       return 'team'
     }
+
+    return null
   }
 
   saveOptions() {
@@ -930,7 +930,7 @@ class OptionsPage {
     this.saveOptions()
   }
 
-  onDragEnd(event) {
+  onDragEnd() {
     this.shortcutsContainer.classList.remove('drag')
     const movingEl = this.shortcutsContainer.querySelector('.shortcut-container.drag')
     if (movingEl) {
@@ -1245,7 +1245,7 @@ class OptionsPage {
   getUniqueID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
       const r = Math.random() * 16 | 0
-      const v = c == 'x' ? r : (r & 0x3 | 0x8)
+      const v = (c === 'x') ? r : (r & 0x3 | 0x8)
       return v.toString(16)
     })
   }
@@ -1338,7 +1338,7 @@ class OptionsPage {
 
   restoreOptions() {
     HubnavStorage.load().then(options => {
-      for (let i of SHORTCUTS) {
+      for (const i of SHORTCUTS) {
         const repo = options[`repository${i}`]
         if (this.isPresent(repo)) {
           this.addRepository(i, repo, options[`defaultBranch${i}`], options[`githubUrl${i}`])
@@ -1379,7 +1379,7 @@ class OptionsPage {
       this.hideShortcutMenuIfNecessary()
 
       const focusTargets = document.querySelectorAll('.focus-target')
-      for (let input of focusTargets) {
+      for (const input of focusTargets) {
         input.classList.remove('focus-target')
       }
 

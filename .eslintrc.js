@@ -18,6 +18,10 @@ module.exports = {
     'class-methods-use-this': 0,
     'no-restricted-syntax': 0,
     'guard-for-in': 0,
-    'dot-location': ['error', 'object']
+    'dot-location': ['error', 'object'],
+    'no-mixed-operators': 0,
+    'no-bitwise': 0,
+    'no-continue': 0,
+    'prefer-destructuring': ['error', { object: true, array: false }]
   }
 };
