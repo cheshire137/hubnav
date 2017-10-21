@@ -1,5 +1,7 @@
 # Hubnav
 
+[![Build Status](https://travis-ci.org/cheshire137/hubnav.svg?branch=master)](https://travis-ci.org/cheshire137/hubnav)
+
 A Chrome extension for navigating github.com via keyboard shortcuts.
 
 **[Install from the Chrome Web Store](https://chrome.google.com/webstore/detail/hubnav/aanefongalfonofnpgkgcibhogmgnckm)**
