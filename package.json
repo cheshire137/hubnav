@@ -1,0 +1,25 @@
+{
+  "name": "hubnav",
+  "version": "0.0.8",
+  "description": "Navigate GitHub.com via keyboard shortcuts in this Chrome extension.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cheshire137/hubnav.git"
+  },
+  "keywords": [
+    "chrome",
+    "extension",
+    "github",
+    "chrome-extension",
+    "browser"
+  ],
+  "author": "Sarah Vessels",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cheshire137/hubnav/issues"
+  },
+  "homepage": "https://github.com/cheshire137/hubnav#readme"
+}
