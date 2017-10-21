@@ -816,7 +816,7 @@ class PopupPage {
         const org = contextParams[0]
         const name = contextParams[1]
         for (const i of SHORTCUTS) {
-          if (options[`teamName${i}`] === name && options[`teamOrg${i}` === org]) {
+          if (options[`teamName${i}`] === name && options[`teamOrg${i}`] === org) {
             activeKey = i
             break
           }
