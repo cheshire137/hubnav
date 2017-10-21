@@ -518,7 +518,7 @@ class OptionsPage {
   }
 
   getFallbackActiveContext(options) {
-    if (options.repository && options.repository.length > 0) {
+    if (this.hasActiveRepositoryDetails(options)) {
       return 'repository'
     }
 
@@ -789,6 +789,10 @@ class OptionsPage {
 
   hasActiveUserDetails(options) {
     return options.user && options.user.length > 0
+  }
+
+  hasActiveRepositoryDetails(options) {
+    return options.repository && options.repository.length > 0
   }
 
   hasActiveProjectDetails(options) {
