@@ -3,7 +3,7 @@
   "version": "0.0.8",
   "description": "Navigate GitHub.com via keyboard shortcuts in this Chrome extension.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/eslint extension/*.js"
   },
   "repository": {
     "type": "git",
@@ -21,5 +21,10 @@
   "bugs": {
     "url": "https://github.com/cheshire137/hubnav/issues"
   },
-  "homepage": "https://github.com/cheshire137/hubnav#readme"
+  "homepage": "https://github.com/cheshire137/hubnav#readme",
+  "devDependencies": {
+    "eslint": "^4.9.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0"
+  }
 }
