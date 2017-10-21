@@ -911,35 +911,35 @@ class PopupPage {
           this.loadActiveOrgProject(options.projectOrg, options.projectName,
                                     options.projectNumber)
         }
-      } else { // no active context
-        if (options.repository && options.repository.length > 0) {
-          this.loadActiveRepository(options.repository)
 
-        } else if (options.user && options.user.length > 0) {
-          if (options.userIsOrg) {
-            this.loadActiveOrganization(options.user)
-          } else {
-            this.loadActiveUser(options.user)
-          }
+      // No active context:
+      } else if (options.repository && options.repository.length > 0) {
+        this.loadActiveRepository(options.repository)
 
-        } else if (options.milestoneNumber && options.milestoneNumber.length > 0 &&
-                   options.milestoneRepo && options.milestoneRepo.length > 0 &&
-                   options.milestoneName && options.milestoneName.length > 0) {
-          this.loadActiveMilestone(options.milestoneRepo, options.milestoneName,
-                                   options.milestoneNumber)
-
-        } else if (options.projectNumber && options.projectNumber.length > 0 &&
-                   options.projectRepo && options.projectRepo.length > 0 &&
-                   options.projectName && options.projectName.length > 0) {
-          this.loadActiveRepoProject(options.projectRepo, options.projectName,
-                                     options.projectNumber)
-
-        } else if (options.projectNumber && options.projectNumber.length > 0 &&
-                   options.projectOrg && options.projectOrg.length > 0 &&
-                   options.projectName && options.projectName.length > 0) {
-          this.loadActiveRepoProject(options.projectOrg, options.projectName,
-                                     options.projectNumber)
+      } else if (options.user && options.user.length > 0) {
+        if (options.userIsOrg) {
+          this.loadActiveOrganization(options.user)
+        } else {
+          this.loadActiveUser(options.user)
         }
+
+      } else if (options.milestoneNumber && options.milestoneNumber.length > 0 &&
+                 options.milestoneRepo && options.milestoneRepo.length > 0 &&
+                 options.milestoneName && options.milestoneName.length > 0) {
+        this.loadActiveMilestone(options.milestoneRepo, options.milestoneName,
+                                 options.milestoneNumber)
+
+      } else if (options.projectNumber && options.projectNumber.length > 0 &&
+                 options.projectRepo && options.projectRepo.length > 0 &&
+                 options.projectName && options.projectName.length > 0) {
+        this.loadActiveRepoProject(options.projectRepo, options.projectName,
+                                   options.projectNumber)
+
+      } else if (options.projectNumber && options.projectNumber.length > 0 &&
+                 options.projectOrg && options.projectOrg.length > 0 &&
+                 options.projectName && options.projectName.length > 0) {
+        this.loadActiveRepoProject(options.projectOrg, options.projectName,
+                                   options.projectNumber)
       }
 
       if (typeof options.closedIssues === 'boolean' && !options.closedIssues) {
