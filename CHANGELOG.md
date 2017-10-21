@@ -2,6 +2,8 @@
 
 0.0.8
 
+- Repositories shortcut for a user now opens the "Repositories" tab on a user profile, instead of taking you to the search results page.
+
 0.0.7
 
 - You can now add GitHub milestones and switch quickly between them.

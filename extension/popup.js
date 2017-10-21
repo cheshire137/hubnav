@@ -412,16 +412,26 @@ class PopupPage {
     HubnavStorage.load().then(options => {
       if (options.user && options.user.length > 0) {
         this.highlightShortcuts(this.rShortcuts)
-        const user = encodeURIComponent(options.user)
-        let path = 'https://github.com/search?s=updated&type=Repositories&q='
+
         if (options.userIsOrg) {
-          path += `org%3A${user}`
+          this.openOrgRepositories(options)
         } else {
-          path += `user%3A${user}`
+          this.openUserRepositories(options)
         }
-        this.openTab(path)
       }
     })
+  }
+
+  openUserRepositories(options) {
+    const user = encodeURIComponent(options.user)
+    const path = `https://github.com/${user}?tab=repositories`
+    this.openTab(path)
+  }
+
+  openOrgRepositories(options) {
+    const org = encodeURIComponent(options.user)
+    const path = `https://github.com/search?s=updated&type=Repositories&q=org%3A${org}`
+    this.openTab(path)
   }
 
   openOptions(hash) {
