@@ -614,7 +614,6 @@ class PopupPage {
 
   doesContextSupportShortcut(key, context, isUserAnOrg) {
     const isUserContext = context === 'user'
-    const isProjectContext = context === 'project'
     const isMilestoneContext = context === 'milestone'
     const isRepoContext = context === 'repository'
 
