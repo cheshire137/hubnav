@@ -112,6 +112,7 @@ class OptionsPage {
     this.userTemplate = document.getElementById('user-template')
     this.orgTemplate = document.getElementById('org-template')
     this.milestoneTemplate = document.getElementById('milestone-template')
+    this.teamTemplate = document.getElementById('team-template')
 
     this.shortcutsContainer = document.getElementById('shortcuts-container')
     this.shortcutTipContainer = document.getElementById('shortcut-tip-container')
@@ -160,21 +161,32 @@ class OptionsPage {
 
   onShortcutMenuItemClick(event) {
     event.preventDefault()
+
     this.addShortcutMenu.classList.remove('is-active')
+
     const menuItem = event.currentTarget
     const shortcutType = menuItem.getAttribute('data-type')
+
     if (shortcutType === 'repository') {
       this.addRepositoryShortcut(event)
+
     } else if (shortcutType === 'organization') {
       this.addOrgShortcut(event)
+
     } else if (shortcutType === 'user') {
       this.addUserShortcut(event)
+
     } else if (shortcutType === 'repo-project') {
       this.addProjectShortcut(event, true)
+
     } else if (shortcutType === 'org-project') {
       this.addProjectShortcut(event, false)
+
     } else if (shortcutType === 'milestone') {
       this.addMilestoneShortcut(event)
+
+    } else if (shortcutType === 'team') {
+      this.addTeamShortcut(event)
     }
   }
 
@@ -257,13 +269,13 @@ class OptionsPage {
     }, 750)
   }
 
-  onProjectOrgKeyup(event, i) {
-    if (this[`projectOrgInput${i}Timer`]) {
-      clearTimeout(this[`projectOrgInput${i}Timer`])
+  onOrgKeyup(type, event, i) {
+    if (this[`${type}OrgInput${i}Timer`]) {
+      clearTimeout(this[`${type}OrgInput${i}Timer`])
     }
     const orgInput = event.target
-    const imgTag = orgInput.closest('.control').querySelector('.project-org-logo')
-    this[`projectOrgInput${i}Timer`] = setTimeout(() => {
+    const imgTag = orgInput.closest('.control').querySelector(`.${type}-org-logo`)
+    this[`${type}OrgInput${i}Timer`] = setTimeout(() => {
       const org = orgInput.value.trim()
       if (org.length < 1) {
         this.showDefaultLogoForUser(imgTag)
@@ -272,6 +284,14 @@ class OptionsPage {
       }
       this.checkFormValidity()
     }, 750)
+  }
+
+  onTeamOrgKeyup(event, i) {
+    this.onOrgKeyup('team', event, i)
+  }
+
+  onProjectOrgKeyup(event, i) {
+    this.onOrgKeyup('project', event, i)
   }
 
   onUserScopeKeyup(event, i) {
@@ -354,6 +374,26 @@ class OptionsPage {
     if (!this.anyErrors()) {
       this.optionsForm.classList.remove('error')
     }
+  }
+
+  onTeamOrgLogoLoad(event, i) {
+    if (this.isBadLogo(event.target.src)) {
+      return
+    }
+    delete this.errors[`teamOrgLogo${i}`]
+    if (!this.anyErrors()) {
+      this.optionsForm.classList.remove('error')
+    }
+  }
+
+  onTeamOrgLogoError(event, i) {
+    const imgTag = event.target
+    this.showBadLogoForUser(imgTag)
+    this.errors[`teamOrgLogo${i}`] = true
+    const orgInput = imgTag.closest('.control').querySelector('.team-org-input')
+    const org = encodeURIComponent(orgInput.value.trim())
+    this.flashErrorMessage(`Invalid team organization: can't find "${org}"`)
+    this.checkFormValidity()
   }
 
   onProjectOrgLogoLoad(event, i) {
@@ -884,6 +924,16 @@ class OptionsPage {
     this.focusLastAddedInput()
   }
 
+  addTeamShortcut(event) {
+    event.currentTarget.blur()
+    const key = this.getNextShortcut()
+    const org = ''
+    const name = ''
+    this.addTeam(key, org, name)
+    this.hideShortcutMenuIfNecessary()
+    this.focusLastAddedInput()
+  }
+
   addUserShortcut(event) {
     this.addUserOrOrgShortcut(event, false)
   }
@@ -912,6 +962,44 @@ class OptionsPage {
     this.addRepository(key, '', 'master', null)
     this.hideShortcutMenuIfNecessary()
     this.focusLastAddedInput()
+  }
+
+  addTeam(i, org, name) {
+    const populate = teamEl => {
+      teamEl.querySelector('.i').textContent = i
+
+      const nameInputID = `team${i}-name`
+      teamEl.querySelector('.team-name-label').htmlFor = nameInputID
+
+      const nameInput = teamEl.querySelector('.team-name-input')
+      nameInput.id = nameInputID
+      nameInput.value = name
+      nameInput.setAttribute('data-key', i)
+      nameInput.addEventListener('change', () => this.checkFormValidity())
+      nameInput.classList.add('focus-target')
+
+      const orgLogo = teamEl.querySelector('.team-org-logo')
+      orgLogo.addEventListener('load', e => this.onTeamOrgLogoLoad(e, i))
+      orgLogo.addEventListener('error', e => this.onTeamOrgLogoError(e, i))
+
+      const orgInputID = `team${i}-org`
+      const orgLabel = teamEl.querySelector('.team-org-label')
+      orgLabel.htmlFor = orgInputID
+
+      const orgInput = teamEl.querySelector('.team-org-input')
+      orgInput.id = orgInputID
+      orgInput.setAttribute('data-key', i)
+      orgInput.addEventListener('keyup', e => this.onTeamOrgKeyup(e, i))
+
+      if (org && org.length > 0) {
+        orgInput.value = org
+        this.loadLogoForUser(org, orgLogo)
+      }
+
+      const removeButton = teamEl.querySelector('.remove-team-button')
+      removeButton.addEventListener('click', e => this.removeTeam(e, i))
+    }
+    this.loadTemplate(i, this.teamTemplate, this.shortcutsContainer, populate)
   }
 
   addMilestone(i, repo, number, name) {
@@ -1162,6 +1250,11 @@ class OptionsPage {
 
   removeMilestone(event, i) {
     this.removeShortcut(event, i, '.milestone-container')
+    this.hideShortcutMenuIfNecessary()
+  }
+
+  removeTeam(event, i) {
+    this.removeShortcut(event, i, '.team-container')
     this.hideShortcutMenuIfNecessary()
   }
 
