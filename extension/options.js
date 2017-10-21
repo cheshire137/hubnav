@@ -522,7 +522,7 @@ class OptionsPage {
       return 'repository'
     }
 
-    if (options.user && options.user.length > 0) {
+    if (this.hasActiveUserDetails(options)) {
       return options.userIsOrg ? 'organization' : 'user'
     }
 
@@ -785,6 +785,10 @@ class OptionsPage {
 
       HubnavStorage.save(newOptions).then(() => this.flashSaveNotice())
     })
+  }
+
+  hasActiveUserDetails(options) {
+    return options.user && options.user.length > 0
   }
 
   hasActiveProjectDetails(options) {
