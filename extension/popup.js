@@ -420,8 +420,6 @@ class PopupPage {
           path += `user%3A${user}`
         }
         this.openTab(path)
-      } else {
-        this.openOptions()
       }
     })
   }
