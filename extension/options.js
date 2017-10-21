@@ -598,6 +598,40 @@ class OptionsPage {
         }
       }
 
+      const teamNameInputs = document.querySelectorAll('.team-name-input')
+      for (const nameInput of teamNameInputs) {
+        const name = nameInput.value.trim()
+        if (this.isPresent(name)) {
+          const i = nameInput.getAttribute('data-key')
+          const container = nameInput.closest('.team-container')
+          const orgInput = container.querySelector('.team-org-input')
+          const org = orgInput.value.trim()
+          newOptions[`teamName${i}`] = name
+          newOptions[`teamOrg${i}`] = org
+        }
+      }
+
+      newOptions.teamName = currentOptions.teamName
+      newOptions.teamOrg = currentOptions.teamOrg
+      const teamNameOptions = []
+      for (const i of SHORTCUTS) {
+        const name = newOptions[`teamName${i}`]
+        if (this.isPresent(name)) {
+          if (newOptions.teamName === name) {
+            newOptions.teamOrg = newOptions[`teamOrg${i}`]
+          }
+          if (!newOptions.teamName || newOptions.teamName.length < 1) {
+            newOptions.teamName = name
+            newOptions.teamOrg = newOptions[`teamOrg${i}`]
+          }
+          teamNameOptions.push(name)
+        }
+      }
+      if (teamNameOptions.indexOf(newOptions.teamName) < 0) {
+        newOptions.teamName = null
+        newOptions.teamOrg = null
+      }
+
       const milestoneNameInputs = document.querySelectorAll('.milestone-name-input')
       for (const nameInput of milestoneNameInputs) {
         const name = nameInput.value.trim()
@@ -768,6 +802,22 @@ class OptionsPage {
           }
 
           if (!this.hasActiveMilestoneDetails(newOptions)) {
+            newOptions.active = this.getFallbackActiveContext(newOptions)
+          }
+
+        // Ensure if we had a team as the current context and the user changed
+        // its name or other details, we still keep a team as the active context.
+        } else if (newOptions.active === 'team' && !this.hasActiveTeamDetails(newOptions)) {
+          for (const i of SHORTCUTS) {
+            const name = newOptions[`teamName${i}`]
+            if (this.isPresent(name)) {
+              newOptions.teamName = name
+              newOptions.teamOrg = newOptions[`teamOrg${i}`]
+              break
+            }
+          }
+
+          if (!this.hasActiveTeamDetails(newOptions)) {
             newOptions.active = this.getFallbackActiveContext(newOptions)
           }
         }
@@ -1308,6 +1358,12 @@ class OptionsPage {
           const milestoneNumber = options[`milestoneNumber${i}`]
           const milestoneRepo = options[`milestoneRepo${i}`]
           this.addMilestone(i, milestoneRepo, milestoneNumber, milestoneName)
+        }
+
+        const teamName = options[`teamName${i}`]
+        if (this.isPresent(teamName)) {
+          const teamOrg = options[`teamOrg${i}`]
+          this.addTeam(i, teamOrg, teamName)
         }
 
         const user = options[`user${i}`]
