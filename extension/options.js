@@ -526,15 +526,11 @@ class OptionsPage {
       return options.userIsOrg ? 'organization' : 'user'
     }
 
-    if (options.projectRepo && options.projectRepo.length > 0 &&
-        options.projectNumber && options.projectNumber.length > 0 &&
-        options.projectName && options.projectName.length > 0) {
+    if (this.hasActiveProjectDetails(options)) {
       return 'project'
     }
 
-    if (options.milestoneRepo && options.milestoneRepo.length > 0 &&
-        options.milestoneNumber && options.milestoneNumber.length > 0 &&
-        options.milestoneName && options.milestoneName.length > 0) {
+    if (this.hasActiveMilestoneDetails(options)) {
       return 'milestone'
     }
 
