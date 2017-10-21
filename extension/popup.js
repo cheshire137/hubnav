@@ -749,15 +749,12 @@ class PopupPage {
     this.highlightActiveContext('repository', repo)
   }
 
-  highlightActiveContext() {
-    const contextParams = arguments
-    const context = contextParams[0]
-
+  highlightActiveContext(context, ...contextParams) {
     HubnavStorage.load().then(options => {
       let activeKey = null
 
       if (context === 'repository') {
-        const repo = contextParams[1]
+        const repo = contextParams[0]
         for (const i of SHORTCUTS) {
           if (options[`repository${i}`] === repo) {
             activeKey = i
@@ -766,7 +763,7 @@ class PopupPage {
         }
 
       } else if (context === 'user') {
-        const user = contextParams[1]
+        const user = contextParams[0]
         for (const i of SHORTCUTS) {
           if (options[`user${i}`] === user && !options[`userIsOrg${i}`]) {
             activeKey = i
@@ -775,7 +772,7 @@ class PopupPage {
         }
 
       } else if (context === 'organization') {
-        const org = contextParams[1]
+        const org = contextParams[0]
         for (const i of SHORTCUTS) {
           if (options[`user${i}`] === org && options[`userIsOrg${i}`]) {
             activeKey = i
@@ -784,9 +781,9 @@ class PopupPage {
         }
 
       } else if (context === 'org-project') {
-        const org = contextParams[1]
-        const name = contextParams[2]
-        const number = contextParams[3]
+        const org = contextParams[0]
+        const name = contextParams[1]
+        const number = contextParams[2]
         for (const i of SHORTCUTS) {
           if (options[`projectNumber${i}`] === number &&
               options[`projectName${i}`] === name &&
@@ -797,9 +794,9 @@ class PopupPage {
         }
 
       } else if (context === 'repo-project') {
-        const repo = contextParams[1]
-        const name = contextParams[2]
-        const number = contextParams[3]
+        const repo = contextParams[0]
+        const name = contextParams[1]
+        const number = contextParams[2]
         for (const i of SHORTCUTS) {
           if (options[`projectNumber${i}`] === number &&
               options[`projectName${i}`] === name &&
@@ -810,9 +807,9 @@ class PopupPage {
         }
 
       } else if (context === 'milestone') {
-        const repo = contextParams[1]
-        const name = contextParams[2]
-        const number = contextParams[3]
+        const repo = contextParams[0]
+        const name = contextParams[1]
+        const number = contextParams[2]
         for (const i of SHORTCUTS) {
           if (options[`milestoneNumber${i}`] === number &&
               options[`milestoneName${i}`] === name &&
