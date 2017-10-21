@@ -550,7 +550,7 @@ class OptionsPage {
       const repoInputs = document.querySelectorAll('.repository-input')
       for (const repoInput of repoInputs) {
         const repo = repoInput.value.trim()
-        if (repo && repo.length > 0) {
+        if (repo.length > 0) {
           const i = repoInput.getAttribute('data-key')
           newOptions[`repository${i}`] = repo
         }
@@ -601,7 +601,7 @@ class OptionsPage {
       const milestoneNameInputs = document.querySelectorAll('.milestone-name-input')
       for (const nameInput of milestoneNameInputs) {
         const name = nameInput.value.trim()
-        if (name && name.length > 0) {
+        if (name.length > 0) {
           const i = nameInput.getAttribute('data-key')
           const container = nameInput.closest('.milestone-container')
           const repoInput = container.querySelector('.milestone-repo-input')
@@ -641,7 +641,7 @@ class OptionsPage {
       const projectNameInputs = document.querySelectorAll('.project-name-input')
       for (const nameInput of projectNameInputs) {
         const name = nameInput.value.trim()
-        if (name && name.length > 0) {
+        if (name.length > 0) {
           const i = nameInput.getAttribute('data-key')
           const container = nameInput.closest('.project-container')
           const repoInput = container.querySelector('.project-repo-input')
@@ -688,7 +688,7 @@ class OptionsPage {
       const userInputs = document.querySelectorAll('.login-input')
       for (const userInput of userInputs) {
         const user = userInput.value.trim()
-        if (user && user.length > 0) {
+        if (user.length > 0) {
           const i = userInput.getAttribute('data-key')
           const container = userInput.closest('.user-container')
           const isOrg = container.classList.contains('org-container')
