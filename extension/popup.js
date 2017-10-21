@@ -450,7 +450,7 @@ class PopupPage {
   quickUserSwitch(i) {
     HubnavStorage.load().then(currentOptions => {
       const newOptions = {}
-      for (let key in currentOptions) {
+      for (const key in currentOptions) {
         newOptions[key] = currentOptions[key]
       }
 
@@ -478,7 +478,7 @@ class PopupPage {
   quickMilestoneSwitch(i) {
     HubnavStorage.load().then(currentOptions => {
       const newOptions = {}
-      for (let key in currentOptions) {
+      for (const key in currentOptions) {
         newOptions[key] = currentOptions[key]
       }
       const newMilestoneRepo = currentOptions[`milestoneRepo${i}`]
@@ -507,7 +507,7 @@ class PopupPage {
   quickProjectSwitch(i) {
     HubnavStorage.load().then(currentOptions => {
       const newOptions = {}
-      for (let key in currentOptions) {
+      for (const key in currentOptions) {
         newOptions[key] = currentOptions[key]
       }
       const newProjectRepo = currentOptions[`projectRepo${i}`]
@@ -568,7 +568,7 @@ class PopupPage {
   quickRepositorySwitch(i) {
     HubnavStorage.load().then(currentOptions => {
       const newOptions = {}
-      for (let key in currentOptions) {
+      for (const key in currentOptions) {
         newOptions[key] = currentOptions[key]
       }
       const newRepo = currentOptions[`repository${i}`]
