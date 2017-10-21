@@ -550,7 +550,7 @@ class OptionsPage {
       const newOptions = {}
 
       const repoInputs = document.querySelectorAll('.repository-input')
-      for (let repoInput of repoInputs) {
+      for (const repoInput of repoInputs) {
         const repo = repoInput.value.trim()
         if (repo && repo.length > 0) {
           const i = repoInput.getAttribute('data-key')
@@ -560,7 +560,7 @@ class OptionsPage {
 
       newOptions.repository = currentOptions.repository
       const repoOptions = []
-      for (let i of SHORTCUTS) {
+      for (const i of SHORTCUTS) {
         const repo = newOptions[`repository${i}`]
         if (repo && repo.length > 0) {
           if (!newOptions.repository || newOptions.repository.length < 1) {
@@ -575,7 +575,7 @@ class OptionsPage {
       }
 
       const branchInputs = document.querySelectorAll('.default-branch-input')
-      for (let branchInput of branchInputs) {
+      for (const branchInput of branchInputs) {
         const i = branchInput.getAttribute('data-key')
         const repo = newOptions[`repository${i}`]
         if (repo && repo.length > 0) {
@@ -588,7 +588,7 @@ class OptionsPage {
       }
 
       const githubUrlInputs = document.querySelectorAll('.github-url-input')
-      for (let urlInput of githubUrlInputs) {
+      for (const urlInput of githubUrlInputs) {
         const i = urlInput.getAttribute('data-key')
         const repo = newOptions[`repository${i}`]
         if (repo && repo.length > 0) {
@@ -601,7 +601,7 @@ class OptionsPage {
       }
 
       const milestoneNameInputs = document.querySelectorAll('.milestone-name-input')
-      for (let nameInput of milestoneNameInputs) {
+      for (const nameInput of milestoneNameInputs) {
         const name = nameInput.value.trim()
         if (name && name.length > 0) {
           const i = nameInput.getAttribute('data-key')
@@ -619,7 +619,7 @@ class OptionsPage {
       newOptions.milestoneNumber = currentOptions.milestoneNumber
       newOptions.milestoneRepo = currentOptions.milestoneRepo
       const milestoneNameOptions = []
-      for (let i of SHORTCUTS) {
+      for (const i of SHORTCUTS) {
         const name = newOptions[`milestoneName${i}`]
         if (name && name.length > 0) {
           if (newOptions.milestoneName === name) {
@@ -641,7 +641,7 @@ class OptionsPage {
       }
 
       const projectNameInputs = document.querySelectorAll('.project-name-input')
-      for (let nameInput of projectNameInputs) {
+      for (const nameInput of projectNameInputs) {
         const name = nameInput.value.trim()
         if (name && name.length > 0) {
           const i = nameInput.getAttribute('data-key')
@@ -663,7 +663,7 @@ class OptionsPage {
       newOptions.projectRepo = currentOptions.projectRepo
       newOptions.projectOrg = currentOptions.projectOrg
       const projectNameOptions = []
-      for (let i of SHORTCUTS) {
+      for (const i of SHORTCUTS) {
         const name = newOptions[`projectName${i}`]
         if (name && name.length > 0) {
           if (newOptions.projectName === name) {
@@ -688,7 +688,7 @@ class OptionsPage {
       }
 
       const userInputs = document.querySelectorAll('.login-input')
-      for (let userInput of userInputs) {
+      for (const userInput of userInputs) {
         const user = userInput.value.trim()
         if (user && user.length > 0) {
           const i = userInput.getAttribute('data-key')
@@ -708,7 +708,7 @@ class OptionsPage {
 
       newOptions.user = currentOptions.user
       const userOptions = []
-      for (let i of SHORTCUTS) {
+      for (const i of SHORTCUTS) {
         const user = newOptions[`user${i}`]
         if (user && user.length > 0) {
           if (newOptions.user === user) {
@@ -726,7 +726,7 @@ class OptionsPage {
       // Ensure active user is one of the options
       if (userOptions.indexOf(newOptions.user) < 0) {
         newOptions.user = userOptions[0]
-        for (let i of SHORTCUTS) {
+        for (const i of SHORTCUTS) {
           if (newOptions[`user${i}`] === newOptions.user) {
             newOptions.userIsOrg = newOptions[`userIsOrg${i}`]
             newOptions.scope = newOptions[`userScope${i}`]
@@ -740,7 +740,7 @@ class OptionsPage {
         // Ensure if we had a project as the current context and the user changed
         // its name or other details, we still keep a project as the active context.
         if (newOptions.active === 'project' && !this.hasActiveProjectDetails(newOptions)) {
-          for (let i of SHORTCUTS) {
+          for (const i of SHORTCUTS) {
             const name = newOptions[`projectName${i}`]
             if (name && name.length > 0) {
               newOptions.projectName = name
@@ -759,7 +759,7 @@ class OptionsPage {
         // its name or other details, we still keep a milestone as the active context.
         } else if (newOptions.active === 'milestone' &&
                    !this.hasActiveMilestoneDetails(newOptions)) {
-          for (let i of SHORTCUTS) {
+          for (const i of SHORTCUTS) {
             const name = newOptions[`milestoneName${i}`]
             if (name && name.length > 0) {
               newOptions.milestoneName = name
