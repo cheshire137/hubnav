@@ -534,10 +534,6 @@ class OptionsPage {
       return 'milestone'
     }
 
-    if (options.projectOrg && options.projectOrg.length > 0 &&
-        options.projectNumber && options.projectNumber.length > 0 &&
-        options.projectName && options.projectName.length > 0) {
-      return 'project'
     }
   }
 
