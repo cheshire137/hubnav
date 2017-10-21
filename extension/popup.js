@@ -106,8 +106,6 @@ class PopupPage {
         this.highlightShortcuts(this.tShortcuts)
         const org = encodeURIComponent(options.user)
         this.openTab(`https://github.com/orgs/${org}/teams`)
-      } else {
-        this.openOptions()
       }
     })
   }
