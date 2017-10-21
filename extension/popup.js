@@ -423,7 +423,7 @@ class PopupPage {
 
   openRepositories() {
     HubnavStorage.load().then(options => {
-      if (options.user && options.user.length > 0) {
+      if (options.active === 'user' && options.user && options.user.length > 0) {
         this.highlightShortcuts(this.rShortcuts)
 
         if (options.userIsOrg) {
@@ -431,6 +431,11 @@ class PopupPage {
         } else {
           this.openUserRepositories(options)
         }
+
+      } else if (options.teamName && options.teamName.length > 0 &&
+                 options.teamOrg && options.teamOrg.length > 0) {
+        this.highlightShortcuts(this.rShortcuts)
+        this.openTeamRepositories(options)
       }
     })
   }
@@ -444,6 +449,13 @@ class PopupPage {
   openOrgRepositories(options) {
     const org = encodeURIComponent(options.user)
     const path = `https://github.com/search?s=updated&type=Repositories&q=org%3A${org}`
+    this.openTab(path)
+  }
+
+  openTeamRepositories(options) {
+    const org = encodeURIComponent(options.teamOrg)
+    const name = encodeURIComponent(options.teamName)
+    const path = `https://github.com/orgs/${org}/teams/${name}/repositories`
     this.openTab(path)
   }
 
@@ -657,14 +669,20 @@ class PopupPage {
     const isUserContext = context === 'user'
     const isMilestoneContext = context === 'milestone'
     const isRepoContext = context === 'repository'
+    const isTeamContext = context === 'team'
 
     // File finder
     if (key === 'f' && !isRepoContext) {
       return false
     }
 
-    // Teams, Members, Repositories
-    if ((key === 't' || key === 'm' || key === 'r') && !isUserContext) {
+    // Teams, Members
+    if ((key === 't' || key === 'm') && !isUserContext) {
+      return false
+    }
+
+    // Repositories
+    if (key === 'r' && !(isUserContext || isTeamContext)) {
       return false
     }
 

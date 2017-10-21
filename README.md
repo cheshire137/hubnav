@@ -82,6 +82,11 @@ Use keyboard shortcuts to quickly access issues, pull requests, and the file fin
     - **Shift p** - filter the project to show only its merged pull requests
     - **Ctrl p** - filter the project to show only its closed pull requests
 
+    **Team commands:**
+
+    - **v** - view the team
+    - **r** - list the team's repositories
+
     **Switch context:**
 
     - Keys **0-9** will change your context to a different repository, project, user, milestone, or organization. This changes what the other shortcuts do.
