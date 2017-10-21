@@ -1160,6 +1160,11 @@ class OptionsPage {
     this.hideShortcutMenuIfNecessary()
   }
 
+  removeMilestone(event, i) {
+    this.removeShortcut(event, i, '.milestone-container')
+    this.hideShortcutMenuIfNecessary()
+  }
+
   removeUser(event, i) {
     this.removeShortcut(event, i, '.user-container')
     this.hideShortcutMenuIfNecessary()
