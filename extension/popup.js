@@ -228,13 +228,9 @@ class PopupPage {
 
   openRepoIssues(options) {
     this.highlightShortcuts(this.iShortcuts)
-    let path = '/issues'
-    if (this.shiftPressed) { // closed
-      path += '?utf8=✓&q=is%3Aissue+is%3Aclosed'
-    } else if (this.ctrlPressed) { // new
-      path += '/new'
-    }
-    this.openTab(this.repoUrl(options.repository, path, options.githubUrl))
+    const urlOpts = { closed: this.shiftPressed, new: this.ctrlPressed }
+    const urlHelper = new GitHubUrl(options.githubUrl)
+    this.openTab(urlHelper.repositoryIssues(options.repository, urlOpts))
   }
 
   openRepoProjectIssues(options) {

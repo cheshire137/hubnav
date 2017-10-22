@@ -23,6 +23,16 @@ class GitHubUrl {
     return `${this.repository(repo)}/find/${branch}`
   }
 
+  repositoryIssues(repo, options) {
+    let path = ''
+    if (options.closed) {
+      path = '?utf8=✓&q=is%3Aissue+is%3Aclosed'
+    } else if (options.new) {
+      path = '/new'
+    }
+    return `${this.repository(repo)}/issues${path}`
+  }
+
   issues(options) {
     let params = '?utf8=✓&q=is%3Aissue'
     if (options.closed) {
