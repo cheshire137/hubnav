@@ -79,7 +79,7 @@ class OptionsPage {
         }
       }
 
-      if ((this.isPresent(org) || this.isPresent(repo) || this.isPresent(name)) &&
+      if ((isPresent(org) || isPresent(repo) || isPresent(name)) &&
           number.length < 1) {
         this.errors[`projectNumber${i}`] = true
         this.flashErrorMessage(`Must set project number: shortcut ${i}`)
@@ -87,7 +87,7 @@ class OptionsPage {
         delete this.errors[`projectNumber${i}`]
       }
 
-      if ((this.isPresent(org) || this.isPresent(repo) || number.length > 0) && name.length < 1) {
+      if ((isPresent(org) || isPresent(repo) || number.length > 0) && name.length < 1) {
         this.errors[`projectName${i}`] = true
         this.flashErrorMessage(`Must set project name: shortcut ${i}`)
       } else {
@@ -207,7 +207,7 @@ class OptionsPage {
 
   loadRepoLogo(rawRepo, imgTag) {
     const user = rawRepo.split('/')[0]
-    if (this.isPresent(user)) {
+    if (isPresent(user)) {
       this.loadLogoForUser(user, imgTag)
     }
   }
@@ -550,7 +550,7 @@ class OptionsPage {
       const repoInputs = document.querySelectorAll('.repository-input')
       for (const repoInput of repoInputs) {
         const repo = repoInput.value.trim()
-        if (this.isPresent(repo)) {
+        if (isPresent(repo)) {
           const i = repoInput.getAttribute('data-key')
           newOptions[`repository${i}`] = repo
         }
@@ -560,7 +560,7 @@ class OptionsPage {
       const repoOptions = []
       for (const i of SHORTCUTS) {
         const repo = newOptions[`repository${i}`]
-        if (this.isPresent(repo)) {
+        if (isPresent(repo)) {
           if (!newOptions.repository || newOptions.repository.length < 1) {
             newOptions.repository = repo
           }
@@ -576,7 +576,7 @@ class OptionsPage {
       for (const branchInput of branchInputs) {
         const i = branchInput.getAttribute('data-key')
         const repo = newOptions[`repository${i}`]
-        if (this.isPresent(repo)) {
+        if (isPresent(repo)) {
           const branch = branchInput.value.trim()
           newOptions[`defaultBranch${i}`] = branch
           if (newOptions.repository === repo) {
@@ -589,7 +589,7 @@ class OptionsPage {
       for (const urlInput of githubUrlInputs) {
         const i = urlInput.getAttribute('data-key')
         const repo = newOptions[`repository${i}`]
-        if (this.isPresent(repo)) {
+        if (isPresent(repo)) {
           const url = urlInput.value.trim()
           newOptions[`githubUrl${i}`] = url
           if (newOptions.repository === repo) {
@@ -601,7 +601,7 @@ class OptionsPage {
       const teamNameInputs = document.querySelectorAll('.team-name-input')
       for (const nameInput of teamNameInputs) {
         const name = nameInput.value.trim()
-        if (this.isPresent(name)) {
+        if (isPresent(name)) {
           const i = nameInput.getAttribute('data-key')
           const container = nameInput.closest('.team-container')
           const orgInput = container.querySelector('.team-org-input')
@@ -616,7 +616,7 @@ class OptionsPage {
       const teamNameOptions = []
       for (const i of SHORTCUTS) {
         const name = newOptions[`teamName${i}`]
-        if (this.isPresent(name)) {
+        if (isPresent(name)) {
           if (newOptions.teamName === name) {
             newOptions.teamOrg = newOptions[`teamOrg${i}`]
           }
@@ -635,7 +635,7 @@ class OptionsPage {
       const milestoneNameInputs = document.querySelectorAll('.milestone-name-input')
       for (const nameInput of milestoneNameInputs) {
         const name = nameInput.value.trim()
-        if (this.isPresent(name)) {
+        if (isPresent(name)) {
           const i = nameInput.getAttribute('data-key')
           const container = nameInput.closest('.milestone-container')
           const repoInput = container.querySelector('.milestone-repo-input')
@@ -653,7 +653,7 @@ class OptionsPage {
       const milestoneNameOptions = []
       for (const i of SHORTCUTS) {
         const name = newOptions[`milestoneName${i}`]
-        if (this.isPresent(name)) {
+        if (isPresent(name)) {
           if (newOptions.milestoneName === name) {
             newOptions.milestoneNumber = newOptions[`milestoneNumber${i}`]
             newOptions.milestoneRepo = newOptions[`milestoneRepo${i}`]
@@ -675,7 +675,7 @@ class OptionsPage {
       const projectNameInputs = document.querySelectorAll('.project-name-input')
       for (const nameInput of projectNameInputs) {
         const name = nameInput.value.trim()
-        if (this.isPresent(name)) {
+        if (isPresent(name)) {
           const i = nameInput.getAttribute('data-key')
           const container = nameInput.closest('.project-container')
           const repoInput = container.querySelector('.project-repo-input')
@@ -697,7 +697,7 @@ class OptionsPage {
       const projectNameOptions = []
       for (const i of SHORTCUTS) {
         const name = newOptions[`projectName${i}`]
-        if (this.isPresent(name)) {
+        if (isPresent(name)) {
           if (newOptions.projectName === name) {
             newOptions.projectNumber = newOptions[`projectNumber${i}`]
             newOptions.projectRepo = newOptions[`projectRepo${i}`]
@@ -722,7 +722,7 @@ class OptionsPage {
       const userInputs = document.querySelectorAll('.login-input')
       for (const userInput of userInputs) {
         const user = userInput.value.trim()
-        if (this.isPresent(user)) {
+        if (isPresent(user)) {
           const i = userInput.getAttribute('data-key')
           const container = userInput.closest('.user-container')
           const isOrg = container.classList.contains('org-container')
@@ -742,7 +742,7 @@ class OptionsPage {
       const userOptions = []
       for (const i of SHORTCUTS) {
         const user = newOptions[`user${i}`]
-        if (this.isPresent(user)) {
+        if (isPresent(user)) {
           if (newOptions.user === user) {
             newOptions.userIsOrg = newOptions[`userIsOrg${i}`]
             newOptions.scope = newOptions[`userScope${i}`]
@@ -774,7 +774,7 @@ class OptionsPage {
         if (newOptions.active === 'project' && !this.hasActiveProjectDetails(newOptions)) {
           for (const i of SHORTCUTS) {
             const name = newOptions[`projectName${i}`]
-            if (this.isPresent(name)) {
+            if (isPresent(name)) {
               newOptions.projectName = name
               newOptions.projectNumber = newOptions[`projectNumber${i}`]
               newOptions.projectOrg = newOptions[`projectOrg${i}`]
@@ -793,7 +793,7 @@ class OptionsPage {
                    !this.hasActiveMilestoneDetails(newOptions)) {
           for (const i of SHORTCUTS) {
             const name = newOptions[`milestoneName${i}`]
-            if (this.isPresent(name)) {
+            if (isPresent(name)) {
               newOptions.milestoneName = name
               newOptions.milestoneNumber = newOptions[`milestoneNumber${i}`]
               newOptions.milestoneRepo = newOptions[`milestoneRepo${i}`]
@@ -810,7 +810,7 @@ class OptionsPage {
         } else if (newOptions.active === 'team' && !this.hasActiveTeamDetails(newOptions)) {
           for (const i of SHORTCUTS) {
             const name = newOptions[`teamName${i}`]
-            if (this.isPresent(name)) {
+            if (isPresent(name)) {
               newOptions.teamName = name
               newOptions.teamOrg = newOptions[`teamOrg${i}`]
               break
@@ -835,32 +835,28 @@ class OptionsPage {
     })
   }
 
-  isPresent(str) {
-    return str && str.length > 0
-  }
-
   hasActiveUserDetails(options) {
-    return this.isPresent(options.user)
+    return isPresent(options.user)
   }
 
   hasActiveRepositoryDetails(options) {
-    return this.isPresent(options.repository)
+    return isPresent(options.repository)
   }
 
   hasActiveTeamDetails(options) {
-    return this.isPresent(options.teamName) && this.isPresent(options.teamOrg)
+    return isPresent(options.teamName) && isPresent(options.teamOrg)
   }
 
   hasActiveProjectDetails(options) {
-    return this.isPresent(options.projectName) &&
+    return isPresent(options.projectName) &&
       typeof options.projectNumber === 'number' &&
-      (this.isPresent(options.projectRepo) || this.isPresent(options.projectOrg))
+      (isPresent(options.projectRepo) || isPresent(options.projectOrg))
   }
 
   hasActiveMilestoneDetails(options) {
-    return this.isPresent(options.milestoneName) &&
+    return isPresent(options.milestoneName) &&
       typeof options.milestoneNumber === 'number' &&
-      this.isPresent(options.milestoneRepo)
+      isPresent(options.milestoneRepo)
   }
 
   loadTemplate(key, template, container, populate) {
@@ -1050,7 +1046,7 @@ class OptionsPage {
       orgInput.setAttribute('data-key', i)
       orgInput.addEventListener('keyup', e => this.onTeamOrgKeyup(e, i))
 
-      if (this.isPresent(org)) {
+      if (isPresent(org)) {
         orgInput.value = org
         this.loadLogoForUser(org, orgLogo)
       }
@@ -1165,16 +1161,16 @@ class OptionsPage {
         orgLabel.htmlFor = orgInputID
       }
 
-      if (this.isPresent(repo) && repoLogo) {
+      if (isPresent(repo) && repoLogo) {
         this.loadRepoLogo(repo, repoLogo)
-      } else if (this.isPresent(org) && orgLogo) {
+      } else if (isPresent(org) && orgLogo) {
         this.loadLogoForUser(org, orgLogo)
       }
 
       const orgInput = projectEl.querySelector('.project-org-input')
       if (orgInput) {
         orgInput.id = orgInputID
-        if (this.isPresent(repo)) {
+        if (isPresent(repo)) {
           orgInput.disabled = true
         } else {
           orgInput.value = org
@@ -1198,7 +1194,7 @@ class OptionsPage {
       const userLogo = userEl.querySelector('.user-logo')
       userLogo.addEventListener('load', e => this.onUserLogoLoad(e, i))
       userLogo.addEventListener('error', e => this.onUserLogoError(e, i))
-      if (this.isPresent(login)) {
+      if (isPresent(login)) {
         this.loadLogoForUser(login, userLogo)
       }
 
@@ -1218,7 +1214,7 @@ class OptionsPage {
         const scopeLogo = userEl.querySelector('.scope-logo')
         scopeLogo.addEventListener('load', e => this.onUserScopeLogoLoad(e, i))
         scopeLogo.addEventListener('error', e => this.onUserScopeLogoError(e, i))
-        if (this.isPresent(scope)) {
+        if (isPresent(scope)) {
           if (scope.indexOf('/') > -1) { // repository
             this.loadRepoLogo(scope, scopeLogo)
           } else { // organization
@@ -1340,34 +1336,34 @@ class OptionsPage {
     HubnavStorage.load().then(options => {
       for (const i of SHORTCUTS) {
         const repo = options[`repository${i}`]
-        if (this.isPresent(repo)) {
+        if (isPresent(repo)) {
           this.addRepository(i, repo, options[`defaultBranch${i}`], options[`githubUrl${i}`])
         }
 
         const projectName = options[`projectName${i}`]
-        if (this.isPresent(projectName)) {
+        if (isPresent(projectName)) {
           const projectNumber = options[`projectNumber${i}`]
           const projectOrg = options[`projectOrg${i}`]
           const projectRepo = options[`projectRepo${i}`]
-          const isOrgProject = this.isPresent(projectOrg)
+          const isOrgProject = isPresent(projectOrg)
           this.addProject(i, projectName, projectNumber, isOrgProject, projectOrg, projectRepo)
         }
 
         const milestoneName = options[`milestoneName${i}`]
-        if (this.isPresent(milestoneName)) {
+        if (isPresent(milestoneName)) {
           const milestoneNumber = options[`milestoneNumber${i}`]
           const milestoneRepo = options[`milestoneRepo${i}`]
           this.addMilestone(i, milestoneRepo, milestoneNumber, milestoneName)
         }
 
         const teamName = options[`teamName${i}`]
-        if (this.isPresent(teamName)) {
+        if (isPresent(teamName)) {
           const teamOrg = options[`teamOrg${i}`]
           this.addTeam(i, teamOrg, teamName)
         }
 
         const user = options[`user${i}`]
-        if (this.isPresent(user)) {
+        if (isPresent(user)) {
           let isOrg = false
           if (typeof options[`userIsOrg${i}`] === 'boolean') {
             isOrg = options[`userIsOrg${i}`]
@@ -1426,7 +1422,7 @@ class OptionsPage {
   showShortcutTip() {
     chrome.commands.getAll(commands => {
       const popupCommand = commands.filter(c => c.name === '_execute_browser_action')[0]
-      if (popupCommand && this.isPresent(popupCommand.shortcut)) {
+      if (popupCommand && isPresent(popupCommand.shortcut)) {
         this.shortcut.textContent = popupCommand.shortcut
         this.shortcutTipContainer.style.display = 'block'
       } else {

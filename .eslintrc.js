@@ -5,7 +5,8 @@ module.exports = {
     document: true,
     window: true,
     SHORTCUTS: true,
-    HubnavStorage: true
+    HubnavStorage: true,
+    isPresent: true
   },
   rules: {
     semi: ['error', 'never'],
@@ -22,6 +23,8 @@ module.exports = {
     'no-mixed-operators': 0,
     'no-bitwise': 0,
     'no-continue': 0,
-    'prefer-destructuring': ['error', { object: true, array: false }]
+    'prefer-destructuring': ['error', { object: true, array: false }],
+    'func-names': ['error', 'never'],
+    'space-before-function-paren': ['error', 'never']
   }
 };
