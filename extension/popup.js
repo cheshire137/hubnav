@@ -210,27 +210,20 @@ class PopupPage {
 
   openUserIssues(options) {
     this.highlightShortcuts(this.iShortcuts)
-    let params = '?utf8=✓&q=is%3Aissue'
-    if (this.shiftPressed) { // closed
-      params += '+is%3Aclosed'
-    } else { // open
-      params += '+is%3Aopen'
-    }
-    const user = encodeURIComponent(options.user)
-    if (options.userIsOrg) { // organization
-      params += `+org%3A${user}`
-    } else { // user
-      params += `+author%3A${user}`
+    const urlOpts = { closed: this.shiftPressed }
+    if (options.userIsOrg) {
+      urlOpts.organization = options.user
+    } else {
+      urlOpts.user = options.user
       if (isPresent(options.scope)) {
-        if (options.scope.indexOf('/') > -1) { // repository
-          const ownerAndName = options.scope.split('/')
-          params += `+repo%3A${ownerAndName[0]}%2F${ownerAndName[1]}`
-        } else { // organization
-          params += `+org%3A${options.scope}`
+        if (options.scope.indexOf('/') > -1) {
+          urlOpts.repository = options.scope
+        } else {
+          urlOpts.organization = options.scope
         }
       }
     }
-    this.openTab(`https://github.com/issues${params}`)
+    this.openTab(new GitHubUrl().issues(urlOpts))
   }
 
   openRepoIssues(options) {

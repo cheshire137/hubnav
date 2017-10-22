@@ -22,6 +22,30 @@ class GitHubUrl {
   fileFinder(repo, branch) {
     return `${this.repository(repo)}/find/${branch}`
   }
+
+  issues(options) {
+    let params = '?utf8=✓&q=is%3Aissue'
+    if (options.closed) {
+      params += '+is%3Aclosed'
+    } else {
+      params += '+is%3Aopen'
+    }
+    if (options.user) {
+      const user = encodeURIComponent(options.user)
+      params += `+author%3A${user}`
+    }
+    if (options.repository) {
+      const [rawOwner, rawName] = options.repository.split('/')
+      const owner = encodeURIComponent(rawOwner)
+      const name = encodeURIComponent(rawName)
+      params += `+repo%3A${owner}%2F${name}`
+    }
+    if (options.organization) {
+      const org = encodeURIComponent(options.organization)
+      params += `+org%3A${org}`
+    }
+    return `${this.baseUrl}/issues${params}`
+  }
 }
 
 window.GitHubUrl = GitHubUrl
