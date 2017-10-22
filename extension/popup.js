@@ -5,6 +5,7 @@ class PopupPage {
     this.ctrlPressed = false
     this.commandSelected = false
     this.altPressed = false
+    this.githubUrl = new GitHubUrl()
   }
 
   findElements() {
@@ -104,8 +105,7 @@ class PopupPage {
     HubnavStorage.load().then(options => {
       if (isPresent(options.user) && options.userIsOrg) {
         this.highlightShortcuts(this.tShortcuts)
-        const org = encodeURIComponent(options.user)
-        this.openTab(`https://github.com/orgs/${org}/teams`)
+        this.openTab(this.githubUrl.teams(options.user))
       }
     })
   }
