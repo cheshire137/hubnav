@@ -241,6 +241,12 @@ class PopupPage {
     this.openTab(new GitHubUrl().repositoryProjectPullRequests(repo, number, urlOpts))
   }
 
+  openOrgProjectHome(options) {
+    this.highlightShortcuts(this.vShortcuts)
+    const urlHelper = new GitHubUrl()
+    this.openTab(urlHelper.organizationProject(options.projectOrg, options.projectNumber))
+  }
+
   openRepoProjectHome(options) {
     this.highlightShortcuts(this.vShortcuts)
     this.openTab(new GitHubUrl().repositoryProject(options.projectRepo, options.projectNumber))
@@ -296,12 +302,7 @@ class PopupPage {
 
       } else if (options.active === 'project' && isPresent(options.projectNumber) &&
                  isPresent(options.projectOrg)) {
-        this.highlightShortcuts(this.vShortcuts)
-        const urlHelper = new GitHubUrl()
-        this.openTab(urlHelper.organizationProject(options.projectOrg, options.projectNumber))
-
-      } else {
-        this.openOptions()
+        this.openOrgProjectHome(options)
       }
     })
   }
