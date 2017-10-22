@@ -287,7 +287,7 @@ class PopupPage {
       } else if (options.active === 'milestone' && isPresent(options.milestoneNumber) &&
                  isPresent(options.milestoneRepo)) {
         this.highlightShortcuts(this.vShortcuts)
-        this.openTab(this.milestoneUrl(options.milestoneRepo, options.milestoneNumber))
+        this.openTab(new GitHubUrl().milestone(options.milestoneRepo, options.milestoneNumber))
 
       } else if (options.active === 'team' && isPresent(options.teamName) &&
                  isPresent(options.teamOrg)) {
@@ -358,12 +358,6 @@ class PopupPage {
         this.openRepoSelect()
       }
     })
-  }
-
-  milestoneUrl(repo, rawNumber) {
-    const number = encodeURIComponent(rawNumber)
-    const path = `/milestone/${number}`
-    return this.repoUrl(repo, path)
   }
 
   openOrgMembers() {

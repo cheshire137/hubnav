@@ -79,6 +79,11 @@ class GitHubUrl {
     return `${this.baseUrl}/orgs/${org}/teams`
   }
 
+  milestone(repo, rawNumber) {
+    const number = encodeURIComponent(rawNumber)
+    return `${this.repository(repo)}/milestone/${number}`
+  }
+
   search() {
     return `${this.baseUrl}/search`
   }
