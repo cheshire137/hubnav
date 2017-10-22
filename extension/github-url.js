@@ -15,6 +15,12 @@ class GitHubUrl {
     return `${this.baseUrl}/${owner}/${name}`
   }
 
+  team(rawOrg, rawName) {
+    const org = encodeURIComponent(rawOrg)
+    const name = encodeURIComponent(rawName)
+    return `${this.baseUrl}/orgs/${org}/teams/${name}`
+  }
+
   teams(rawOrg) {
     const org = encodeURIComponent(rawOrg)
     return `${this.baseUrl}/orgs/${org}/teams`

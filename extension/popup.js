@@ -268,7 +268,7 @@ class PopupPage {
       } else if (options.active === 'team' && isPresent(options.teamName) &&
                  isPresent(options.teamOrg)) {
         this.highlightShortcuts(this.vShortcuts)
-        this.openTab(this.teamUrl(options.teamOrg, options.teamName))
+        this.openTab(new GitHubUrl().team(options.teamOrg, options.teamName))
 
       } else if (options.active === 'project' && isPresent(options.projectNumber) &&
                  isPresent(options.projectOrg)) {
@@ -359,12 +359,6 @@ class PopupPage {
       }
     }
     return `&card_filter_query=${query}`
-  }
-
-  teamUrl(rawOrg, rawName) {
-    const org = encodeURIComponent(rawOrg)
-    const name = encodeURIComponent(rawName)
-    return `https://github.com/orgs/${org}/teams/${name}`
   }
 
   milestoneUrl(repo, rawNumber) {
