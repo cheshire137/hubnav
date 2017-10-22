@@ -3,6 +3,11 @@ class GitHubUrl {
     this.baseUrl = (githubUrl || 'https://github.com').replace(/\/+$/, '')
   }
 
+  profile(rawLogin) {
+    const login = encodeURIComponent(rawLogin)
+    return `${this.baseUrl}/${login}`
+  }
+
   repository(nameWithOwner) {
     const [rawOwner, rawName] = nameWithOwner.split('/')
     const owner = encodeURIComponent(rawOwner)

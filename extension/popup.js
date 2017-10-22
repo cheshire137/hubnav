@@ -253,8 +253,7 @@ class PopupPage {
 
       } else if (options.active === 'user' && isPresent(options.user)) {
         this.highlightShortcuts(this.vShortcuts)
-        const user = encodeURIComponent(options.user)
-        this.openTab(`https://github.com/${user}`)
+        this.openTab(new GitHubUrl().profile(options.user))
 
       } else if (options.active === 'project' && isPresent(options.projectNumber) &&
                  isPresent(options.projectRepo)) {
