@@ -6,7 +6,8 @@ module.exports = {
     window: true,
     SHORTCUTS: true,
     HubnavStorage: true,
-    isPresent: true
+    isPresent: true,
+    GitHubUrl: true
   },
   rules: {
     semi: ['error', 'never'],

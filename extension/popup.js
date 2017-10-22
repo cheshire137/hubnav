@@ -5,7 +5,6 @@ class PopupPage {
     this.ctrlPressed = false
     this.commandSelected = false
     this.altPressed = false
-    this.githubUrl = new GitHubUrl()
   }
 
   findElements() {
@@ -83,8 +82,7 @@ class PopupPage {
       if (isPresent(options.repository)) {
         this.highlightShortcuts(this.fShortcuts)
         const defaultBranch = options.defaultBranch || 'master'
-        const path = `/find/${defaultBranch}`
-        this.openTab(this.repoUrl(options.repository, path, options.githubUrl))
+        this.openTab(new GitHubUrl(options.githubUrl).fileFinder(options.repository, defaultBranch))
       } else {
         this.openRepoSelect()
       }
@@ -98,14 +96,14 @@ class PopupPage {
 
   openGlobalSearch() {
     this.highlightShortcuts(this.sShortcuts)
-    this.openTab('https://github.com/search')
+    this.openTab(new GitHubUrl().search())
   }
 
   openTeams() {
     HubnavStorage.load().then(options => {
       if (isPresent(options.user) && options.userIsOrg) {
         this.highlightShortcuts(this.tShortcuts)
-        this.openTab(this.githubUrl.teams(options.user))
+        this.openTab(new GitHubUrl().teams(options.user))
       }
     })
   }
