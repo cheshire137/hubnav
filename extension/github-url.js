@@ -15,6 +15,59 @@ class GitHubUrl {
     return `${this.baseUrl}/${owner}/${name}`
   }
 
+  organizationProject(rawOrg, rawNumber) {
+    const org = encodeURIComponent(rawOrg)
+    const number = encodeURIComponent(rawNumber)
+    return `${this.baseUrl}/orgs/${org}/projects/${number}?fullscreen=true`
+  }
+
+  repositoryProject(repo, rawNumber) {
+    const number = encodeURIComponent(rawNumber)
+    return `${this.repository(repo)}/projects/${number}?fullscreen=true`
+  }
+
+  organizationProjectIssues(org, number, options) {
+    const query = this.issuesQuery(options)
+    return `${this.organizationProject(org, number)}&card_filter_query=${query}`
+  }
+
+  organizationProjectPullRequests(org, number, options) {
+    const query = this.pullRequestsQuery(options)
+    return `${this.organizationProject(org, number)}&card_filter_query=${query}`
+  }
+
+  repositoryProjectIssues(repo, number, options) {
+    const query = this.issuesQuery(options)
+    return `${this.repositoryProject(repo, number)}&card_filter_query=${query}`
+  }
+
+  repositoryProjectPullRequests(repo, number, options) {
+    const query = this.pullRequestsQuery(options)
+    return `${this.repositoryProject(repo, number)}&card_filter_query=${query}`
+  }
+
+  issuesQuery(options) {
+    let query = 'is%3Aissue'
+    if (options.closed) {
+      query += '+is%3Aclosed'
+    } else {
+      query += '+is%3Aopen'
+    }
+    return query
+  }
+
+  pullRequestsQuery(options) {
+    let query = 'is%3Apr'
+    if (options.merged) {
+      query += '+is%3Amerged'
+    } else if (options.closed) {
+      query += '+is%3Aclosed+is%3Aunmerged'
+    } else {
+      query += '+is%3Aopen'
+    }
+    return query
+  }
+
   team(rawOrg, rawName) {
     const org = encodeURIComponent(rawOrg)
     const name = encodeURIComponent(rawName)

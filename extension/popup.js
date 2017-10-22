@@ -233,16 +233,41 @@ class PopupPage {
     this.openTab(urlHelper.repositoryIssues(options.repository, urlOpts))
   }
 
+  openRepoProjectPullRequests(options) {
+    this.highlightShortcuts(this.pShortcuts)
+    const repo = options.projectRepo
+    const number = options.projectNumber
+    const urlOpts = { merged: this.shiftPressed, closed: this.ctrlPressed }
+    this.openTab(new GitHubUrl().repositoryProjectPullRequests(repo, number, urlOpts))
+  }
+
+  openRepoProjectHome(options) {
+    this.highlightShortcuts(this.vShortcuts)
+    this.openTab(new GitHubUrl().repositoryProject(options.projectRepo, options.projectNumber))
+  }
+
   openRepoProjectIssues(options) {
     this.highlightShortcuts(this.iShortcuts)
-    const args = this.argsForProjectUrl('issues')
-    this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber, args))
+    const urlOpts = { closed: this.shiftPressed }
+    const repo = options.projectRepo
+    const number = options.projectNumber
+    this.openTab(new GitHubUrl().repositoryProjectIssues(repo, number, urlOpts))
+  }
+
+  openOrgProjectPullRequests(options) {
+    this.highlightShortcuts(this.pShortcuts)
+    const urlOpts = { merged: this.shiftPressed, closed: this.ctrlPressed }
+    const org = options.projectOrg
+    const number = options.projectNumber
+    this.openTab(new GitHubUrl().organizationProjectPullRequests(org, number, urlOpts))
   }
 
   openOrgProjectIssues(options) {
     this.highlightShortcuts(this.iShortcuts)
-    const args = this.argsForProjectUrl('issues')
-    this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber, args))
+    const org = options.projectOrg
+    const number = options.projectNumber
+    const urlOpts = { closed: this.shiftPressed }
+    this.openTab(new GitHubUrl().organizationProjectIssues(org, number, urlOpts))
   }
 
   openHomeForContext() {
@@ -257,8 +282,7 @@ class PopupPage {
 
       } else if (options.active === 'project' && isPresent(options.projectNumber) &&
                  isPresent(options.projectRepo)) {
-        this.highlightShortcuts(this.vShortcuts)
-        this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber))
+        this.openRepoProjectHome(options)
 
       } else if (options.active === 'milestone' && isPresent(options.milestoneNumber) &&
                  isPresent(options.milestoneRepo)) {
@@ -273,7 +297,8 @@ class PopupPage {
       } else if (options.active === 'project' && isPresent(options.projectNumber) &&
                  isPresent(options.projectOrg)) {
         this.highlightShortcuts(this.vShortcuts)
-        this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber))
+        const urlHelper = new GitHubUrl()
+        this.openTab(urlHelper.organizationProject(options.projectOrg, options.projectNumber))
 
       } else {
         this.openOptions()
@@ -323,15 +348,11 @@ class PopupPage {
 
       } else if (options.active === 'project' && isPresent(options.projectNumber) &&
                  isPresent(options.projectRepo)) {
-        this.highlightShortcuts(this.pShortcuts)
-        const args = this.argsForProjectUrl('pull_requests')
-        this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber, args))
+        this.openRepoProjectPullRequests(options)
 
       } else if (options.active === 'project' && isPresent(options.projectNumber) &&
                  isPresent(options.projectOrg)) {
-        this.highlightShortcuts(this.pShortcuts)
-        const args = this.argsForProjectUrl('pull_requests')
-        this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber, args))
+        this.openOrgProjectPullRequests(options)
 
       } else {
         this.openRepoSelect()
@@ -339,44 +360,10 @@ class PopupPage {
     })
   }
 
-  argsForProjectUrl(type) {
-    let query = ''
-    if (type === 'pull_requests') { // pull requests
-      query = 'is%3Apr'
-      if (this.shiftPressed) { // merged
-        query += '+is%3Amerged'
-      } else if (this.ctrlPressed) { // closed, not merged
-        query += '+is%3Aclosed+is%3Aunmerged'
-      } else {
-        query += '+is%3Aopen'
-      }
-    } else { // issues
-      query = 'is%3Aissue'
-      if (this.shiftPressed) {
-        query += '+is%3Aclosed'
-      } else {
-        query += '+is%3Aopen'
-      }
-    }
-    return `&card_filter_query=${query}`
-  }
-
   milestoneUrl(repo, rawNumber) {
     const number = encodeURIComponent(rawNumber)
     const path = `/milestone/${number}`
     return this.repoUrl(repo, path)
-  }
-
-  repoProjectUrl(repo, rawNumber, args) {
-    const number = encodeURIComponent(rawNumber)
-    const path = `/projects/${number}?fullscreen=true${args || ''}`
-    return this.repoUrl(repo, path)
-  }
-
-  orgProjectUrl(rawOrg, rawNumber, args) {
-    const org = encodeURIComponent(rawOrg)
-    const number = encodeURIComponent(rawNumber)
-    return `https://github.com/orgs/${org}/projects/${number}?fullscreen=true${args || ''}`
   }
 
   openOrgMembers() {
