@@ -156,8 +156,8 @@ class PopupPage {
 
   openClosedIssues() {
     HubnavStorage.load().then(options => {
-      if (options.active === 'milestone' && options.milestoneName &&
-          options.milestoneNumber && options.milestoneRepo) {
+      if (options.active === 'milestone' && isPresent(options.milestoneName) &&
+          isPresent(options.milestoneNumber) && isPresent(options.milestoneRepo)) {
         this.openMilestoneClosedIssues(options)
       }
     })
@@ -165,8 +165,8 @@ class PopupPage {
 
   openNewIssue() {
     HubnavStorage.load().then(options => {
-      if (options.active === 'milestone' && options.milestoneName &&
-          options.milestoneNumber && options.milestoneRepo) {
+      if (options.active === 'milestone' && isPresent(options.milestoneName) &&
+          isPresent(options.milestoneNumber) && isPresent(options.milestoneRepo)) {
         this.openMilestoneNewIssue(options)
       }
     })
