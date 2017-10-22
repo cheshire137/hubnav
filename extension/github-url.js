@@ -102,6 +102,20 @@ class GitHubUrl {
     return `${this.repository(repo)}/issues${path}`
   }
 
+  repositoryPullRequests(repo, options) {
+    let path = ''
+    if (options.merged) {
+      path = '/pulls?utf8=✓&q=is%3Apr%20is%3Amerged'
+    } else if (options.new) {
+      path = '/compare'
+    } else if (options.closed) {
+      path = '/pulls?utf8=✓&q=is%3Apr%20is%3Aclosed+is%3Aunmerged'
+    } else {
+      path = '/pulls'
+    }
+    return `${this.repository(repo)}${path}`
+  }
+
   issues(options) {
     let params = '?utf8=✓&q=is%3Aissue'
     if (options.closed) {

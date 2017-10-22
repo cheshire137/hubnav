@@ -233,6 +233,13 @@ class PopupPage {
     this.openTab(urlHelper.repositoryIssues(options.repository, urlOpts))
   }
 
+  openRepoPullRequests(options) {
+    this.highlightShortcuts(this.pShortcuts)
+    const urlOpts = { merged: this.shiftPressed, new: this.ctrlPressed, closed: this.altPressed }
+    const urlHelper = new GitHubUrl(options.githubUrl)
+    this.openTab(urlHelper.repositoryPullRequests(options.repository, urlOpts))
+  }
+
   openRepoProjectPullRequests(options) {
     this.highlightShortcuts(this.pShortcuts)
     const repo = options.projectRepo
@@ -336,16 +343,7 @@ class PopupPage {
         this.openTab(`https://github.com/pulls${params}`)
 
       } else if (options.active === 'repository' && isPresent(options.repository)) {
-        this.highlightShortcuts(this.pShortcuts)
-        let path = '/pulls'
-        if (this.shiftPressed) {
-          path += '?utf8=✓&q=is%3Apr%20is%3Amerged'
-        } else if (this.ctrlPressed) {
-          path = '/compare'
-        } else if (this.altPressed) {
-          path += '?utf8=✓&q=is%3Apr%20is%3Aclosed+is%3Aunmerged'
-        }
-        this.openTab(this.repoUrl(options.repository, path, options.githubUrl))
+        this.openRepoPullRequests(options)
 
       } else if (options.active === 'project' && isPresent(options.projectNumber) &&
                  isPresent(options.projectRepo)) {
