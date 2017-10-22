@@ -174,9 +174,10 @@ class PopupPage {
 
   openMilestoneClosedIssues(options) {
     this.highlightShortcuts(this.cShortcuts)
-    const number = encodeURIComponent(options.milestoneNumber)
-    const path = `/milestone/${number}?closed=1`
-    this.openTab(this.repoUrl(options.milestoneRepo, path))
+    const repo = options.milestoneRepo
+    const number = options.milestoneNumber
+    const urlOpts = { closed: true }
+    this.openTab(new GitHubUrl().milestone(repo, number, urlOpts))
   }
 
   openMilestoneNewIssue(options) {
