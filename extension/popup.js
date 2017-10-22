@@ -274,7 +274,7 @@ class PopupPage {
     HubnavStorage.load().then(options => {
       if (options.active === 'repository' && isPresent(options.repository)) {
         this.highlightShortcuts(this.vShortcuts)
-        this.openTab(this.repoUrl(options.repository, null, options.githubUrl))
+        this.openTab(new GitHubUrl(options.githubUrl).repository(options.repository))
 
       } else if (options.active === 'user' && isPresent(options.user)) {
         this.highlightShortcuts(this.vShortcuts)
