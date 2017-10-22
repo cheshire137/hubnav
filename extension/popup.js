@@ -79,7 +79,7 @@ class PopupPage {
 
   openFileFinder() {
     HubnavStorage.load().then(options => {
-      if (options.repository && options.repository.length > 0) {
+      if (isPresent(options.repository)) {
         this.highlightShortcuts(this.fShortcuts)
         const defaultBranch = options.defaultBranch || 'master'
         const path = `/find/${defaultBranch}`
@@ -102,7 +102,7 @@ class PopupPage {
 
   openTeams() {
     HubnavStorage.load().then(options => {
-      if (options.user && options.user.length > 0 && options.userIsOrg) {
+      if (isPresent(options.user) && options.userIsOrg) {
         this.highlightShortcuts(this.tShortcuts)
         const org = encodeURIComponent(options.user)
         this.openTab(`https://github.com/orgs/${org}/teams`)
@@ -190,21 +190,18 @@ class PopupPage {
 
   openIssues() {
     HubnavStorage.load().then(options => {
-      if (options.active === 'user' && options.user && options.user.length > 0) {
+      if (options.active === 'user' && isPresent(options.user)) {
         this.openUserIssues(options)
 
-      } else if (options.active === 'repository' && options.repository &&
-                 options.repository.length > 0) {
+      } else if (options.active === 'repository' && isPresent(options.repository)) {
         this.openRepoIssues(options)
 
-      } else if (options.active === 'project' && options.projectNumber &&
-                 options.projectNumber.length > 0 && options.projectRepo &&
-                 options.projectRepo.length > 0) {
+      } else if (options.active === 'project' && isPresent(options.projectNumber) &&
+                 isPresent(options.projectRepo)) {
         this.openRepoProjectIssues(options)
 
-      } else if (options.active === 'project' && options.projectNumber &&
-                 options.projectNumber.length > 0 && options.projectOrg &&
-                 options.projectOrg.length > 0) {
+      } else if (options.active === 'project' && isPresent(options.projectNumber) &&
+                 isPresent(options.projectOrg)) {
         this.openOrgProjectIssues(options)
 
       } else {
@@ -226,7 +223,7 @@ class PopupPage {
       params += `+org%3A${user}`
     } else { // user
       params += `+author%3A${user}`
-      if (options.scope && options.scope.length > 0) {
+      if (isPresent(options.scope)) {
         if (options.scope.indexOf('/') > -1) { // repository
           const ownerAndName = options.scope.split('/')
           params += `+repo%3A${ownerAndName[0]}%2F${ownerAndName[1]}`
@@ -263,36 +260,32 @@ class PopupPage {
 
   openHomeForContext() {
     HubnavStorage.load().then(options => {
-      if (options.active === 'repository' && options.repository && options.repository.length > 0) {
+      if (options.active === 'repository' && isPresent(options.repository)) {
         this.highlightShortcuts(this.vShortcuts)
         this.openTab(this.repoUrl(options.repository, null, options.githubUrl))
 
-      } else if (options.active === 'user' && options.user && options.user.length > 0) {
+      } else if (options.active === 'user' && isPresent(options.user)) {
         this.highlightShortcuts(this.vShortcuts)
         const user = encodeURIComponent(options.user)
         this.openTab(`https://github.com/${user}`)
 
-      } else if (options.active === 'project' && options.projectNumber &&
-                 options.projectNumber.length > 0 && options.projectRepo &&
-                 options.projectRepo.length > 0) {
+      } else if (options.active === 'project' && isPresent(options.projectNumber) &&
+                 isPresent(options.projectRepo)) {
         this.highlightShortcuts(this.vShortcuts)
         this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber))
 
-      } else if (options.active === 'milestone' && options.milestoneNumber &&
-                 options.milestoneNumber.length > 0 && options.milestoneRepo &&
-                 options.milestoneRepo.length > 0) {
+      } else if (options.active === 'milestone' && isPresent(options.milestoneNumber) &&
+                 isPresent(options.milestoneRepo)) {
         this.highlightShortcuts(this.vShortcuts)
         this.openTab(this.milestoneUrl(options.milestoneRepo, options.milestoneNumber))
 
-      } else if (options.active === 'team' && options.teamName &&
-                 options.teamName.length > 0 && options.teamOrg &&
-                 options.teamOrg.length > 0) {
+      } else if (options.active === 'team' && isPresent(options.teamName) &&
+                 isPresent(options.teamOrg)) {
         this.highlightShortcuts(this.vShortcuts)
         this.openTab(this.teamUrl(options.teamOrg, options.teamName))
 
-      } else if (options.active === 'project' && options.projectNumber &&
-                 options.projectNumber.length > 0 && options.projectOrg &&
-                 options.projectOrg.length > 0) {
+      } else if (options.active === 'project' && isPresent(options.projectNumber) &&
+                 isPresent(options.projectOrg)) {
         this.highlightShortcuts(this.vShortcuts)
         this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber))
 
@@ -304,7 +297,7 @@ class PopupPage {
 
   openPullRequests() {
     HubnavStorage.load().then(options => {
-      if (options.active === 'user' && options.user && options.user.length > 0) {
+      if (options.active === 'user' && isPresent(options.user)) {
         this.highlightShortcuts(this.pShortcuts)
         const user = encodeURIComponent(options.user)
         let params = '?utf8=✓&q=is%3Apr'
@@ -312,7 +305,7 @@ class PopupPage {
           params += `+org%3A${user}`
         } else { // user
           params += `+author%3A${user}`
-          if (options.scope && options.scope.length > 0) {
+          if (isPresent(options.scope)) {
             if (options.scope.indexOf('/') > -1) { // repository
               const ownerAndName = options.scope.split('/')
               params += `+repo%3A${ownerAndName[0]}%2F${ownerAndName[1]}`
@@ -330,8 +323,7 @@ class PopupPage {
         }
         this.openTab(`https://github.com/pulls${params}`)
 
-      } else if (options.active === 'repository' && options.repository &&
-                 options.repository.length > 0) {
+      } else if (options.active === 'repository' && isPresent(options.repository)) {
         this.highlightShortcuts(this.pShortcuts)
         let path = '/pulls'
         if (this.shiftPressed) {
@@ -343,16 +335,14 @@ class PopupPage {
         }
         this.openTab(this.repoUrl(options.repository, path, options.githubUrl))
 
-      } else if (options.active === 'project' && options.projectNumber &&
-                 options.projectNumber.length > 0 && options.projectRepo &&
-                 options.projectRepo.length > 0) {
+      } else if (options.active === 'project' && isPresent(options.projectNumber) &&
+                 isPresent(options.projectRepo)) {
         this.highlightShortcuts(this.pShortcuts)
         const args = this.argsForProjectUrl('pull_requests')
         this.openTab(this.repoProjectUrl(options.projectRepo, options.projectNumber, args))
 
-      } else if (options.active === 'project' && options.projectNumber &&
-                 options.projectNumber.length > 0 && options.projectOrg &&
-                 options.projectOrg.length > 0) {
+      } else if (options.active === 'project' && isPresent(options.projectNumber) &&
+                 isPresent(options.projectOrg)) {
         this.highlightShortcuts(this.pShortcuts)
         const args = this.argsForProjectUrl('pull_requests')
         this.openTab(this.orgProjectUrl(options.projectOrg, options.projectNumber, args))
@@ -411,7 +401,7 @@ class PopupPage {
 
   openOrgMembers() {
     HubnavStorage.load().then(options => {
-      if (options.user && options.user.length > 0 && options.userIsOrg) {
+      if (isPresent(options.user) && options.userIsOrg) {
         this.highlightShortcuts(this.mShortcuts)
         const org = encodeURIComponent(options.user)
         this.openTab(`https://github.com/orgs/${org}/people`)
@@ -423,7 +413,7 @@ class PopupPage {
 
   openRepositories() {
     HubnavStorage.load().then(options => {
-      if (options.active === 'user' && options.user && options.user.length > 0) {
+      if (options.active === 'user' && isPresent(options.user)) {
         this.highlightShortcuts(this.rShortcuts)
 
         if (options.userIsOrg) {
@@ -432,8 +422,7 @@ class PopupPage {
           this.openUserRepositories(options)
         }
 
-      } else if (options.teamName && options.teamName.length > 0 &&
-                 options.teamOrg && options.teamOrg.length > 0) {
+      } else if (isPresent(options.teamName) && isPresent(options.teamOrg)) {
         this.highlightShortcuts(this.rShortcuts)
         this.openTeamRepositories(options)
       }
@@ -461,7 +450,7 @@ class PopupPage {
 
   openOptions(hash) {
     let path = `chrome-extension://${chrome.runtime.id}/options.html`
-    if (hash && hash.length > 0) {
+    if (isPresent(hash)) {
       path += `#${hash}`
     }
     this.highlightShortcuts(this.oShortcuts)
@@ -480,7 +469,7 @@ class PopupPage {
       }
 
       const newUser = currentOptions[`user${i}`]
-      if (newUser && newUser.length > 0) {
+      if (isPresent(newUser)) {
         newOptions.user = newUser
         newOptions.userIsOrg = currentOptions[`userIsOrg${i}`]
         newOptions.scope = currentOptions[`userScope${i}`]
@@ -508,10 +497,10 @@ class PopupPage {
       }
       const newTeamOrg = currentOptions[`teamOrg${i}`]
       const newTeamName = currentOptions[`teamName${i}`]
-      if (newTeamOrg && newTeamOrg.length > 0) {
+      if (isPresent(newTeamOrg)) {
         newOptions.teamOrg = newTeamOrg
       }
-      if (newTeamName && newTeamName.length > 0) {
+      if (isPresent(newTeamName)) {
         newOptions.teamName = newTeamName
       }
       newOptions.active = 'team'
@@ -533,13 +522,13 @@ class PopupPage {
       const newMilestoneRepo = currentOptions[`milestoneRepo${i}`]
       const newMilestoneName = currentOptions[`milestoneName${i}`]
       const newMilestoneNumber = currentOptions[`milestoneNumber${i}`]
-      if (newMilestoneRepo && newMilestoneRepo.length > 0) {
+      if (isPresent(newMilestoneRepo)) {
         newOptions.milestoneRepo = newMilestoneRepo
       }
-      if (newMilestoneNumber && newMilestoneNumber.length > 0) {
+      if (isPresent(newMilestoneNumber)) {
         newOptions.milestoneNumber = newMilestoneNumber
       }
-      if (newMilestoneName && newMilestoneName.length > 0) {
+      if (isPresent(newMilestoneName)) {
         newOptions.milestoneName = newMilestoneName
       }
       newOptions.active = 'milestone'
@@ -563,25 +552,25 @@ class PopupPage {
       const newProjectOrg = currentOptions[`projectOrg${i}`]
       const newProjectName = currentOptions[`projectName${i}`]
       const newProjectNumber = currentOptions[`projectNumber${i}`]
-      if (newProjectRepo && newProjectRepo.length > 0) {
+      if (isPresent(newProjectRepo)) {
         newOptions.projectRepo = newProjectRepo
         delete newOptions.projectOrg
       }
-      if (newProjectOrg && newProjectOrg.length > 0) {
+      if (isPresent(newProjectOrg)) {
         newOptions.projectOrg = newProjectOrg
         delete newOptions.projectRepo
       }
-      if (newProjectNumber && newProjectNumber.length > 0) {
+      if (isPresent(newProjectNumber)) {
         newOptions.projectNumber = newProjectNumber
       }
-      if (newProjectName && newProjectName.length > 0) {
+      if (isPresent(newProjectName)) {
         newOptions.projectName = newProjectName
       }
       newOptions.active = 'project'
       HubnavStorage.save(newOptions).then(() => {
         this.highlightShortcut(this[`shortcuts${i}`])
         this.runAfterDelay(() => {
-          if (newOptions.projectRepo && newOptions.projectRepo.length > 0) {
+          if (isPresent(newOptions.projectRepo)) {
             this.loadActiveRepoProject(newOptions.projectRepo, newOptions.projectName,
                                        newOptions.projectNumber)
           } else {
@@ -627,13 +616,13 @@ class PopupPage {
       const newRepo = currentOptions[`repository${i}`]
       const newDefaultBranch = currentOptions[`defaultBranch${i}`]
       const newGithubUrl = currentOptions[`githubUrl${i}`]
-      if (newRepo && newRepo.length > 0) {
+      if (isPresent(newRepo)) {
         newOptions.repository = newRepo
       }
-      if (newDefaultBranch && newDefaultBranch.length > 0) {
+      if (isPresent(newDefaultBranch)) {
         newOptions.defaultBranch = newDefaultBranch
       }
-      if (newGithubUrl && newGithubUrl.length > 0) {
+      if (isPresent(newGithubUrl)) {
         newOptions.githubUrl = newGithubUrl
       }
       newOptions.active = 'repository'
@@ -954,73 +943,62 @@ class PopupPage {
       }
 
       if (options.active && typeof options.active === 'string') {
-        if (options.active === 'user' && options.user && options.user.length > 0) {
+        if (options.active === 'user' && isPresent(options.user)) {
           if (options.userIsOrg) {
             this.loadActiveOrganization(options.user)
           } else {
             this.loadActiveUser(options.user)
           }
 
-        } else if (options.active === 'repository' && options.repository &&
-                   options.repository.length > 0) {
+        } else if (options.active === 'repository' && isPresent(options.repository)) {
           this.loadActiveRepository(options.repository)
 
-        } else if (options.active === 'project' && options.projectNumber &&
-                   options.projectNumber.length > 0 &&
-                   options.projectRepo && options.projectRepo.length > 0 &&
-                   options.projectName && options.projectName.length > 0) {
+        } else if (options.active === 'project' && isPresent(options.projectNumber) &&
+                   isPresent(options.projectRepo) && isPresent(options.projectName)) {
           this.loadActiveRepoProject(options.projectRepo, options.projectName,
                                      options.projectNumber)
 
-        } else if (options.active === 'milestone' && options.milestoneNumber &&
-                   options.milestoneNumber.length > 0 &&
-                   options.milestoneRepo && options.milestoneRepo.length > 0 &&
-                   options.milestoneName && options.milestoneName.length > 0) {
+        } else if (options.active === 'milestone' && isPresent(options.milestoneNumber) &&
+                   isPresent(options.milestoneRepo) && isPresent(options.milestoneName)) {
           this.loadActiveMilestone(options.milestoneRepo, options.milestoneName,
                                    options.milestoneNumber)
 
-        } else if (options.active === 'team' && options.teamOrg && options.teamOrg.length > 0 &&
-                   options.teamName && options.teamName.length > 0) {
+        } else if (options.active === 'team' && isPresent(options.teamOrg) &&
+                   isPresent(options.teamName)) {
           this.loadActiveTeam(options.teamOrg, options.teamName)
 
-        } else if (options.active === 'project' && options.projectNumber &&
-                   options.projectNumber.length > 0 &&
-                   options.projectOrg && options.projectOrg.length > 0 &&
-                   options.projectName && options.projectName.length > 0) {
+        } else if (options.active === 'project' && isPresent(options.projectNumber) &&
+                   isPresent(options.projectOrg) && isPresent(options.projectName)) {
           this.loadActiveOrgProject(options.projectOrg, options.projectName,
                                     options.projectNumber)
         }
 
       // No active context:
-      } else if (options.repository && options.repository.length > 0) {
+      } else if (isPresent(options.repository)) {
         this.loadActiveRepository(options.repository)
 
-      } else if (options.user && options.user.length > 0) {
+      } else if (isPresent(options.user)) {
         if (options.userIsOrg) {
           this.loadActiveOrganization(options.user)
         } else {
           this.loadActiveUser(options.user)
         }
 
-      } else if (options.milestoneNumber && options.milestoneNumber.length > 0 &&
-                 options.milestoneRepo && options.milestoneRepo.length > 0 &&
-                 options.milestoneName && options.milestoneName.length > 0) {
+      } else if (isPresent(options.milestoneNumber) && isPresent(options.milestoneRepo) &&
+                 isPresent(options.milestoneName)) {
         this.loadActiveMilestone(options.milestoneRepo, options.milestoneName,
                                  options.milestoneNumber)
 
-      } else if (options.teamOrg && options.teamOrg.length > 0 &&
-                 options.teamName && options.teamName.length > 0) {
+      } else if (isPresent(options.teamOrg) && isPresent(options.teamName)) {
         this.loadActiveTeam(options.teamOrg, options.teamName)
 
-      } else if (options.projectNumber && options.projectNumber.length > 0 &&
-                 options.projectRepo && options.projectRepo.length > 0 &&
-                 options.projectName && options.projectName.length > 0) {
+      } else if (isPresent(options.projectNumber) && isPresent(options.projectRepo) &&
+                 isPresent(options.projectName)) {
         this.loadActiveRepoProject(options.projectRepo, options.projectName,
                                    options.projectNumber)
 
-      } else if (options.projectNumber && options.projectNumber.length > 0 &&
-                 options.projectOrg && options.projectOrg.length > 0 &&
-                 options.projectName && options.projectName.length > 0) {
+      } else if (isPresent(options.projectNumber) && isPresent(options.projectOrg) &&
+                 isPresent(options.projectName)) {
         this.loadActiveRepoProject(options.projectOrg, options.projectName,
                                    options.projectNumber)
       }
@@ -1054,7 +1032,7 @@ class PopupPage {
       let contextCount = 0
       for (const i of SHORTCUTS) {
         const repo = options[`repository${i}`]
-        if (repo && repo.length > 0) {
+        if (isPresent(repo)) {
           contextCount++
           this.addShortcut(i, 'repository', (headerEl, logoEl) => {
             headerEl.textContent = repo
@@ -1063,7 +1041,7 @@ class PopupPage {
         }
 
         const milestoneName = options[`milestoneName${i}`]
-        if (milestoneName && milestoneName.length > 0) {
+        if (isPresent(milestoneName)) {
           contextCount++
           const milestoneRepo = options[`milestoneRepo${i}`]
           this.addShortcut(i, 'milestone', (headerEl, logoEl) => {
@@ -1073,7 +1051,7 @@ class PopupPage {
         }
 
         const teamName = options[`teamName${i}`]
-        if (teamName && teamName.length > 0) {
+        if (isPresent(teamName)) {
           contextCount++
           const teamOrg = options[`teamOrg${i}`]
           this.addShortcut(i, 'team', (headerEl, logoEl) => {
@@ -1083,22 +1061,22 @@ class PopupPage {
         }
 
         const projectName = options[`projectName${i}`]
-        if (projectName && projectName.length > 0) {
+        if (isPresent(projectName)) {
           contextCount++
           const projectRepo = options[`projectRepo${i}`]
           const org = options[`projectOrg${i}`]
           this.addShortcut(i, 'project', (headerEl, logoEl) => {
             headerEl.textContent = projectName
-            if (projectRepo && projectRepo.length > 0) {
+            if (isPresent(projectRepo)) {
               this.loadRepoLogo(projectRepo, logoEl)
-            } else if (org && org.length > 0) {
+            } else if (isPresent(org)) {
               this.loadUserLogo(org, logoEl)
             }
           })
         }
 
         const user = options[`user${i}`]
-        if (user && user.length > 0) {
+        if (isPresent(user)) {
           contextCount++
           const userIsOrg = options[`userIsOrg${i}`]
           this.addShortcut(i, userIsOrg ? 'organization' : 'user', (headerEl, logoEl) => {
@@ -1116,7 +1094,7 @@ class PopupPage {
 
   loadRepoLogo(rawRepo, imgTag) {
     const user = rawRepo.split('/')[0]
-    if (user && user.length > 0) {
+    if (isPresent(user)) {
       this.loadUserLogo(user, imgTag)
     }
   }
