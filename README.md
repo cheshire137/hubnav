@@ -86,6 +86,7 @@ Use keyboard shortcuts to quickly access issues, pull requests, and the file fin
 
     - **v** - view the team
     - **r** - list the team's repositories
+    - **m** - list the team's members
 
     **Switch context:**
 
