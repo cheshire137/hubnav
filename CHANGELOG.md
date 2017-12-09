@@ -4,7 +4,7 @@
 
 - You can now add shortcuts for GitHub teams.
 - Repositories shortcut for a user now opens the "Repositories" tab on a user profile, instead of taking you to the search results page.
-- Fix bug where so you can remove a milestone shortcut.
+- Fix bug so that you can remove milestone shortcuts.
 
 0.0.7
 
