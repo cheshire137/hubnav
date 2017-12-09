@@ -360,16 +360,29 @@ class PopupPage {
     })
   }
 
-  openOrgMembers() {
+  openMembers() {
     HubnavStorage.load().then(options => {
-      if (isPresent(options.user) && options.userIsOrg) {
-        this.highlightShortcuts(this.mShortcuts)
-        const org = encodeURIComponent(options.user)
-        this.openTab(`https://github.com/orgs/${org}/people`)
+      if (options.active === 'team') {
+        this.openTeamMembers(options)
       } else {
-        this.openOptions()
+        this.openOrgMembers(options)
       }
     })
+  }
+
+  openTeamMembers(options) {
+    if (isPresent(options.teamOrg) && isPresent(options.teamName)) {
+      this.highlightShortcuts(this.mShortcuts)
+      this.openTab(new GitHubUrl().teamMembers(options.teamOrg, options.teamName))
+    }
+  }
+
+  openOrgMembers(options) {
+    if (isPresent(options.user) && options.userIsOrg) {
+      this.highlightShortcuts(this.mShortcuts)
+      const org = encodeURIComponent(options.user)
+      this.openTab(`https://github.com/orgs/${org}/people`)
+    }
   }
 
   openRepositories() {
@@ -403,10 +416,7 @@ class PopupPage {
   }
 
   openTeamRepositories(options) {
-    const org = encodeURIComponent(options.teamOrg)
-    const name = encodeURIComponent(options.teamName)
-    const path = `https://github.com/orgs/${org}/teams/${name}/repositories`
-    this.openTab(path)
+    this.openTab(new GitHubUrl().teamRepositories(options.teamOrg, options.teamName))
   }
 
   openOptions(hash) {
@@ -620,24 +630,25 @@ class PopupPage {
     const isMilestoneContext = context === 'milestone'
     const isRepoContext = context === 'repository'
     const isTeamContext = context === 'team'
+    const isOrgContext = isUserContext && isUserAnOrg
 
     // File finder
     if (key === 'f' && !isRepoContext) {
       return false
     }
 
-    // Teams, Members
-    if ((key === 't' || key === 'm') && !isUserContext) {
+    // Teams
+    if (key === 't' && !isOrgContext) {
+      return false
+    }
+
+    // Members
+    if (key === 'm' && !isTeamContext && !isOrgContext) {
       return false
     }
 
     // Repositories
-    if (key === 'r' && !(isUserContext || isTeamContext)) {
-      return false
-    }
-
-    // Teams, Members
-    if ((key === 't' || key === 'm') && !isUserAnOrg) {
+    if (key === 'r' && !isUserContext && !isTeamContext) {
       return false
     }
 
@@ -687,7 +698,7 @@ class PopupPage {
         this.openHomeForContext()
 
       } else if (key === 'm') {
-        this.openOrgMembers()
+        this.openMembers()
 
       } else if (key === 'r') {
         this.openRepositories()

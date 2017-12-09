@@ -74,6 +74,14 @@ class GitHubUrl {
     return `${this.baseUrl}/orgs/${org}/teams/${name}`
   }
 
+  teamMembers(rawOrg, rawName) {
+    return `${this.team(rawOrg, rawName)}/members`
+  }
+
+  teamRepositories(rawOrg, rawName) {
+    return `${this.team(rawOrg, rawName)}/repositories`
+  }
+
   teams(rawOrg) {
     const org = encodeURIComponent(rawOrg)
     return `${this.baseUrl}/orgs/${org}/teams`
