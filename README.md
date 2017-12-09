@@ -103,6 +103,6 @@ choose the extension/ directory from wherever you cloned this repository.
 ## How to Test
 
 ```bash
-bundle install
-bundle exec rspec
+npm install
+npm test
 ```
