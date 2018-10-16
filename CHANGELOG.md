@@ -2,7 +2,7 @@
 
 0.0.9
 
-- Add 'pro[j]ects' shortcut for organizations.
+- Add 'pro[j]ects' shortcut for organizations and repositories.
 
 0.0.8
 

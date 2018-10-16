@@ -15,6 +15,10 @@ class GitHubUrl {
     return `${this.baseUrl}/${owner}/${name}`
   }
 
+  repositoryProjects(nameWithOwner) {
+    return `${this.repository(nameWithOwner)}/projects`
+  }
+
   organizationProject(rawOrg, rawNumber) {
     const org = encodeURIComponent(rawOrg)
     const number = encodeURIComponent(rawNumber)

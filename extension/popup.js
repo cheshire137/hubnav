@@ -319,14 +319,13 @@ class PopupPage {
   openProjects() {
     HubnavStorage.load().then(options => {
       if (options.active === 'user' && isPresent(options.user)) {
-        this.highlightShortcuts(this.jShortcuts)
-        const user = encodeURIComponent(options.user)
-
         if (options.userIsOrg) {
+          this.highlightShortcuts(this.jShortcuts)
+          const user = encodeURIComponent(options.user)
           this.openTab(`https://github.com/orgs/${user}/projects`)
-        } else {
-
         }
+      } else if (options.active === 'repository' && isPresent(options.repository)) {
+        this.openTab(new GitHubUrl().repositoryProjects(options.repository))
       }
     })
   }
