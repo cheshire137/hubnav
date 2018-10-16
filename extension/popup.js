@@ -325,6 +325,7 @@ class PopupPage {
           this.openTab(`https://github.com/orgs/${user}/projects`)
         }
       } else if (options.active === 'repository' && isPresent(options.repository)) {
+        this.highlightShortcuts(this.jShortcuts)
         this.openTab(new GitHubUrl().repositoryProjects(options.repository))
       }
     })
