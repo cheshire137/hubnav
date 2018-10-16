@@ -1,5 +1,9 @@
 # Change Log
 
+0.0.9
+
+- Add 'pro[j]ects' shortcut for organizations.
+
 0.0.8
 
 - You can now add shortcuts for GitHub teams.

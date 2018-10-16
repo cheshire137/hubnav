@@ -3,7 +3,7 @@
   "name": "Hubnav",
   "short_name": "Hubnav",
   "description": "Navigate GitHub.com via keyboard shortcuts.",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "permissions": ["storage"],
   "browser_action": {
     "default_icon": "icon48.png",
