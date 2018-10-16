@@ -40,6 +40,7 @@ class PopupPage {
     this.vShortcuts = document.querySelectorAll('.shortcut-v')
     this.cShortcuts = document.querySelectorAll('.shortcut-c')
     this.nShortcuts = document.querySelectorAll('.shortcut-n')
+    this.jShortcuts = document.querySelectorAll('.shortcut-j')
 
     // Modifiers:
     this.closedIssueModifiers = document.querySelectorAll('.closed-issues')
@@ -311,6 +312,21 @@ class PopupPage {
       } else if (options.active === 'project' && isPresent(options.projectNumber) &&
                  isPresent(options.projectOrg)) {
         this.openOrgProjectHome(options)
+      }
+    })
+  }
+
+  openProjects() {
+    HubnavStorage.load().then(options => {
+      if (options.active === 'user' && isPresent(options.user)) {
+        this.highlightShortcuts(this.jShortcuts)
+        const user = encodeURIComponent(options.user)
+
+        if (options.userIsOrg) {
+          this.openTab(`https://github.com/orgs/${user}/projects`)
+        } else {
+
+        }
       }
     })
   }
@@ -693,6 +709,9 @@ class PopupPage {
 
       } else if (key === 'p' || key === 'π') {
         this.openPullRequests()
+
+      } else if (key === 'j') {
+        this.openProjects()
 
       } else if (key === 'v') {
         this.openHomeForContext()
