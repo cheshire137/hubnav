@@ -373,33 +373,25 @@ class OptionsPage {
   }
 
   onUserLogoLoad(event, i) {
+    this.onLogoLoad(event, i, 'userLogo')
+  }
+
+  onLogoLoad(event, i, key) {
     if (this.isBadLogo(event.target.src)) {
       return
     }
-    delete this.errors[`userLogo${i}`]
+    delete this.errors[`${key}${i}`]
     if (!this.anyErrors()) {
       this.optionsForm.classList.remove('error')
     }
   }
 
   onUserScopeLogoLoad(event, i) {
-    if (this.isBadLogo(event.target.src)) {
-      return
-    }
-    delete this.errors[`userScopeLogo${i}`]
-    if (!this.anyErrors()) {
-      this.optionsForm.classList.remove('error')
-    }
+    this.onLogoLoad(event, i, 'userScopeLogo')
   }
 
   onTeamOrgLogoLoad(event, i) {
-    if (this.isBadLogo(event.target.src)) {
-      return
-    }
-    delete this.errors[`teamOrgLogo${i}`]
-    if (!this.anyErrors()) {
-      this.optionsForm.classList.remove('error')
-    }
+    this.onLogoLoad(event, i, 'teamOrgLogo')
   }
 
   onTeamOrgLogoError(event, i) {
@@ -413,43 +405,19 @@ class OptionsPage {
   }
 
   onProjectOrgLogoLoad(event, i) {
-    if (this.isBadLogo(event.target.src)) {
-      return
-    }
-    delete this.errors[`projectOrgLogo${i}`]
-    if (!this.anyErrors()) {
-      this.optionsForm.classList.remove('error')
-    }
+    this.onLogoLoad(event, i, 'projectOrgLogo')
   }
 
   onProjectUserLogoLoad(event, i) {
-    if (this.isBadLogo(event.target.src)) {
-      return
-    }
-    delete this.errors[`projectUserLogo${i}`]
-    if (!this.anyErrors()) {
-      this.optionsForm.classList.remove('error')
-    }
+    this.onLogoLoad(event, i, 'projectUserLogo')
   }
 
   onRepoLogoLoad(event, i) {
-    if (this.isBadLogo(event.target.src)) {
-      return
-    }
-    delete this.errors[`repositoryLogo${i}`]
-    if (!this.anyErrors()) {
-      this.optionsForm.classList.remove('error')
-    }
+    this.onLogoLoad(event, i, 'repositoryLogo')
   }
 
   onMilestoneRepoLogoLoad(event, i) {
-    if (this.isBadLogo(event.target.src)) {
-      return
-    }
-    delete this.errors[`milestoneRepoLogo${i}`]
-    if (!this.anyErrors()) {
-      this.optionsForm.classList.remove('error')
-    }
+    this.onLogoLoad(event, i, 'milestoneRepoLogo')
   }
 
   onMilestoneRepoLogoError(event, i) {
@@ -464,13 +432,7 @@ class OptionsPage {
   }
 
   onProjectRepoLogoLoad(event, i) {
-    if (this.isBadLogo(event.target.src)) {
-      return
-    }
-    delete this.errors[`projectRepoLogo${i}`]
-    if (!this.anyErrors()) {
-      this.optionsForm.classList.remove('error')
-    }
+    this.onLogoLoad(event, i, 'projectRepoLogo')
   }
 
   onProjectRepoLogoError(event, i) {
