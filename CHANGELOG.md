@@ -1,5 +1,7 @@
 # Change Log
 
+0.1.0
+
 0.0.9
 
 - Add 'pro[j]ects' shortcut for organizations and repositories.
