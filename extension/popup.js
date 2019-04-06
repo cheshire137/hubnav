@@ -990,7 +990,7 @@ class PopupPage {
 
       } else if (isPresent(options.projectNumber) && isPresent(options.projectOrg) &&
                  isPresent(options.projectName)) {
-        this.loadActiveRepoProject(options.projectOrg, options.projectName,
+        this.loadActiveOrgProject(options.projectOrg, options.projectName,
                                    options.projectNumber)
       }
 
