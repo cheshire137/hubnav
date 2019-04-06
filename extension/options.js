@@ -175,10 +175,10 @@ class OptionsPage {
       this.addUserShortcut(event)
 
     } else if (shortcutType === 'repo-project') {
-      this.addProjectShortcut(event, true)
+      this.addRepoProjectShortcut(event)
 
     } else if (shortcutType === 'org-project') {
-      this.addProjectShortcut(event, false)
+      this.addOrgProjectShortcut(event)
 
     } else if (shortcutType === 'milestone') {
       this.addMilestoneShortcut(event)
@@ -1003,10 +1003,18 @@ class OptionsPage {
     this.focusLastAddedInput()
   }
 
-  addProjectShortcut(event, isRepoProject) {
+  addOrgProjectShortcut(event) {
     event.currentTarget.blur()
     const key = this.getNextShortcut()
-    this.addProject(key, '', '', !isRepoProject, '', '')
+    this.addOrgProject(key, '', '', '')
+    this.hideShortcutMenuIfNecessary()
+    this.focusLastAddedInput()
+  }
+
+  addRepoProjectShortcut(event) {
+    event.currentTarget.blur()
+    const key = this.getNextShortcut()
+    this.addRepoProject(key, '', '', '')
     this.hideShortcutMenuIfNecessary()
     this.focusLastAddedInput()
   }
@@ -1102,7 +1110,7 @@ class OptionsPage {
     this.loadTemplate(i, this.milestoneTemplate, this.shortcutsContainer, populate)
   }
 
-  addProject(i, name, number, isOrgProject, org, repo) {
+  addOrgProject(i, name, number, org) {
     const populate = projectEl => {
       projectEl.querySelector('.i').textContent = i
 
@@ -1130,6 +1138,53 @@ class OptionsPage {
         orgLogo.addEventListener('error', e => this.onProjectOrgLogoError(e, i))
       }
 
+      const orgInputID = `project${i}-org`
+      const orgLabel = projectEl.querySelector('.project-org-label')
+      if (orgLabel) {
+        orgLabel.htmlFor = orgInputID
+      }
+
+      if (isPresent(org) && orgLogo) {
+        this.loadLogoForUser(org, orgLogo)
+      }
+
+      const orgInput = projectEl.querySelector('.project-org-input')
+      if (orgInput) {
+        orgInput.id = orgInputID
+        orgInput.value = org
+        orgInput.setAttribute('data-key', i)
+        orgInput.addEventListener('keyup', e => this.onProjectOrgKeyup(e, i))
+        orgInput.classList.add('focus-target')
+      }
+
+      const removeButton = projectEl.querySelector('.remove-project-button')
+      removeButton.addEventListener('click', e => this.removeProject(e, i))
+    }
+    this.loadTemplate(i, this.orgProjectTemplate, this.shortcutsContainer, populate)
+  }
+
+  addRepoProject(i, name, number, repo) {
+    const populate = projectEl => {
+      projectEl.querySelector('.i').textContent = i
+
+      const nameInputID = `project${i}-name`
+      projectEl.querySelector('.project-name-label').htmlFor = nameInputID
+
+      const nameInput = projectEl.querySelector('.project-name-input')
+      nameInput.id = nameInputID
+      nameInput.value = name
+      nameInput.setAttribute('data-key', i)
+      nameInput.addEventListener('change', () => this.checkFormValidity())
+
+      const numberInputID = `project${i}-number`
+      projectEl.querySelector('.project-number-label').htmlFor = numberInputID
+
+      const numberInput = projectEl.querySelector('.project-number-input')
+      numberInput.id = numberInputID
+      numberInput.value = number
+      numberInput.setAttribute('data-key', i)
+      numberInput.addEventListener('change', () => this.checkFormValidity())
+
       const repoLogo = projectEl.querySelector('.project-repo-logo')
       if (repoLogo) {
         repoLogo.addEventListener('load', e => this.onProjectRepoLogoLoad(e, i))
@@ -1145,46 +1200,20 @@ class OptionsPage {
       const repoInput = projectEl.querySelector('.project-repo-input')
       if (repoInput) {
         repoInput.id = repoInputID
-        if (isOrgProject) {
-          repoInput.disabled = true
-        } else {
-          repoInput.value = repo
-        }
+        repoInput.value = repo
         repoInput.setAttribute('data-key', i)
         repoInput.addEventListener('keyup', e => this.onProjectRepoKeyup(e, i))
         repoInput.classList.add('focus-target')
       }
 
-      const orgInputID = `project${i}-org`
-      const orgLabel = projectEl.querySelector('.project-org-label')
-      if (orgLabel) {
-        orgLabel.htmlFor = orgInputID
-      }
-
       if (isPresent(repo) && repoLogo) {
         this.loadRepoLogo(repo, repoLogo)
-      } else if (isPresent(org) && orgLogo) {
-        this.loadLogoForUser(org, orgLogo)
-      }
-
-      const orgInput = projectEl.querySelector('.project-org-input')
-      if (orgInput) {
-        orgInput.id = orgInputID
-        if (isPresent(repo)) {
-          orgInput.disabled = true
-        } else {
-          orgInput.value = org
-        }
-        orgInput.setAttribute('data-key', i)
-        orgInput.addEventListener('keyup', e => this.onProjectOrgKeyup(e, i))
-        orgInput.classList.add('focus-target')
       }
 
       const removeButton = projectEl.querySelector('.remove-project-button')
       removeButton.addEventListener('click', e => this.removeProject(e, i))
     }
-    const template = isOrgProject ? this.orgProjectTemplate : this.repoProjectTemplate
-    this.loadTemplate(i, template, this.shortcutsContainer, populate)
+    this.loadTemplate(i, this.repoProjectTemplate, this.shortcutsContainer, populate)
   }
 
   addUser(i, login, isOrg, scope) {
@@ -1345,8 +1374,11 @@ class OptionsPage {
           const projectNumber = options[`projectNumber${i}`]
           const projectOrg = options[`projectOrg${i}`]
           const projectRepo = options[`projectRepo${i}`]
-          const isOrgProject = isPresent(projectOrg)
-          this.addProject(i, projectName, projectNumber, isOrgProject, projectOrg, projectRepo)
+          if (isPresent(projectOrg)) {
+            this.addOrgProject(i, projectName, projectNumber, projectOrg)
+          } else {
+            this.addRepoProject(i, projectName, projectNumber, projectRepo)
+          }
         }
 
         const milestoneName = options[`milestoneName${i}`]
