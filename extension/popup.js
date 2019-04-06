@@ -204,6 +204,10 @@ class PopupPage {
                  isPresent(options.projectOrg)) {
         this.openOrgProjectIssues(options)
 
+      } else if (options.active === 'project' && isPresent(options.projectNumber) &&
+                 isPresent(options.projectUser)) {
+        this.openUserProjectIssues(options)
+
       } else {
         this.openRepoSelect()
       }
@@ -250,6 +254,12 @@ class PopupPage {
     this.openTab(new GitHubUrl().repositoryProjectPullRequests(repo, number, urlOpts))
   }
 
+  openUserProjectHome(options) {
+    this.highlightShortcuts(this.vShortcuts)
+    const urlHelper = new GitHubUrl()
+    this.openTab(urlHelper.userProject(options.projectUser, options.projectNumber))
+  }
+
   openOrgProjectHome(options) {
     this.highlightShortcuts(this.vShortcuts)
     const urlHelper = new GitHubUrl()
@@ -269,12 +279,28 @@ class PopupPage {
     this.openTab(new GitHubUrl().repositoryProjectIssues(repo, number, urlOpts))
   }
 
+  openUserProjectPullRequests(options) {
+    this.highlightShortcuts(this.pShortcuts)
+    const urlOpts = { merged: this.shiftPressed, closed: this.ctrlPressed }
+    const user = options.projectUser
+    const number = options.projectNumber
+    this.openTab(new GitHubUrl().userProjectPullRequests(user, number, urlOpts))
+  }
+
   openOrgProjectPullRequests(options) {
     this.highlightShortcuts(this.pShortcuts)
     const urlOpts = { merged: this.shiftPressed, closed: this.ctrlPressed }
     const org = options.projectOrg
     const number = options.projectNumber
     this.openTab(new GitHubUrl().organizationProjectPullRequests(org, number, urlOpts))
+  }
+
+  openUserProjectIssues(options) {
+    this.highlightShortcuts(this.iShortcuts)
+    const user = options.projectUser
+    const number = options.projectNumber
+    const urlOpts = { closed: this.shiftPressed }
+    this.openTab(new GitHubUrl().userProjectIssues(user, number, urlOpts))
   }
 
   openOrgProjectIssues(options) {
@@ -312,6 +338,10 @@ class PopupPage {
       } else if (options.active === 'project' && isPresent(options.projectNumber) &&
                  isPresent(options.projectOrg)) {
         this.openOrgProjectHome(options)
+
+      } else if (options.active === 'project' && isPresent(options.projectNumber) &&
+                 isPresent(options.projectUser)) {
+        this.openUserProjectHome(options)
       }
     })
   }
@@ -369,6 +399,10 @@ class PopupPage {
       } else if (options.active === 'project' && isPresent(options.projectNumber) &&
                  isPresent(options.projectOrg)) {
         this.openOrgProjectPullRequests(options)
+
+      } else if (options.active === 'project' && isPresent(options.projectNumber) &&
+                 isPresent(options.projectUser)) {
+        this.openUserProjectPullRequests(options)
 
       } else {
         this.openRepoSelect()
@@ -535,17 +569,27 @@ class PopupPage {
       for (const key in currentOptions) {
         newOptions[key] = currentOptions[key]
       }
+
       const newProjectRepo = currentOptions[`projectRepo${i}`]
       const newProjectOrg = currentOptions[`projectOrg${i}`]
+      const newProjectUser = currentOptions[`projectUser${i}`]
       const newProjectName = currentOptions[`projectName${i}`]
       const newProjectNumber = currentOptions[`projectNumber${i}`]
+
       if (isPresent(newProjectRepo)) {
         newOptions.projectRepo = newProjectRepo
         delete newOptions.projectOrg
+        delete newOptions.projectUser
       }
       if (isPresent(newProjectOrg)) {
         newOptions.projectOrg = newProjectOrg
         delete newOptions.projectRepo
+        delete newOptions.projectUser
+      }
+      if (isPresent(newProjectUser)) {
+        newOptions.projectUser = newProjectUser
+        delete newOptions.projectRepo
+        delete newOptions.projectOrg
       }
       if (isPresent(newProjectNumber)) {
         newOptions.projectNumber = newProjectNumber
@@ -559,6 +603,9 @@ class PopupPage {
         this.runAfterDelay(() => {
           if (isPresent(newOptions.projectRepo)) {
             this.loadActiveRepoProject(newOptions.projectRepo, newOptions.projectName,
+                                       newOptions.projectNumber)
+          } else if (isPresent(newOptions.projectUser)) {
+            this.loadActiveUserProject(newOptions.projectUser, newOptions.projectName,
                                        newOptions.projectNumber)
           } else {
             this.loadActiveOrgProject(newOptions.projectOrg, newOptions.projectName,
@@ -781,6 +828,13 @@ class PopupPage {
     this.highlightActiveContext('org-project', org, name, number)
   }
 
+  loadActiveUserProject(user, name, number) {
+    this.toggleCommandsShown('project')
+    this.loadUserLogo(user, this.projectLogo)
+    this.project.textContent = name
+    this.highlightActiveContext('user-project', user, name, number)
+  }
+
   loadActiveUser(user) {
     this.toggleCommandsShown('user')
     this.loadUserLogo(user, this.userLogo)
@@ -844,6 +898,19 @@ class PopupPage {
           if (options[`projectNumber${i}`] === number &&
               options[`projectName${i}`] === name &&
               options[`projectOrg${i}`] === org) {
+            activeKey = i
+            break
+          }
+        }
+
+      } else if (context === 'user-project') {
+        const user = contextParams[0]
+        const name = contextParams[1]
+        const number = contextParams[2]
+        for (const i of SHORTCUTS) {
+          if (options[`projectNumber${i}`] === number &&
+              options[`projectName${i}`] === name &&
+              options[`projectUser${i}`] === user) {
             activeKey = i
             break
           }
@@ -962,6 +1029,11 @@ class PopupPage {
                    isPresent(options.projectOrg) && isPresent(options.projectName)) {
           this.loadActiveOrgProject(options.projectOrg, options.projectName,
                                     options.projectNumber)
+
+        } else if (options.active === 'project' && isPresent(options.projectNumber) &&
+                   isPresent(options.projectUser) && isPresent(options.projectName)) {
+          this.loadActiveUserProject(options.projectUser, options.projectName,
+                                     options.projectNumber)
         }
 
       // No active context:
@@ -991,6 +1063,11 @@ class PopupPage {
       } else if (isPresent(options.projectNumber) && isPresent(options.projectOrg) &&
                  isPresent(options.projectName)) {
         this.loadActiveOrgProject(options.projectOrg, options.projectName,
+                                  options.projectNumber)
+
+      } else if (isPresent(options.projectNumber) && isPresent(options.projectUser) &&
+                 isPresent(options.projectName)) {
+        this.loadActiveUserProject(options.projectUser, options.projectName,
                                    options.projectNumber)
       }
 
@@ -1054,14 +1131,20 @@ class PopupPage {
         const projectName = options[`projectName${i}`]
         if (isPresent(projectName)) {
           contextCount++
+
           const projectRepo = options[`projectRepo${i}`]
-          const org = options[`projectOrg${i}`]
+          const projectOrg = options[`projectOrg${i}`]
+          const projectUser = options[`projectUser${i}`]
+
           this.addShortcut(i, 'project', (headerEl, logoEl) => {
             headerEl.textContent = projectName
+
             if (isPresent(projectRepo)) {
               this.loadRepoLogo(projectRepo, logoEl)
-            } else if (isPresent(org)) {
-              this.loadUserLogo(org, logoEl)
+            } else if (isPresent(projectOrg)) {
+              this.loadUserLogo(projectOrg, logoEl)
+            } else if (isPresent(projectUser)) {
+              this.loadUserLogo(projectUser, logoEl)
             }
           })
         }
@@ -1069,7 +1152,9 @@ class PopupPage {
         const user = options[`user${i}`]
         if (isPresent(user)) {
           contextCount++
+
           const userIsOrg = options[`userIsOrg${i}`]
+
           this.addShortcut(i, userIsOrg ? 'organization' : 'user', (headerEl, logoEl) => {
             headerEl.textContent = user
             this.loadUserLogo(user, logoEl)
