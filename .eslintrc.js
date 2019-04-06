@@ -24,6 +24,7 @@ module.exports = {
     'no-mixed-operators': 0,
     'no-bitwise': 0,
     'no-continue': 0,
+    'operator-linebreak': ['error', 'after'],
     'prefer-destructuring': ['error', { object: true, array: false }],
     'func-names': ['error', 'never'],
     'space-before-function-paren': ['error', 'never']
