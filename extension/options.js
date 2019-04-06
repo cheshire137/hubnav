@@ -395,13 +395,7 @@ class OptionsPage {
   }
 
   onTeamOrgLogoError(event, i) {
-    const imgTag = event.target
-    this.showBadLogoForUser(imgTag)
-    this.errors[`teamOrgLogo${i}`] = true
-    const orgInput = imgTag.closest('.control').querySelector('.team-org-input')
-    const org = encodeURIComponent(orgInput.value.trim())
-    this.flashErrorMessage(`Invalid team organization: can't find "${org}"`)
-    this.checkFormValidity()
+    this.onLogoError(event, i, 'team organization', 'teamOrgLogo', '.team-org-input')
   }
 
   onProjectOrgLogoLoad(event, i) {
@@ -456,34 +450,26 @@ class OptionsPage {
     this.checkFormValidity()
   }
 
-  onUserLogoError(event, i) {
+  onLogoError(event, i, type, key, inputSelector) {
     const imgTag = event.target
     this.showBadLogoForUser(imgTag)
-    this.errors[`userLogo${i}`] = true
-    const userInput = imgTag.closest('.control').querySelector('.login-input')
-    const user = encodeURIComponent(userInput.value.trim())
-    this.flashErrorMessage(`Invalid user: can't find "${user}"`)
+    this.errors[`${key}${i}`] = true
+    const input = imgTag.closest('.control').querySelector(inputSelector)
+    const value = encodeURIComponent(input.value.trim())
+    this.flashErrorMessage(`Invalid ${type}: can't find "${value}"`)
     this.checkFormValidity()
+  }
+
+  onUserLogoError(event, i) {
+    this.onLogoError(event, i, 'user', 'userLogo', '.login-input')
   }
 
   onProjectUserLogoError(event, i) {
-    const imgTag = event.target
-    this.showBadLogoForUser(imgTag)
-    this.errors[`projectUserLogo${i}`] = true
-    const userInput = imgTag.closest('.control').querySelector('.project-user-input')
-    const user = encodeURIComponent(userInput.value.trim())
-    this.flashErrorMessage(`Invalid user: can't find "${user}"`)
-    this.checkFormValidity()
+    this.onLogoError(event, i, 'user', 'projectUserLogo', '.project-user-input')
   }
 
   onProjectOrgLogoError(event, i) {
-    const imgTag = event.target
-    this.showBadLogoForUser(imgTag)
-    this.errors[`projectOrgLogo${i}`] = true
-    const orgInput = imgTag.closest('.control').querySelector('.project-org-input')
-    const org = encodeURIComponent(orgInput.value.trim())
-    this.flashErrorMessage(`Invalid organization: can't find "${org}"`)
-    this.checkFormValidity()
+    this.onLogoError(event, i, 'organization', 'projectOrgLogo', '.project-org-input')
   }
 
   onRepoLogoError(event, i) {
