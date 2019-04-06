@@ -19,6 +19,17 @@ class GitHubUrl {
     return `${this.repository(nameWithOwner)}/projects`
   }
 
+  userProjects(rawUser) {
+    const user = encodeURIComponent(rawUser)
+    return `${this.baseUrl}/users/${user}/projects`
+  }
+
+  userProject(rawUser, rawNumber) {
+    const user = encodeURIComponent(rawUser)
+    const number = encodeURIComponent(rawNumber)
+    return `${this.baseUrl}/users/${user}/projects/${number}?fullscreen=true`
+  }
+
   organizationProject(rawOrg, rawNumber) {
     const org = encodeURIComponent(rawOrg)
     const number = encodeURIComponent(rawNumber)
@@ -40,9 +51,19 @@ class GitHubUrl {
     return `${this.organizationProject(org, number)}&card_filter_query=${query}`
   }
 
+  userProjectIssues(user, number, options) {
+    const query = this.issuesQuery(options)
+    return `${this.userProject(user, number)}&card_filter_query=${query}`
+  }
+
   repositoryProjectIssues(repo, number, options) {
     const query = this.issuesQuery(options)
     return `${this.repositoryProject(repo, number)}&card_filter_query=${query}`
+  }
+
+  userProjectPullRequests(user, number, options) {
+    const query = this.pullRequestsQuery(options)
+    return `${this.userProject(user, number)}&card_filter_query=${query}`
   }
 
   repositoryProjectPullRequests(repo, number, options) {
