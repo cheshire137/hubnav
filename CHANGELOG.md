@@ -2,6 +2,8 @@
 
 0.1.0
 
+- You can now add shortcuts for user projects.
+
 0.0.9
 
 - Add 'pro[j]ects' shortcut for organizations and repositories.

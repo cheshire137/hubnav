@@ -107,6 +107,7 @@ class OptionsPage {
     this.repoTemplate = document.getElementById('repository-template')
     this.repoProjectTemplate = document.getElementById('repo-project-template')
     this.orgProjectTemplate = document.getElementById('org-project-template')
+    this.userProjectTemplate = document.getElementById('user-project-template')
     this.userTemplate = document.getElementById('user-template')
     this.orgTemplate = document.getElementById('org-template')
     this.milestoneTemplate = document.getElementById('milestone-template')
@@ -180,6 +181,9 @@ class OptionsPage {
     } else if (shortcutType === 'org-project') {
       this.addOrgProjectShortcut(event)
 
+    } else if (shortcutType === 'user-project') {
+      this.addUserProjectShortcut(event)
+
     } else if (shortcutType === 'milestone') {
       this.addMilestoneShortcut(event)
 
@@ -250,13 +254,13 @@ class OptionsPage {
     }, 750)
   }
 
-  onUserKeyup(event, i) {
-    if (this[`userInput${i}Timer`]) {
-      clearTimeout(this[`userInput${i}Timer`])
+  onUserKeyup(type, event, i) {
+    if (this[`${type}UserInput${i}Timer`]) {
+      clearTimeout(this[`${type}UserInput${i}Timer`])
     }
     const userInput = event.target
-    const imgTag = userInput.closest('.control').querySelector('.user-logo')
-    this[`userInput${i}Timer`] = setTimeout(() => {
+    const imgTag = userInput.closest('.control').querySelector(`.${type}-user-logo`)
+    this[`${type}UserInput${i}Timer`] = setTimeout(() => {
       const user = userInput.value.trim()
       if (user.length < 1) {
         this.showDefaultLogoForUser(imgTag)
@@ -290,6 +294,10 @@ class OptionsPage {
 
   onProjectOrgKeyup(event, i) {
     this.onOrgKeyup('project', event, i)
+  }
+
+  onProjectUserKeyup(event, i) {
+    this.onUserKeyup('project', event, i)
   }
 
   onUserScopeKeyup(event, i) {
@@ -404,6 +412,16 @@ class OptionsPage {
     }
   }
 
+  onProjectUserLogoLoad(event, i) {
+    if (this.isBadLogo(event.target.src)) {
+      return
+    }
+    delete this.errors[`projectUserLogo${i}`]
+    if (!this.anyErrors()) {
+      this.optionsForm.classList.remove('error')
+    }
+  }
+
   onRepoLogoLoad(event, i) {
     if (this.isBadLogo(event.target.src)) {
       return
@@ -471,6 +489,16 @@ class OptionsPage {
     this.showBadLogoForUser(imgTag)
     this.errors[`userLogo${i}`] = true
     const userInput = imgTag.closest('.control').querySelector('.login-input')
+    const user = encodeURIComponent(userInput.value.trim())
+    this.flashErrorMessage(`Invalid user: can't find "${user}"`)
+    this.checkFormValidity()
+  }
+
+  onProjectUserLogoError(event, i) {
+    const imgTag = event.target
+    this.showBadLogoForUser(imgTag)
+    this.errors[`projectUserLogo${i}`] = true
+    const userInput = imgTag.closest('.control').querySelector('.project-user-input')
     const user = encodeURIComponent(userInput.value.trim())
     this.flashErrorMessage(`Invalid user: can't find "${user}"`)
     this.checkFormValidity()
@@ -1011,6 +1039,14 @@ class OptionsPage {
     this.focusLastAddedInput()
   }
 
+  addUserProjectShortcut(event) {
+    event.currentTarget.blur()
+    const key = this.getNextShortcut()
+    this.addUserProject(key, '', '', '')
+    this.hideShortcutMenuIfNecessary()
+    this.focusLastAddedInput()
+  }
+
   addRepoProjectShortcut(event) {
     event.currentTarget.blur()
     const key = this.getNextShortcut()
@@ -1108,6 +1144,59 @@ class OptionsPage {
       removeButton.addEventListener('click', e => this.removeMilestone(e, i))
     }
     this.loadTemplate(i, this.milestoneTemplate, this.shortcutsContainer, populate)
+  }
+
+  addUserProject(i, name, number, user) {
+    const populate = projectEl => {
+      projectEl.querySelector('.i').textContent = i
+
+      const nameInputID = `project${i}-name`
+      projectEl.querySelector('.project-name-label').htmlFor = nameInputID
+
+      const nameInput = projectEl.querySelector('.project-name-input')
+      nameInput.id = nameInputID
+      nameInput.value = name
+      nameInput.setAttribute('data-key', i)
+      nameInput.addEventListener('change', () => this.checkFormValidity())
+
+      const numberInputID = `project${i}-number`
+      projectEl.querySelector('.project-number-label').htmlFor = numberInputID
+
+      const numberInput = projectEl.querySelector('.project-number-input')
+      numberInput.id = numberInputID
+      numberInput.value = number
+      numberInput.setAttribute('data-key', i)
+      numberInput.addEventListener('change', () => this.checkFormValidity())
+
+      const userLogo = projectEl.querySelector('.project-user-logo')
+      if (userLogo) {
+        userLogo.addEventListener('load', e => this.onProjectUserLogoLoad(e, i))
+        userLogo.addEventListener('error', e => this.onProjectUserLogoError(e, i))
+      }
+
+      const userInputID = `project${i}-user`
+      const userLabel = projectEl.querySelector('.project-user-label')
+      if (userLabel) {
+        userLabel.htmlFor = userInputID
+      }
+
+      if (isPresent(user) && userLogo) {
+        this.loadLogoForUser(user, userLogo)
+      }
+
+      const userInput = projectEl.querySelector('.project-user-input')
+      if (userInput) {
+        userInput.id = userInputID
+        userInput.value = user
+        userInput.setAttribute('data-key', i)
+        userInput.addEventListener('keyup', e => this.onProjectUserKeyup(e, i))
+        userInput.classList.add('focus-target')
+      }
+
+      const removeButton = projectEl.querySelector('.remove-project-button')
+      removeButton.addEventListener('click', e => this.removeProject(e, i))
+    }
+    this.loadTemplate(i, this.userProjectTemplate, this.shortcutsContainer, populate)
   }
 
   addOrgProject(i, name, number, org) {
@@ -1221,10 +1310,12 @@ class OptionsPage {
       userEl.querySelector('.i').textContent = i
 
       const userLogo = userEl.querySelector('.user-logo')
-      userLogo.addEventListener('load', e => this.onUserLogoLoad(e, i))
-      userLogo.addEventListener('error', e => this.onUserLogoError(e, i))
-      if (isPresent(login)) {
-        this.loadLogoForUser(login, userLogo)
+      if (userLogo) {
+        userLogo.addEventListener('load', e => this.onUserLogoLoad(e, i))
+        userLogo.addEventListener('error', e => this.onUserLogoError(e, i))
+        if (isPresent(login)) {
+          this.loadLogoForUser(login, userLogo)
+        }
       }
 
       const loginInputID = `userInput${i}`

@@ -285,6 +285,62 @@
           </div>
         </template>
 
+        <template id="user-project-template">
+          <div class="flex-row project-container shortcut-container" draggable="true">
+            <div class="drag-handle">
+              <svg width="16" height="16" class="octicon octicon-three-bars" viewBox="0 0 12 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M11.41 9H.59C0 9 0 8.59 0 8c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zm0-4H.59C0 5 0 4.59 0 4c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zM.59 11H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1H.59C0 13 0 12.59 0 12c0-.59 0-1 .59-1z"></path></svg>
+            </div>
+            <h3 class="subtitle is-5">
+              <span>
+                <svg class="octicon octicon-project" title="User project shortcut" viewBox="0 0 15 16" version="1.1" width="15" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10 12h3V2h-3v10zm-4-2h3V2H6v8zm-4 4h3V2H2v12zm-1 1h13V1H1v14zM14 0H1a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1z"></path></svg>
+                <span>Shortcut <span class="i"></span></span>
+              </span>
+              <button type="button" class="button is-small is-link remove-project-button">
+                <svg class="octicon octicon-x" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z"></path></svg>
+                Remove
+              </button>
+            </h3>
+            <div class="fields">
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <label class="label project-user-label">Project user:</label>
+                    <div class="control with-image">
+                      <img width="36" height="36" class="project-user-logo user-logo" src="unknown-user.png">
+                      <input class="input project-user-input" autocomplete="off" type="text" placeholder="e.g., twbs">
+                    </div>
+                    <p class="help">
+                      For a user project, specify the user's login.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <label class="label project-number-label">Project number:</label>
+                    <div class="control">
+                      <input class="input project-number-input" autocomplete="off" type="number" min="1" step="1" placeholder="e.g., 3">
+                    </div>
+                    <p class="help">The number of the project in its URL.</p>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="field">
+                    <label class="label project-name-label">Project name:</label>
+                    <div class="control">
+                      <input class="input project-name-input shortcut-input" autocomplete="off" type="text" placeholder="e.g., My Project">
+                    </div>
+                    <p class="help">
+                      A name to help you identify this project.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+
         <template id="user-template">
           <div class="flex-row user-container shortcut-container" draggable="true">
             <div class="drag-handle">
@@ -309,7 +365,7 @@
                   <div class="field is-expanded">
                     <div class="field">
                       <div class="control with-image">
-                        <img width="36" height="36" class="user-logo" src="unknown-user.png">
+                        <img width="36" height="36" class="user-logo profile-user-logo" src="unknown-user.png">
                         <input class="input login-input shortcut-input" autocomplete="off" type="text" placeholder="e.g., cheshire137">
                       </div>
                     </div>
@@ -328,7 +384,7 @@
                   <div class="field is-expanded">
                     <div class="field">
                       <div class="control with-image is-small">
-                        <img width="28" height="28" class="user-logo scope-logo" src="unknown-user.png">
+                        <img width="28" height="28" class="profile-user-logo scope-logo" src="unknown-user.png">
                         <input class="input is-small scope-input" autocomplete="off" type="text" placeholder="e.g., my-org or my-org/my-repo">
                       </div>
                     </div>
@@ -456,6 +512,9 @@
                   </a>
                   <a href="#" class="dropdown-item shortcut-dropdown-item" data-type="org-project">
                     Project (in an organization)
+                  </a>
+                  <a href="#" class="dropdown-item shortcut-dropdown-item" data-type="user-project">
+                    Project (for a user)
                   </a>
                   <a href="#" class="dropdown-item shortcut-dropdown-item" data-type="user">
                     User
