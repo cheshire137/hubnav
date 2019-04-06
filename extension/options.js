@@ -61,6 +61,8 @@ class OptionsPage {
       const repo = repoInput ? repoInput.value.trim() : null
       const orgInput = container.querySelector('.project-org-input')
       const org = orgInput ? orgInput.value.trim() : null
+      const userInput = container.querySelector('.project-user-input')
+      const user = userInput ? userInput.value.trim() : null
       const number = container.querySelector('.project-number-input').value
 
       if (repoInput) {
@@ -77,9 +79,16 @@ class OptionsPage {
         } else {
           delete this.errors[`projectOrg${i}`]
         }
+      } else if (userInput) {
+        if (user.length < 1) {
+          this.errors[`projectUser${i}`] = true
+          this.flashErrorMessage(`Invalid project user: shortcut ${i}`)
+        } else {
+          delete this.errors[`projectUser${i}`]
+        }
       }
 
-      if ((isPresent(org) || isPresent(repo) || isPresent(name)) &&
+      if ((isPresent(org) || isPresent(user) || isPresent(repo) || isPresent(name)) &&
           number.length < 1) {
         this.errors[`projectNumber${i}`] = true
         this.flashErrorMessage(`Must set project number: shortcut ${i}`)
@@ -87,7 +96,8 @@ class OptionsPage {
         delete this.errors[`projectNumber${i}`]
       }
 
-      if ((isPresent(org) || isPresent(repo) || number.length > 0) && name.length < 1) {
+      if ((isPresent(org) || isPresent(user) || isPresent(repo) || number.length > 0) &&
+          name.length < 1) {
         this.errors[`projectName${i}`] = true
         this.flashErrorMessage(`Must set project name: shortcut ${i}`)
       } else {
@@ -175,14 +185,14 @@ class OptionsPage {
     } else if (shortcutType === 'user') {
       this.addUserShortcut(event)
 
+    } else if (shortcutType === 'user-project') {
+      this.addUserProjectShortcut(event)
+
     } else if (shortcutType === 'repo-project') {
       this.addRepoProjectShortcut(event)
 
     } else if (shortcutType === 'org-project') {
       this.addOrgProjectShortcut(event)
-
-    } else if (shortcutType === 'user-project') {
-      this.addUserProjectShortcut(event)
 
     } else if (shortcutType === 'milestone') {
       this.addMilestoneShortcut(event)
@@ -710,11 +720,14 @@ class OptionsPage {
           const repo = repoInput ? repoInput.value.trim() : null
           const orgInput = container.querySelector('.project-org-input')
           const org = orgInput ? orgInput.value.trim() : null
+          const userInput = container.querySelector('.project-user-input')
+          const user = userInput ? userInput.value.trim() : null
           const number = container.querySelector('.project-number-input').value
           newOptions[`projectName${i}`] = name
           newOptions[`projectNumber${i}`] = number
           newOptions[`projectRepo${i}`] = repo
           newOptions[`projectOrg${i}`] = org
+          newOptions[`projectUser${i}`] = user
         }
       }
 
@@ -722,6 +735,7 @@ class OptionsPage {
       newOptions.projectNumber = currentOptions.projectNumber
       newOptions.projectRepo = currentOptions.projectRepo
       newOptions.projectOrg = currentOptions.projectOrg
+      newOptions.projectUser = currentOptions.projectUser
       const projectNameOptions = []
       for (const i of SHORTCUTS) {
         const name = newOptions[`projectName${i}`]
@@ -730,12 +744,14 @@ class OptionsPage {
             newOptions.projectNumber = newOptions[`projectNumber${i}`]
             newOptions.projectRepo = newOptions[`projectRepo${i}`]
             newOptions.projectOrg = newOptions[`projectOrg${i}`]
+            newOptions.projectUser = newOptions[`projectUser${i}`]
           }
           if (!newOptions.projectName || newOptions.projectName.length < 1) {
             newOptions.projectName = name
             newOptions.projectNumber = newOptions[`projectNumber${i}`]
             newOptions.projectRepo = newOptions[`projectRepo${i}`]
             newOptions.projectOrg = newOptions[`projectOrg${i}`]
+            newOptions.projectUser = newOptions[`projectUser${i}`]
           }
           projectNameOptions.push(name)
         }
@@ -745,6 +761,7 @@ class OptionsPage {
         newOptions.projectNumber = null
         newOptions.projectRepo = null
         newOptions.projectOrg = null
+        newOptions.projectUser = null
       }
 
       const userInputs = document.querySelectorAll('.login-input')
@@ -806,6 +823,7 @@ class OptionsPage {
               newOptions.projectName = name
               newOptions.projectNumber = newOptions[`projectNumber${i}`]
               newOptions.projectOrg = newOptions[`projectOrg${i}`]
+              newOptions.projectUser = newOptions[`projectUser${i}`]
               newOptions.projectRepo = newOptions[`projectRepo${i}`]
               break
             }
@@ -878,7 +896,8 @@ class OptionsPage {
   hasActiveProjectDetails(options) {
     return isPresent(options.projectName) &&
       typeof options.projectNumber === 'number' &&
-      (isPresent(options.projectRepo) || isPresent(options.projectOrg))
+      (isPresent(options.projectRepo) || isPresent(options.projectOrg) ||
+       isPresent(options.projectUser))
   }
 
   hasActiveMilestoneDetails(options) {
@@ -1347,7 +1366,7 @@ class OptionsPage {
       loginInput.id = loginInputID
       loginInput.value = login
       loginInput.setAttribute('data-key', i)
-      loginInput.addEventListener('keyup', e => this.onUserKeyup(e, i))
+      loginInput.addEventListener('keyup', e => this.onUserKeyup('profile', e, i))
       loginInput.classList.add('focus-target')
 
       const removeButton = userEl.querySelector('.remove-user-button')
@@ -1464,9 +1483,12 @@ class OptionsPage {
         if (isPresent(projectName)) {
           const projectNumber = options[`projectNumber${i}`]
           const projectOrg = options[`projectOrg${i}`]
+          const projectUser = options[`projectUser${i}`]
           const projectRepo = options[`projectRepo${i}`]
           if (isPresent(projectOrg)) {
             this.addOrgProject(i, projectName, projectNumber, projectOrg)
+          } else if (isPresent(projectUser)) {
+            this.addUserProject(i, projectName, projectNumber, projectUser)
           } else {
             this.addRepoProject(i, projectName, projectNumber, projectRepo)
           }
